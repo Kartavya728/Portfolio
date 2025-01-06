@@ -1,10 +1,14 @@
 import { FaLocationArrow } from "react-icons/fa6";
-
+import img from "../data/profile.jpg";
 import MagicButton from "./MagicButton";
 import { Spotlight } from "./ui/Spotlight";
 import { TextGenerateEffect } from "./ui/TextGenerateEffect";
+import Image from "next/image";
 
 const Hero = () => {
+  const handleClick = () => {
+    alert("Resume not uploaded yet");
+  };
   return (
     <div className="pb-20 pt-36">
       {/**
@@ -39,12 +43,19 @@ const Hero = () => {
          bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"
         />
       </div>
-
-      <div className="flex justify-center relative my-20 z-10">
+      <div className="flex justify-center items-center z-10000">
+        <div className="relative w-24 h-24 rounded-full border-4 border-white overflow-hidden shadow-md z-10000">
+          <Image
+            src={img} // Replace with your image path
+            alt="Centered Circle Image"
+            layout="fill"
+            objectFit="cover"
+          />
+        </div>
+      </div>
+      <div className="flex justify-center relative mb-10 mt-2 z-10">
         <div className="max-w-[89vw] md:max-w-2xl lg:max-w-[60vw] flex flex-col items-center justify-center">
-          <p className="uppercase tracking-widest text-xs text-center text-blue-100 max-w-80">
-            Dynamic Web Magic with Next.js
-          </p>
+          <p className="uppercase tracking-widest text-xs text-center text-blue-100 max-w-80"></p>
 
           {/**
            *  Link: https://ui.aceternity.com/components/text-generate-effect
@@ -52,21 +63,31 @@ const Hero = () => {
            *  change md:text-6xl, add more responsive code
            */}
           <TextGenerateEffect
-            words="Transforming Concepts into Seamless User Experiences"
+            words="Hi, I'm Kartavya Suryawanshi - student at IIT Mandi"
             className="text-center text-[40px] md:text-5xl lg:text-6xl"
           />
 
           <p className="text-center md:tracking-wider mb-4 text-sm md:text-lg lg:text-2xl">
-            Hi! I&apos;m Adrian, a Next.js Developer based in Croatia.
+            A Data Science Engineering student at IIT Mandi, passionate about
+            turning data into impactful solutions.
           </p>
-
-          <a href="#about">
-            <MagicButton
-              title="Show my work"
-              icon={<FaLocationArrow />}
-              position="right"
-            />
-          </a>
+          <div className="flex justify-center items-center gap-4">
+            <a href="https://github.com/Kartavya728" className="flex-1">
+              <MagicButton
+                title="My GitHub"
+                icon={<FaLocationArrow />}
+                position="right"
+              />
+            </a>
+            <div onClick={handleClick} className="flex-1">
+              <MagicButton
+                title="My Resume"
+                icon={<FaLocationArrow />}
+                position="right"
+                // Add the onClick event
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -34,7 +34,12 @@
 
     --radius: 0.5rem;
   }
-
+  @media (min-width: 768px) {
+    .heading {
+      font-size: 3rem;
+      line-height: 2;
+    }
+  }
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;

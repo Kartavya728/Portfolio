@@ -1,23 +1,25 @@
 "use client";
-
+import img1 from "../data/node.png";
+import img2 from "../data/react.png";
+import img3 from "../data/arduino.png";
+import img4 from "../data/mongo.png";
+import img5 from "../data/postman.png";
+import img6 from "../data/next.png";
 import React from "react";
-
-import { companies, testimonials } from "@/data";
+import { testimonials } from "@/data";
 import { InfiniteMovingCards } from "./ui/InfiniteCards";
+import Image from "next/image";
 
 const Clients = () => {
   return (
     <section id="testimonials" className="py-20">
       <h1 className="heading">
-        Kind words from
-        <span className="text-purple"> satisfied clients</span>
+        My Participations in Various
+        <span className="text-purple"> Events & Competition</span>
       </h1>
 
       <div className="flex flex-col items-center max-lg:mt-10">
-        <div
-          // remove bg-white dark:bg-black dark:bg-grid-white/[0.05], h-[40rem] to 30rem , md:h-[30rem] are for the responsive design
-          className="h-[50vh] md:h-[30rem] rounded-md flex flex-col antialiased  items-center justify-center relative overflow-hidden"
-        >
+        <div className="h-[50vh] md:h-[30rem] rounded-md flex flex-col antialiased items-center justify-center relative overflow-hidden">
           <InfiniteMovingCards
             items={testimonials}
             direction="right"
@@ -25,24 +27,51 @@ const Clients = () => {
           />
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-4 md:gap-16 max-lg:mt-10">
-          {companies.map((company) => (
-            <React.Fragment key={company.id}>
-              <div className="flex md:max-w-60 max-w-32 gap-2">
-                <img
-                  src={company.img}
-                  alt={company.name}
-                  className="md:w-10 w-5"
-                />
-                <img
-                  src={company.nameImg}
-                  alt={company.name}
-                  width={company.id === 4 || company.id === 5 ? 100 : 150}
-                  className="md:w-24 w-20"
-                />
-              </div>
-            </React.Fragment>
-          ))}
+        <div className="flex flex-wrap justify-around items-center gap-4 md:gap-16 max-lg:mt-10">
+          <div className="flex gap-4 flex-wrap justify-around w-full">
+            <Image
+              src={img1}
+              alt="Centered Circle Image"
+              height={50}
+              width={150}
+              className="flex-shrink-0"
+            />
+            <Image
+              src={img2}
+              alt="Centered Circle Image"
+              height={50}
+              width={150}
+              className="flex-shrink-0"
+            />
+            <Image
+              src={img3}
+              alt="Centered Circle Image"
+              height={50}
+              width={150}
+              className="flex-shrink-0"
+            />
+            <Image
+              src={img4}
+              alt="Centered Circle Image"
+              height={50}
+              width={150}
+              className="flex-shrink-0"
+            />
+            <Image
+              src={img5}
+              alt="Centered Circle Image"
+              height={50}
+              width={150}
+              className="flex-shrink-0"
+            />
+            <Image
+              src={img6}
+              alt="Centered Circle Image"
+              height={50}
+              width={150}
+              className="flex-shrink-0"
+            />
+          </div>
         </div>
       </div>
     </section>
