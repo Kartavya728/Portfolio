@@ -179,28 +179,28 @@ export const workExperience = [
   {
     id: 1,
     title: "Frontend Devolpment",
-    desc: "Assisted in the development of a web-based platform using React.js, enhancing interactivity.",
+    desc: "Made various projects in React Js and Next Js also be the front-end devloper for website of Research Scoiety, IIT Mandi",
     className: "md:col-span-2",
     thumbnail: "/exp1.svg",
   },
   {
     id: 2,
     title: "Backend Devolpment",
-    desc: "Designed and developed mobile app for both iOS & Android platforms using React Native.",
+    desc: "Know Node Js ,Express Js and use to with MongoDB ,Atlas and made various projects in it.",
     className: "md:col-span-2", // change to md:col-span-2
     thumbnail: "/exp2.svg",
   },
   {
     id: 3,
     title: "Learning ML",
-    desc: "Led the dev of a mobile app for a client, from initial concept to deployment on app stores.",
+    desc: "This part is not grown yet but recently started learning different python libreries like pytorch,tensorflow and opencv but now completed them yet!",
     className: "md:col-span-2", // change to md:col-span-2
     thumbnail: "/exp3.svg",
   },
   {
     id: 4,
     title: "Competitive Programing",
-    desc: "Developed and maintained user-facing features using modern frontend technologies.",
+    desc: "Solved 300+ leetcode problems and also completed DSA in c++ and able to use STL in coding compititions",
     className: "md:col-span-2",
     thumbnail: "/exp4.svg",
   },

@@ -13,11 +13,9 @@ const Approach = () => {
       <div className="my-20 flex flex-col lg:flex-row items-center justify-center w-full gap-4">
         {/* add des prop */}
         <Card
-          title="Planning & Strategy"
+          title="AIR-2357(mains),3895(Adv)"
           icon={<AceternityIcon order="Crack JEE Adv." />}
-          des="We'll collaborate to map out your website's goals, target audience, 
-          and key functionalities. We'll discuss things like site structure, 
-          navigation, and content requirements."
+          des="no description needed 😎😎"
         >
           <CanvasRevealEffect
             animationSpeed={5.1}
@@ -48,9 +46,9 @@ const Approach = () => {
           {/* <div className="absolute inset-0 [mask-image:radial-gradient(400px_at_center,white,transparent)] bg-black/50 dark:bg-black/90" /> */}
         </Card>
         <Card
-          title="Not Placed Yet!"
+          title="Not Placed Yet 😅😅"
           icon={<AceternityIcon order="Being Placed" />}
-          des="i am in 1st year now"
+          des="i am in 1st year now."
         >
           <CanvasRevealEffect
             animationSpeed={3}

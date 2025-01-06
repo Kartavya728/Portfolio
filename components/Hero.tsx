@@ -7,8 +7,14 @@ import Image from "next/image";
 
 const Hero = () => {
   const handleClick = () => {
-    alert("Resume not uploaded yet");
+    const link = document.createElement("a");
+    link.href = "/Kartavya_Suryawanshi_Resume.pdf"; // Relative to the `public` folder
+    link.download = "Kartavya_Suryawanshi_Resume.pdf"; // Name of the downloaded file
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
+
   return (
     <div className="pb-20 pt-36">
       {/**
