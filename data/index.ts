@@ -2,6 +2,9 @@ import img1 from "./scri (1).png";
 import img2 from "./Screenshot 2025-01-06 184802.png";
 import img3 from "./Screenshot 2025-01-06 184349.png";
 import img4 from "./Screenshot 2025-01-06 185003.png";
+import imgtrf from "./traffic.png";
+import imgtumor from "./tumor.png";
+import leaf from "./damaged.jpg";
 
 export const navItems = [
   { name: "About", link: "#about" },
@@ -77,11 +80,11 @@ export const gridItems = [
 export const projects = [
   {
     id: 1,
-    title: "A Website for College Clubs",
-    des: "A dynamic website designed to help college clubs manage events, share updates, and interact with members. Built using ReactJs, Framer, and Tailwind CSS for a seamless user experience.",
-    img: img1,
-    iconLists: ["/re.svg", "/tail.svg", "/ts.svg", "/three.svg", "/fm.svg"],
-    link: "Tools: ReactJs, Framer, CSS",
+    title: "Smart Traffic Management",
+    des: "An intelligent system using ML and DL to recognize vehicles, monitor lanes, and assist drivers. It provides real-time traffic data and integrates with a website for enhanced usability.",
+    img: imgtrf,
+    iconLists: ["/next.svg", "/tail.svg", "/ts.svg", "/stream.svg", "/c.svg"],
+    link: "Tools: Python, TensorFlow, OpenCV, React, Flask",
   },
   {
     id: 2,
@@ -93,6 +96,36 @@ export const projects = [
   },
   {
     id: 3,
+    title: "Brain Tumor Detection",
+    des: "An AI-powered tool that analyzes MRI scans to detect brain tumors. If a tumor is present, it highlights the affected area with a bounding box and provides a probability score. Integrated with a website for easy access.",
+    img: imgtumor,
+    iconLists: [
+      "/python.svg",
+      "/tensorflow.svg",
+      "/opencv.svg",
+      "/react.svg",
+      "/flask.svg",
+    ],
+    link: "Tools: Python, TensorFlow, OpenCV, React, Flask",
+  },
+  {
+    id: 4,
+    title: "A Website for College Clubs",
+    des: "A dynamic website designed to help college clubs manage events, share updates, and interact with members. Built using ReactJs, Framer, and Tailwind CSS for a seamless user experience.",
+    img: img1,
+    iconLists: ["/re.svg", "/tail.svg", "/ts.svg", "/three.svg", "/fm.svg"],
+    link: "Tools: ReactJs, Framer, CSS",
+  },
+  {
+    id: 5,
+    title: "Plant Health Detector",
+    des: "A deep learning-based system that identifies plant species and detects diseases by analyzing leaf images. The model helps farmers and gardeners diagnose plant health issues accurately.",
+    img: leaf,
+    iconLists: ["/python.svg", "/tensorflow.svg", "/opencv.svg", "/flask.svg"],
+    link: "Tools: Python, TensorFlow, OpenCV, Flask",
+  },
+  {
+    id: 6,
     title: "A Website for Any College Fest",
     des: "A customizable website template for college festivals, featuring event schedules, registration systems, and live updates. Built using NextJs and NodeJs for a fast and responsive experience.",
     img: img3,
@@ -100,7 +133,7 @@ export const projects = [
     link: "Tools: NextJs, NodeJs",
   },
   {
-    id: 4,
+    id: 7,
     title: "Arduino Remote Control Page",
     des: "A page designed to control Arduino-based devices remotely. Utilizes Arduino IDE and Python for communication, providing users with the ability to control hardware through a simple web interface.",
     img: img4,
@@ -132,6 +165,13 @@ export const testimonials = [
     name: "Exodia'25",
     img: "https://tse4.mm.bing.net/th?id=OIP.sXFT0d5ysD2_p2BPlVFpuAHaHa&pid=Api&P=0&h=180",
     title: "Part of web-dev team for Exodia'25 of IIT Mandi",
+  },
+  {
+    quote:
+      "Google KrackHack 2025 was an incredible opportunity to push my limits in problem-solving and innovation. Participating in the hackathon conducted by the Google Developer Group at IIT Mandi, I worked on a Machine Learning and Deep Learning-based Traffic Management System. The project recognized various vehicles and lanes, providing real-time assistance to drivers while collecting traffic data. Integrating the model with a website added another layer of functionality, making the system both interactive and impactful.",
+    name: "Google KrackHack 2025",
+    img: "https://tse1.mm.bing.net/th?id=OIP.Z0QINSms7lBLyg-mjUQtGAHaHa&pid=Api&P=0&h=180",
+    title: "Participant in Google KrackHack 2025 at IIT Mandi",
   },
   {
     quote:
