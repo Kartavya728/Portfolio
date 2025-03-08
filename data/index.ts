@@ -232,8 +232,8 @@ export const workExperience = [
   },
   {
     id: 3,
-    title: "Learning ML",
-    desc: "This part is not grown yet but recently started learning different python libreries like pytorch,tensorflow and opencv but now completed them yet!",
+    title: "Machine Learning and Deep Learning",
+    desc: "Know tensorflow and OpenCv train various models based on logistic reggrestion,Random Forest,CNN and LSTM.ALso know to use Ultralytics to tune YOLO model for projects",
     className: "md:col-span-2", // change to md:col-span-2
     thumbnail: "/exp3.svg",
   },
