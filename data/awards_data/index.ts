@@ -1,15 +1,14 @@
 export const awards = [
   {
     id: 1,
-    title: "Competitive Programming Excellence",
+    title: "Winner – NASA Space Apps Challenge",
     year: 2025,
-    description:
-      "Solved 500+ coding problems across LeetCode, Codeforces, and HackerRank.",
-    category: "Technical Achievement",
-    icon: "💻",
+    description: "1st place for an AI-driven lunar exploration solution.",
+    category: "International Competition",
+    icon: "🚀",
     logo: "/data/achievements_data/achive-1.png",
-    link: "https://leetcode.com/",
-    color: "from-yellow-500 to-orange-600",
+    link: "https://www.spaceappschallenge.org/",
+    color: "from-blue-500 to-cyan-600",
   },
   {
     id: 2,
@@ -25,27 +24,27 @@ export const awards = [
   },
   {
     id: 3,
-    title: "Winner – NASA Space Apps Challenge",
-    year: 2025,
-    description: "1st place for an AI-driven lunar exploration solution.",
-    category: "International Competition",
-    icon: "🚀",
-    logo: "/data/achievements_data/achive-3.png",
-    link: "https://www.spaceappschallenge.org/",
-    color: "from-blue-500 to-cyan-600",
-    
-  },
-  {
-    id: 4,
     title: "Finance Management Portal Recognition",
     year: 2025,
     description:
       "Received formal appreciation from the Deputy Registrar (Finance), IIT Mandi for leading development of an Integrated Finance Workflow Portal.",
     category: "Institutional Recognition",
     icon: "📊",
-    logo: "/data/achievements_data/achive-4.png",
+    logo: "/data/achievements_data/achive-3.png",
     link: "#",
     color: "from-green-500 to-emerald-600",
+  },
+  {
+    id: 4,
+    title: "Competitive Programming Excellence",
+    year: 2025,
+    description:
+      "Solved 500+ coding problems across LeetCode, Codeforces, and HackerRank.",
+    category: "Technical Achievement",
+    icon: "💻",
+    logo: "/data/achievements_data/achive-4.png",
+    link: "https://leetcode.com/",
+    color: "from-yellow-500 to-orange-600",
   },
   // Row 2 (5-9): Repeating with same images
   {

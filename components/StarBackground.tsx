@@ -10,7 +10,7 @@ import * as random from "maath/random/dist/maath-random.esm";
 
 const StarBackground = (props: any) => {
   const ref: any = useRef();
-  const { theme } = useTheme();
+  const { currentTheme } = useTheme();
 
   // Ensure sphere is only generated once
   const [sphere] = useState(() => {
@@ -18,8 +18,8 @@ const StarBackground = (props: any) => {
     return random.inSphere(new Float32Array(5000), { radius: 1.2 });
   });
 
-  // Determine color based on theme
-  const particleColor = theme === "light" ? "#a855f7" : "#FFFFFF"; // Purple for light, white for dark
+  // Use accent color from current theme
+  const particleColor = currentTheme.accentColor;
 
   useFrame((state, delta) => {
     if (ref.current) {

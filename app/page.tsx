@@ -16,64 +16,82 @@ import Footer from "@/components/Footer";
 import { FloatingNav } from "@/components/ui/FloatingNavbar";
 import StarsCanvas from "@/components/StarBackground";
 import { ThemeProvider } from "@/context/ThemeContext";
-import ThemeToggle from "@/components/ThemeToggle";
-import { useTheme } from "@/context/ThemeContext";
+import { useTheme, SectionId } from "@/context/ThemeContext";
 import { useEffect, useRef } from "react";
 
 const HomeContent = () => {
-  const { theme, toggleTheme } = useTheme();
-  const achievementsRef = useRef<HTMLDivElement>(null);
-  const lastThemeRef = useRef<"dark" | "light">(theme);
-
-  const bgColor = theme === "light" ? "#262F3CFF" : "#07001CFF";
-  const textColor = theme === "light" ? "#000A4AFF" : "#FFFFFF";
+  const { currentTheme, setCurrentSection } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
-      const achievementsElement = document.getElementById("achievements");
+      // Define section IDs in order of appearance
+      const sectionIds: SectionId[] = [
+        "hero",
+        "about",
+        "skills",
+        "expertise",
+        "projects",
+        "achievements",
+        "certifications",
+        "leadership",
+        "contact",
+      ];
 
-      if (achievementsElement) {
-        const rect = achievementsElement.getBoundingClientRect();
-        // When achievements section is in view and below viewport center, switch to light mode
-        const shouldBeLightMode = rect.top < window.innerHeight * 0.5;
+      // Find which section is currently most visible in viewport
+      let maxVisibility = 0;
+      let mostVisibleSection: SectionId = "hero";
 
-        if (shouldBeLightMode && lastThemeRef.current === "dark") {
-          toggleTheme();
-          lastThemeRef.current = "light";
-        } else if (!shouldBeLightMode && lastThemeRef.current === "light") {
-          toggleTheme();
-          lastThemeRef.current = "dark";
+      sectionIds.forEach((sectionId) => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          const viewportHeight = window.innerHeight;
+
+          // Calculate visibility ratio
+          const visibleTop = Math.max(0, rect.top);
+          const visibleBottom = Math.min(viewportHeight, rect.bottom);
+          const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+          const visibility = visibleHeight / viewportHeight;
+
+          if (visibility > maxVisibility) {
+            maxVisibility = visibility;
+            mostVisibleSection = sectionId;
+          }
         }
-      }
+      });
+
+      // Update theme based on most visible section
+      setCurrentSection(mostVisibleSection);
     };
 
+    // Run on mount and scroll
+    handleScroll();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [toggleTheme]);
-
-  // Update the ref when theme changes from external toggle
-  useEffect(() => {
-    lastThemeRef.current = theme;
-  }, [theme]);
+  }, [setCurrentSection]);
 
   return (
     <>
       <StarsCanvas />
       <main
-        className="relative flex justify-center items-center flex-col overflow-hidden mx-auto sm:px-10 px-5 transition-colors duration-500"
+        className="relative flex justify-center items-center flex-col overflow-hidden mx-auto sm:px-10 px-5 transition-colors duration-700"
         style={{
-          backgroundColor: bgColor,
-          color: textColor,
+          backgroundColor: currentTheme.backgroundColor,
+          color: currentTheme.textColor,
         }}
       >
         <div className="max-w-7xl w-full">
           <FloatingNav navItems={navItems} />
-          <Hero />
+          <div id="hero">
+            <Hero />
+          </div>
           <AboutMe />
           <Skills />
           <CoreExpertise />
-          <FeaturedProjects />
-          <TechnicalProjects />
+          <div id="projects">
+            <FeaturedProjects />
+            <TechnicalProjects />
+          </div>
           <Achievements />
           <Certifications />
           <Leadership />
@@ -81,7 +99,6 @@ const HomeContent = () => {
           <Footer />
         </div>
       </main>
-      <ThemeToggle />
     </>
   );
 };

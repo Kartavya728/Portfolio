@@ -15,6 +15,7 @@ export const HeroParallax = ({
     title: string;
     link: string;
     thumbnail: string;
+    description?: string;
   }[];
 }) => {
   const firstRow = products.slice(0, 5);
@@ -110,12 +111,11 @@ export const Header = () => {
   return (
     <div className="max-w-7xl relative mx-auto py-20 md:py-40 px-4 w-full  left-0 top-0">
       <h1 className="text-2xl md:text-7xl font-bold dark:text-white">
-        The Ultimate <br /> development studio
+        Campus Leadership <br /> & Innovation
       </h1>
       <p className="max-w-2xl text-base md:text-xl mt-8 dark:text-neutral-200">
-        We build beautiful products with the latest technologies and frameworks.
-        We are a team of passionate developers and designers that love to build
-        amazing products.
+        I lead AI/ML learning, technical events, and high-impact student initiatives across IIT Mandi.
+        A mentor and collaborator driving research, coding culture, and real-world project execution.
       </p>
     </div>
   );
@@ -129,6 +129,7 @@ export const ProductCard = ({
     title: string;
     link: string;
     thumbnail: string;
+    description?: string;
   };
   translate: MotionValue<number>;
 }) => {
@@ -152,10 +153,30 @@ export const ProductCard = ({
           alt={product.title}
         />
       </a>
-      <div className="absolute inset-0 h-full w-full opacity-0 group-hover/product:opacity-80 bg-black pointer-events-none"></div>
-      <h2 className="absolute bottom-4 left-4 opacity-0 group-hover/product:opacity-100 text-white">
-        {product.title}
-      </h2>
+      {/* Hover overlay with gradient background */}
+      <div className="absolute inset-0 h-full w-full opacity-0 group-hover/product:opacity-95 bg-gradient-to-br from-black via-purple-900/50 to-black pointer-events-none transition-opacity duration-300"></div>
+      
+      {/* Hover content */}
+      <div className="absolute inset-0 flex flex-col justify-between p-6 opacity-0 group-hover/product:opacity-100 pointer-events-none transition-opacity duration-300">
+        {/* Title at top */}
+        <h2 className="text-xl font-bold text-white leading-tight">
+          {product.title}
+        </h2>
+        
+        {/* Description in center */}
+        {product.description && (
+          <p className="text-sm text-gray-200 leading-relaxed flex-grow flex items-center">
+            {product.description}
+          </p>
+        )}
+        
+        {/* View More button at bottom */}
+        <div className="flex justify-center">
+          <span className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold text-sm transition-colors duration-200 pointer-events-auto cursor-pointer">
+            View More
+          </span>
+        </div>
+      </div>
     </motion.div>
   );
 };

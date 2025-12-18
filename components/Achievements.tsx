@@ -12,6 +12,7 @@ const Achievements = () => {
     title: award.title,
     link: award.link,
     thumbnail: award.logo,
+    description: award.description,
   }));
 
   return (

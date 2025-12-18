@@ -5,6 +5,26 @@ import { certifications } from "@/public/data/certifications_data";
 import { FaAward, FaDownload } from "react-icons/fa";
 
 const Certifications = () => {
+  const handleDownload = async (url: string, filename: string) => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up the blob URL
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error('Download failed:', error);
+    }
+  };
+
   return (
     <section id="certifications" className="py-20">
       <h1 className="heading">
@@ -59,14 +79,13 @@ const Certifications = () => {
 
                 {/* Download Button */}
                 {cert.downloadUrl && cert.downloadUrl !== "#" && (
-                  <a
-                    href={cert.downloadUrl}
-                    download
-                    className="inline-flex items-center justify-center gap-2 w-full px-4 py-3 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white transition-all text-sm font-semibold border border-purple-500/30 hover:border-purple-500/60 group/btn"
+                  <button
+                    onClick={() => handleDownload(cert.downloadUrl, `${cert.title.replace(/\s+/g, '-')}.png`)}
+                    className="inline-flex items-center justify-center gap-2 w-full px-4 py-3 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white transition-all text-sm font-semibold border border-purple-500/30 hover:border-purple-500/60 group/btn cursor-pointer"
                   >
                     <FaDownload className="w-4 h-4 group-hover/btn:translate-y-1 transition-transform" />
                     Download Certificate
-                  </a>
+                  </button>
                 )}
               </div>
             </div>

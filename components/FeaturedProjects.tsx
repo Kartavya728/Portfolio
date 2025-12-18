@@ -37,11 +37,11 @@ const FeaturedProjects = () => {
   return (
     <div id="projects">
       <div className="text-center mb-4 py-10">
-        <p className="text-sm text-purple font-semibold uppercase tracking-wide">
+        <p className="text-sm text-white font-semibold uppercase tracking-wide">
           Featured / Live Projects
         </p>
         <h1 className="heading mt-2">
-          Check out my <span className="text-purple">Featured Projects</span>
+          Check out my <span className="text-white">Featured Projects</span>
         </h1>
       </div>
       <div

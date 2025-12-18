@@ -7,8 +7,8 @@ export const certifications = [
     date: "2025",
     description:
       "Formal appreciation for leading the development of an Integrated Finance Workflow Portal",
-    image: "/data/certifications_data/lor.png", // Certificate image
-    downloadUrl: "/data/certifications_data/lor.png", // Download link
+    image: "/cert1.png", // Certificate image
+    downloadUrl: "/certificates/finance-letter.pdf", // Download link
   },
   {
     id: 2,
@@ -17,8 +17,7 @@ export const certifications = [
     date: "2025",
     description:
       "1st Place Winner in iHub Multimodal AI Hackathon with 1,600+ teams (80,000+ students)",
-    image: "/data/certifications_data/ihub.png", // Certificate image
-    downloadUrl: "/data/certifications_data/ihub.png", // Download link
+    image: "/cert2.png", // Certificate image
+    downloadUrl: "/certificates/ihub-excellence.pdf", // Download link
   },
 ];
-

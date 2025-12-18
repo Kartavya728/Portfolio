@@ -6,6 +6,14 @@ import imgtrf from "./traffic.png";
 import imgtumor from "./tumor.png";
 import leaf from "./damaged.jpg";
 
+// New project images
+import legalImg from "/data/projects_data/legal.png";
+import yoloImg from "/data/projects_data/yolo.png";
+import tumorNewImg from "/data/projects_data/tumor.png";
+import ctfImg from "/data/projects_data/ctf.png";
+import demImg from "/data/projects_data/dem.png";
+import stacWebImg from "/data/projects_data/stac-web.png";
+
 export const navItems = [
   { name: "About Me", link: "#about" },
   { name: "Skills", link: "#skills" },
@@ -83,65 +91,108 @@ export const gridItems = [
 export const projects = [
   {
     id: 1,
-    title: "Smart Traffic Management",
-    des: "An intelligent system using ML and DL to recognize vehicles, monitor lanes, and assist drivers. It provides real-time traffic data and integrates with a website for enhanced usability.",
-    img: imgtrf,
-    iconLists: ["/next.svg", "/tail.svg", "/ts.svg", "/stream.svg", "/c.svg"],
-    link: "Tools: Python, TensorFlow, OpenCV, React, Flask",
+    title: "Legal Document Analyzer",
+    des: "GenAI-based legal document analyzer supporting PDF, image, and doc uploads. Uses OCR, LangGraph agents, and Gemini APIs with Next.js, Supabase, and LangChain for features like chat history, document comparison, originality verification, and Q&A.",
+    img: legalImg,
+    iconLists: ["/next.svg", "/ts.svg", "/tail.svg", "/gemini.svg", "/langchain.svg"],
+    link: "Google Gen AI Hackathon - Sep 2025",
+    github: "https://github.com/Kartavya728",
+    website: "#"
   },
   {
     id: 2,
+    title: "Vision Drive - YOLO Traffic Management",
+    des: "YOLO-based traffic management model trained on 100k+ images. Detects vehicles, pedestrians, lanes, and signals in real time. Integrated with Streamlit for an interactive UI.",
+    img: yoloImg,
+    iconLists: ["/python.svg", "/tensorflow.svg", "/opencv.svg", "/stream.svg", "/c.svg"],
+    link: "Feb 2025",
+    github: "https://github.com/Kartavya728",
+    website: "#"
+  },
+  {
+    id: 3,
+    title: "Tumor Detection Website",
+    des: "AI-powered web app for brain tumor detection from MRI scans using a custom CNN model with convolution, pooling, and fully connected layers. Provides bounding boxes, probability scores, and processed image previews.",
+    img: tumorNewImg,
+    iconLists: ["/python.svg", "/tensorflow.svg", "/opencv.svg", "/react.svg", "/flask.svg"],
+    link: "Sep 2025",
+    github: "https://github.com/Kartavya728",
+    website: "#"
+  },
+  {
+    id: 4,
+    title: "Capture the Flag Platform",
+    des: "Developed a CTF competition platform with secure admin control, real-time scoreboard, automated answer verification, negative marking, and support for audio, PDF, DOC, and image uploads.",
+    img: ctfImg,
+    iconLists: ["/next.svg", "/tail.svg", "/ts.svg", "/node.svg", "/mongo.svg"],
+    link: "STAC IIT Mandi - Aug 2025",
+    github: "https://github.com/Kartavya728",
+    website: "#"
+  },
+  {
+    id: 5,
+    title: "Lunar DEM Generation using Photoclinometry",
+    des: "Developed a system to generate high-resolution Digital Elevation Models (DEM) of the lunar surface using photoclinometry. Processed NASA lunar datasets with ML, computer vision, and GIS tools to create accurate 3D topographic maps.",
+    img: demImg,
+    iconLists: ["/python.svg", "/opencv.svg", "/tensorflow.svg", "/gis.svg", "/nasa.svg"],
+    link: "ISRO Hackathon - Jul 2025",
+    github: "https://github.com/Kartavya728",
+    website: "#"
+  },
+  {
+    id: 6,
+    title: "STAC IIT Mandi Website",
+    des: "Designed and developed the STAC IIT Mandi website with astronomy-focused sections, complex UI designs, and integrated resources for space-related activities. Included interactive elements, event details, and knowledge-sharing modules.",
+    img: stacWebImg,
+    iconLists: ["/next.svg", "/tail.svg", "/ts.svg", "/three.svg", "/fm.svg"],
+    link: "Astronomy Portal - Jun 2025",
+    github: "https://github.com/Kartavya728",
+    website: "#"
+  },
+  {
+    id: 7,
     title: "Food Delivery Web",
     des: "A modern food delivery website that simplifies the ordering process. Users can browse menus, place orders, and track delivery statuses, powered by NodeJs, ReactJs, MongoDb, and Express.",
     img: img2,
     iconLists: ["/next.svg", "/tail.svg", "/ts.svg", "/stream.svg", "/c.svg"],
-    link: "Tools: NodeJs, ReactJs, MongoDb, Express..",
+    link: "Tools: NodeJs, ReactJs, MongoDb, Express",
+    github: "https://github.com/Kartavya728",
   },
   {
-    id: 3,
-    title: "Brain Tumor Detection",
-    des: "An AI-powered tool that analyzes MRI scans to detect brain tumors. If a tumor is present, it highlights the affected area with a bounding box and provides a probability score. Integrated with a website for easy access.",
-    img: imgtumor,
-    iconLists: [
-      "/python.svg",
-      "/tensorflow.svg",
-      "/opencv.svg",
-      "/react.svg",
-      "/flask.svg",
-    ],
-    link: "Tools: Python, TensorFlow, OpenCV, React, Flask",
-  },
-  {
-    id: 4,
+    id: 8,
     title: "A Website for College Clubs",
     des: "A dynamic website designed to help college clubs manage events, share updates, and interact with members. Built using ReactJs, Framer, and Tailwind CSS for a seamless user experience.",
     img: img1,
     iconLists: ["/re.svg", "/tail.svg", "/ts.svg", "/three.svg", "/fm.svg"],
     link: "Tools: ReactJs, Framer, CSS",
+    github: "https://github.com/Kartavya728",
   },
   {
-    id: 5,
+    id: 9,
     title: "Plant Health Detector",
     des: "A deep learning-based system that identifies plant species and detects diseases by analyzing leaf images. The model helps farmers and gardeners diagnose plant health issues accurately.",
     img: leaf,
     iconLists: ["/python.svg", "/tensorflow.svg", "/opencv.svg", "/flask.svg"],
     link: "Tools: Python, TensorFlow, OpenCV, Flask",
+    github: "https://github.com/Kartavya728",
   },
   {
-    id: 6,
+    id: 10,
     title: "A Website for Any College Fest",
     des: "A customizable website template for college festivals, featuring event schedules, registration systems, and live updates. Built using NextJs and NodeJs for a fast and responsive experience.",
     img: img3,
     iconLists: ["/re.svg", "/tail.svg", "/ts.svg", "/three.svg", "/c.svg"],
     link: "Tools: NextJs, NodeJs",
+    github: "https://github.com/Kartavya728",
   },
   {
-    id: 7,
+    id: 11,
     title: "Arduino Remote Control Page",
     des: "A page designed to control Arduino-based devices remotely. Utilizes Arduino IDE and Python for communication, providing users with the ability to control hardware through a simple web interface.",
     img: img4,
     iconLists: ["/next.svg", "/tail.svg", "/ts.svg", "/three.svg", "/gsap.svg"],
     link: "Tools: Arduino IDE, Python",
+    github: "https://github.com/Kartavya728",
   },
 ];
 

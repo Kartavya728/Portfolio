@@ -4,33 +4,35 @@ import { FaLocationArrow } from "react-icons/fa6";
 import { projects } from "@/data";
 import { PinContainer } from "./ui/Pin";
 import Image from "next/image";
+import ThreeBackground from "./ThreeBackground";
 
 const TechnicalProjects = () => {
   return (
-    <section id="technical-projects" className="py-20">
+    <section id="technical-projects" className="py-20 relative overflow-hidden">
+      <ThreeBackground />
       <div className="text-center mb-2">
-        <p className="text-sm text-purple font-semibold uppercase tracking-wide">
+        <p className="text-sm text-blue-400 font-semibold uppercase tracking-wide">
           Technical / AI-ML Projects
         </p>
       </div>
       <h1 className="heading">
-        My <span className="text-purple">Technical Projects</span>
+        My <span className="text-white">Github Projects</span>
       </h1>
 
       <div className="flex flex-wrap items-center justify-center p-4 gap-16 mt-10">
         {projects.map((item) => (
           <div
-            className="lg:min-h-[32.5rem] h-[25rem] flex items-center justify-center sm:w-96 w-[80vw]"
+            className="lg:min-h-[32.5rem] h-[25rem] flex items-center justify-center sm:w-96 w-[80vw] bg-color-blue-900"
             key={item.id}
           >
             <PinContainer
               title={item.link}
               href="https://github.com/Kartavya728"
             >
-              <div className="relative flex items-center justify-center sm:w-96 w-[80vw] overflow-hidden h-[20vh] lg:h-[30vh] mb-10">
+              <div className="relative flex items-center bg-color-blue-900 justify-center sm:w-96 w-[80vw] overflow-hidden h-[20vh] lg:h-[30vh] mb-10">
                 <div
                   className="relative w-full h-full overflow-hidden lg:rounded-3xl"
-                  style={{ backgroundColor: "#13162D" }}
+                  style={{ backgroundColor: "#13162dff" }}
                 >
                   <img src="/bg.png" alt="bgimg" />
                 </div>
@@ -43,14 +45,14 @@ const TechnicalProjects = () => {
                 />
               </div>
 
-              <h1 className="font-bold lg:text-2xl md:text-xl text-base line-clamp-1">
+              <h1 className="font-bold lg:text-2xl md:text-xl text-base text-white line-clamp-1">
                 {item.title}
               </h1>
 
               <p
-                className="lg:text-xl lg:font-normal font-light text-sm line-clamp-2"
+                className="lg:text-xl lg:font-normal font-light text-sm text-white line-clamp-2"
                 style={{
-                  color: "#BEC1DD",
+                  color: "#d2daffff",
                   margin: "1vh 0",
                 }}
               >
@@ -74,15 +76,15 @@ const TechnicalProjects = () => {
 
                 <div className="flex justify-center items-center">
                   <a
-                    href="https://github.com/Kartavya728"
+                    href={item.github || "https://github.com/Kartavya728"}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex lg:text-xl md:text-xs text-sm text-purple"
+                    className="flex lg:text-xl md:text-xs text-sm text-black"
                   >
                     View in GitHub
                   </a>
 
-                  <FaLocationArrow className="ms-3" color="#CBACF9" />
+                  <FaLocationArrow className="ms-3" color="#000000ff" />
                 </div>
               </div>
             </PinContainer>
