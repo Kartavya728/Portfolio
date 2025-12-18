@@ -7,9 +7,12 @@ import imgtumor from "./tumor.png";
 import leaf from "./damaged.jpg";
 
 export const navItems = [
-  { name: "About", link: "#about" },
+  { name: "About Me", link: "#about" },
+  { name: "Skills", link: "#skills" },
   { name: "Projects", link: "#projects" },
-  { name: "Skills", link: "#testimonials" },
+  { name: "Achievements", link: "#achievements" },
+  { name: "Certifications", link: "#certifications" },
+  { name: "Experience", link: "#experience" },
   { name: "Contact", link: "#contact" },
 ];
 

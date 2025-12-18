@@ -58,10 +58,8 @@ export const FloatingNav = ({
           duration: 0.2,
         }}
         className={cn(
-          // change rounded-full to rounded-lg
-          // remove dark:border-white/[0.2] dark:bg-black bg-white border-transparent
-          // change  pr-2 pl-8 py-2 to px-10 py-5
-          "flex max-w-fit md:min-w-[70vw] lg:min-w-fit fixed z-[5000] top-10 inset-x-0 mx-auto px-10 py-5 rounded-lg border border-black/.1 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] items-center justify-center space-x-4",
+          // Responsive classes for mobile, tablet, and desktop
+          "flex flex-wrap max-w-fit md:min-w-[70vw] lg:min-w-fit fixed z-[5000] top-4 sm:top-10 inset-x-0 mx-auto px-3 sm:px-10 py-2.5 sm:py-5 rounded-lg border border-black/.1 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] items-center justify-center gap-1 sm:space-x-4",
           className
         )}
         style={{
@@ -76,13 +74,17 @@ export const FloatingNav = ({
             key={`link=${idx}`}
             href={navItem.link}
             className={cn(
-              "relative dark:text-neutral-50 items-center  flex space-x-1 text-neutral-600 dark:hover:text-neutral-300 hover:text-neutral-500"
+              "relative dark:text-neutral-50 items-center flex space-x-1 text-neutral-600 dark:hover:text-neutral-300 hover:text-neutral-500 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-all duration-200 hover:bg-purple-500/10 dark:hover:bg-purple-500/20 group text-xs sm:text-sm md:text-sm"
             )}
           >
-            <span className="block sm:hidden">{navItem.icon}</span>
+            <span className="block sm:hidden text-xs">{navItem.icon}</span>
             {/* add !cursor-pointer */}
             {/* remove hidden sm:block for the mobile responsive */}
-            <span className=" text-sm !cursor-pointer">{navItem.name}</span>
+            <span className="font-medium !cursor-pointer group-hover:text-purple-400 transition-colors whitespace-nowrap">
+              {navItem.name}
+            </span>
+            {/* Underline effect on hover */}
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-purple-600 group-hover:w-full transition-all duration-300" />
           </Link>
         ))}
         {/* remove this login btn */}
