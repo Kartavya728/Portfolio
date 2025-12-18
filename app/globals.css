@@ -69,15 +69,85 @@
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
   }
+
+  .light {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 10% 3.9%;
+  }
 }
 
 @layer base {
   * {
     @apply border-border !scroll-smooth;
   }
-  body {
-    @apply bg-background text-foreground;
+  
+  html {
+    scroll-padding-top: 0px;
   }
+  
+  body {
+    @apply bg-background text-foreground transition-colors duration-300;
+  }
+
+  /* Light theme specific styles */
+  html.light {
+    @apply bg-white;
+    color-scheme: light;
+  }
+
+  html.light body {
+    @apply bg-white text-black;
+  }
+
+  html.light h1,
+  html.light h2,
+  html.light h3,
+  html.light h4,
+  html.light h5,
+  html.light h6 {
+    @apply text-black;
+  }
+
+  html.light p,
+  html.light span,
+  html.light div {
+    color-scheme: light;
+  }
+
+  /* Dark theme specific styles */
+  html:not(.light) {
+    color-scheme: dark;
+  }
+
+  html:not(.light) body {
+    @apply bg-black text-white;
+  }
+
   button {
     @apply active:outline-none;
   }

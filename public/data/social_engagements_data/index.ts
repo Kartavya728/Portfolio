@@ -6,9 +6,15 @@ export const socialEngagements = [
     role: "Team Member",
     organization: "IIT Mandi Tech Fest",
     duration: "2024 - Present",
-    description: "Part of the core web development team for IIT Mandi's annual tech fest, building responsive and interactive web applications",
+    description:
+      "Part of the core web development team for IIT Mandi's annual tech fest, building responsive and interactive web applications",
     type: "Club",
-    img: "/exp1.svg", // Replace with actual image
+    img: "/exp1.svg",
+    // For InfiniteCards compatibility
+    quote:
+      "Part of the core web development team for IIT Mandi's annual tech fest, building responsive and interactive web applications",
+    name: "Web Development Team",
+    title: "IIT Mandi Tech Fest",
   },
   {
     id: 2,
@@ -16,9 +22,15 @@ export const socialEngagements = [
     role: "Frontend Developer",
     organization: "IIT Mandi",
     duration: "2024 - Present",
-    description: "Developed and maintained the official website for Research Society, IIT Mandi",
+    description:
+      "Developed and maintained the official website for Research Society, IIT Mandi",
     type: "Society",
-    img: "/exp2.svg", // Replace with actual image
+    img: "/exp2.svg",
+    // For InfiniteCards compatibility
+    quote:
+      "Developed and maintained the official website for Research Society, IIT Mandi",
+    name: "Research Society",
+    title: "Frontend Developer",
   },
   {
     id: 3,
@@ -26,9 +38,15 @@ export const socialEngagements = [
     role: "Web Developer",
     organization: "IIT Mandi",
     duration: "Winter 2024",
-    description: "Contributed to the development of Literary Society website as part of winter project",
+    description:
+      "Contributed to the development of Literary Society website as part of winter project",
     type: "Project",
-    img: "/exp3.svg", // Replace with actual image
+    img: "/exp3.svg",
+    // For InfiniteCards compatibility
+    quote:
+      "Contributed to the development of Literary Society website as part of winter project",
+    name: "Literary Society",
+    title: "Web Developer",
   },
   {
     id: 4,
@@ -36,8 +54,14 @@ export const socialEngagements = [
     role: "Active Member",
     organization: "IIT Mandi",
     duration: "2023 - Present",
-    description: "Participate in coding competitions, hackathons, and organize workshops for juniors",
+    description:
+      "Participate in coding competitions, hackathons, and organize workshops for juniors",
     type: "Club",
-    img: "/exp4.svg", // Replace with actual image
+    img: "/exp4.svg",
+    // For InfiniteCards compatibility
+    quote:
+      "Participate in coding competitions, hackathons, and organize workshops for juniors",
+    name: "Coding Club",
+    title: "Active Member",
   },
 ];

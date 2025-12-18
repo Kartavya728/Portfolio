@@ -26,17 +26,7 @@ const Skills = () => {
         { name: "LaTeX", level: "Intermediate" },
       ],
     },
-    {
-      category: "AI & Automation",
-      skills: [
-        { name: "Machine Learning", level: "Intermediate" },
-        { name: "Generative AI", level: "Intermediate" },
-        { name: "AI Agents", level: "Intermediate" },
-        { name: "YOLO", level: "Intermediate" },
-        { name: "Chatbots", level: "Intermediate" },
-        { name: "Python Automation", level: "Advanced" },
-      ],
-    },
+
     {
       category: "Platforms & Systems",
       skills: [
