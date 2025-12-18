@@ -13,6 +13,9 @@ import tumorNewImg from "/data/projects_data/tumor.png";
 import ctfImg from "/data/projects_data/ctf.png";
 import demImg from "/data/projects_data/dem.png";
 import stacWebImg from "/data/projects_data/stac-web.png";
+import nasaImg from "/data/projects_data/nasa.png";
+import lectureImg from "/data/projects_data/Screenshot 2025-09-15 005612.png";
+import pathwayImg from "./projects_data/pathway.png.jpeg";
 
 export const navItems = [
   { name: "About Me", link: "#about" },
@@ -193,6 +196,62 @@ export const projects = [
     iconLists: ["/next.svg", "/tail.svg", "/ts.svg", "/three.svg", "/gsap.svg"],
     link: "Tools: Arduino IDE, Python",
     github: "https://github.com/Kartavya728",
+  },
+  {
+    id: 12,
+    title: "Space Biology Knowledge Engine",
+    des: "AI-powered platform analyzing 608 NASA bioscience publications using RAG with Google Gemini 2.0 Flash. Features role-based analysis for scientists, investors, and mission architects with ChromaDB vector search, LangChain ReAct agents, and interactive data visualizations.",
+    img: nasaImg,
+    iconLists: ["/react.svg", "/ts.svg", "/tail.svg", "/three.svg", "/python.svg"],
+    link: "NASA Hackathon - 2025",
+    github: "https://github.com/Kartavya728",
+    website: "#"
+  },
+  {
+    id: 13,
+    title: "Multimodal Lecture Understanding System",
+    des: "Advanced learning platform with multimodal understanding (video, audio, PDFs). Features lecture summarization, Q&A generation, slides management, student & professor dashboards, and structured planning mode. Built with Next.js, Supabase, and Python pipelines for embedding extraction.",
+    img: lectureImg,
+    iconLists: ["/next.svg", "/ts.svg", "/tail.svg", "/python.svg", "/supabase.svg"],
+    link: "Educational AI Platform - 2025",
+    github: "https://github.com/Kartavya728",
+    website: "#"
+  },
+  {
+    id: 14,
+    title: "F.L.O.W. – Fraud & Loan Optimization Workbench",
+    des: "Twin-pipeline financial intelligence system with real-time fraud detection (97% accuracy, <2s latency) and AI-powered customer targeting. Features Pathway streaming, NATS messaging, River online ML, adaptive learning, and explainable decisions. Processes 1.9M transactions with GMM models and sentiment analysis.",
+    img: pathwayImg,
+    iconLists: ["/python.svg", "/redis.svg", "/prometheus.svg", "/ai.svg", "/stream.svg"],
+    link: "Financial AI System - 2024",
+    github: "https://github.com/Kartavya728",
+    website: "#"
+  },
+];
+
+// Featured Projects - Separate from Technical Projects
+export const featuredProjects = [
+  {
+    id: 1,
+    title: "Multimodal Lecture Understanding System (Smart Scribe)",
+    des: "Advanced learning platform with multimodal understanding (video, audio, PDFs). Features lecture summarization, Q&A generation, slides management, student & professor dashboards, and structured planning mode. Built with Next.js, Supabase, and Python pipelines for embedding extraction.",
+    img: lectureImg,
+    video: "/data/projects_data/ss.mp4", // Video file for featured project
+    iconLists: ["/next.svg", "/ts.svg", "/tail.svg", "/python.svg", "/supabase.svg"],
+    link: "Educational AI Platform - 2025",
+    github: "https://github.com/Kartavya728",
+    website: "#"
+  },
+  {
+    id: 2,
+    title: "Lunar DEM Generation using Photoclinometry",
+    des: "Developed a system to generate high-resolution Digital Elevation Models (DEM) of the lunar surface using photoclinometry. Processed NASA lunar datasets with ML, computer vision, and GIS tools to create accurate 3D topographic maps.",
+    img: demImg,
+    video: "/data/projects_data/dem.mp4", // Video file for featured project (add dem.mp4 to folder)
+    iconLists: ["/python.svg", "/opencv.svg", "/tensorflow.svg", "/gis.svg", "/nasa.svg"],
+    link: "ISRO Hackathon - Jul 2025",
+    github: "https://github.com/Kartavya728",
+    website: "#"
   },
 ];
 

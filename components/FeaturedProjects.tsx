@@ -1,17 +1,62 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { StickyScroll } from "./ui/sticky-scroll-reveal";
-import { projects } from "@/data";
+import { featuredProjects } from "@/public/data/featured_projects_data";
 import Image from "next/image";
 
+// VideoPlayer component to handle video playback
+const VideoPlayer = ({ src }: { src: string }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      // Add error event listener
+      const handleError = (e: Event) => {
+        console.error("Video loading error:", e);
+        console.error("Video source:", src);
+      };
+      
+      video.addEventListener('error', handleError);
+      
+      video.load();
+      video.play().catch((error) => {
+        console.log("Autoplay prevented, will play on interaction:", error);
+      });
+
+      return () => {
+        video.removeEventListener('error', handleError);
+      };
+    }
+  }, [src]);
+
+  return (
+    <div className="absolute inset-0 z-10 rounded-lg overflow-hidden">
+      <video
+        ref={videoRef}
+        key={src} // Force re-render when src changes
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="auto"
+        className="w-full h-full object-cover"
+      >
+        <source src={src} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  );
+};
+
 const FeaturedProjects = () => {
-  const content = projects.map((project) => ({
+  const content = featuredProjects.map((project) => ({
     title: project.title,
     description: project.des,
     iconLists: project.iconLists,
-    github: "https://github.com/Kartavya728",
-    live: "https://example.com",
+    github: project.github || "https://github.com/Kartavya728",
+    live: project.website || "https://example.com",
     content: (
       <div className="h-full w-full relative overflow-hidden rounded-lg">
         <div
@@ -24,12 +69,16 @@ const FeaturedProjects = () => {
             className="w-full h-full object-cover"
           />
         </div>
-        <Image
-          src={project.img}
-          alt={project.title}
-          fill
-          className="object-cover z-10"
-        />
+        {project.video ? (
+          <VideoPlayer src={project.video} />
+        ) : (
+          <Image
+            src={project.img}
+            alt={project.title}
+            fill
+            className="object-cover z-10"
+          />
+        )}
       </div>
     ),
   }));

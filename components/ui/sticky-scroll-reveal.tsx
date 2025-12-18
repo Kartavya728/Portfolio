@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { useMotionValueEvent, useScroll } from "motion/react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
-import { useTheme } from "@/context/ThemeContext";
 
 export const StickyScroll = ({
   content,
@@ -20,7 +19,6 @@ export const StickyScroll = ({
   contentClassName?: string;
 }) => {
   const [activeCard, setActiveCard] = React.useState(0);
-  const { theme } = useTheme();
   const ref = useRef<any>(null);
   const { scrollYProgress } = useScroll({
     // uncomment line 22 and comment line 23 if you DONT want the overflow container and want to have it change on the entire page scroll
@@ -45,11 +43,8 @@ export const StickyScroll = ({
     setActiveCard(closestBreakpointIndex);
   });
 
-  // Theme-aware background colors
-  const backgroundColors =
-    theme === "light"
-      ? ["#f5f5f5", "#ffffff", "#f0f0f0"] // Light theme backgrounds
-      : ["#0f172a", "#000000", "#171717"]; // Dark theme backgrounds
+  // Background colors for dark theme
+  const backgroundColors = ["#0f172a", "#000000", "#171717"];
 
   const linearGradients = [
     "linear-gradient(to bottom right, #06b6d4, #10b981)", // cyan-500 to emerald-500
@@ -65,11 +60,11 @@ export const StickyScroll = ({
     setBackgroundGradient(linearGradients[activeCard % linearGradients.length]);
   }, [activeCard]);
 
-  // Theme-aware text colors
-  const textColor = theme === "light" ? "#000000" : "#e2e8f0";
-  const mutedTextColor = theme === "light" ? "#666666" : "#cbd5e1";
-  const iconBgColor = theme === "light" ? "#ffffff" : "#000000";
-  const iconBorder = theme === "light" ? "#ddd" : "#ffffff";
+  // Dark theme text colors
+  const textColor = "#e2e8f0";
+  const mutedTextColor = "#cbd5e1";
+  const iconBgColor = "#000000";
+  const iconBorder = "#ffffff";
 
   return (
     <motion.div
@@ -140,11 +135,7 @@ export const StickyScroll = ({
                       href={item.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all border ${
-                        theme === "light"
-                          ? "bg-purple-100 hover:bg-purple-200 text-purple-700 hover:text-purple-800 border-purple-300 hover:border-purple-400"
-                          : "bg-purple-600/20 hover:bg-purple-600/40 text-purple-300 hover:text-purple-200 border-purple-500/30 hover:border-purple-500/60"
-                      }`}
+                      className="px-4 py-2 rounded-lg text-sm font-semibold transition-all border bg-purple-600/20 hover:bg-purple-600/40 text-purple-300 hover:text-purple-200 border-purple-500/30 hover:border-purple-500/60"
                     >
                       GitHub
                     </a>
@@ -154,11 +145,7 @@ export const StickyScroll = ({
                       href={item.live}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all border ${
-                        theme === "light"
-                          ? "bg-blue-100 hover:bg-blue-200 text-blue-700 hover:text-blue-800 border-blue-300 hover:border-blue-400"
-                          : "bg-blue-600/20 hover:bg-blue-600/40 text-blue-300 hover:text-blue-200 border-blue-500/30 hover:border-blue-500/60"
-                      }`}
+                      className="px-4 py-2 rounded-lg text-sm font-semibold transition-all border bg-blue-600/20 hover:bg-blue-600/40 text-blue-300 hover:text-blue-200 border-blue-500/30 hover:border-blue-500/60"
                     >
                       Deployed
                     </a>
@@ -172,10 +159,11 @@ export const StickyScroll = ({
       </div>
       <div
         style={{ background: backgroundGradient }}
-        className={cn(
-          "sticky top-1/2 -translate-y-1/2 hidden h-96 w-96 overflow-hidden rounded-md bg-white lg:block",
-          contentClassName
-        )}
+className={cn(
+  "sticky top-1/2 -translate-y-1/2 -translate-x-24 hidden h-[400px] w-[610px] overflow-hidden rounded-md bg-white lg:block z-50",
+  contentClassName
+)}
+
       >
         {content[activeCard].content ?? null}
       </div>
