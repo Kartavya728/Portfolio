@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from "react";
 import { StickyScroll } from "./ui/sticky-scroll-reveal";
 import { featuredProjects } from "@/public/data/featured_projects_data";
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 // VideoPlayer component to handle video playback
 const VideoPlayer = ({ src }: { src: string }) => {
@@ -84,7 +85,13 @@ const FeaturedProjects = () => {
   }));
 
   return (
-    <div id="projects">
+    <motion.div
+      id="projects"
+      initial={{ opacity: 0, x: 100 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: false, amount: 0.2 }}
+      transition={{ duration: 0.8, ease: [0.25, 0.4, 0.25, 1] }}
+    >
       <div className="text-center mb-4 py-10">
         <p className="text-sm text-white font-semibold uppercase tracking-wide">
           Featured / Live Projects
@@ -105,7 +112,7 @@ const FeaturedProjects = () => {
       >
         <StickyScroll content={content} contentClassName="rounded-lg" />
       </div>
-    </div>
+    </motion.div>
   );
 };
 

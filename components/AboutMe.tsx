@@ -1,9 +1,17 @@
+"use client";
+
 import { gridItems } from "@/data";
 import { BentoGrid, BentoGridItem } from "./ui/BentoGrid";
+import { motion } from "framer-motion";
 
 const AboutMe = () => {
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: false, amount: 0.2 }}
+      transition={{ duration: 0.6, ease: [0.25, 0.4, 0.25, 1] }}
+    >
       <h1 className="heading">
         <span className="text-purple">About Me</span>
       </h1>
@@ -24,7 +32,7 @@ const AboutMe = () => {
           ))}
         </BentoGrid>
       </section>
-    </div>
+    </motion.div>
   );
 };
 

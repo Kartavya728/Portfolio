@@ -9,6 +9,7 @@ import {
   FaPhone,
 } from "react-icons/fa";
 import MagicButton from "./MagicButton";
+import { motion } from "framer-motion";
 
 const Contact = () => {
   const contactLinks = [
@@ -42,7 +43,16 @@ const Contact = () => {
     },
   ];
 
-  return <section id="contact" className="py-20"></section>;
+  return (
+    <motion.section
+      id="contact"
+      className="py-20"
+      initial={{ opacity: 0, scale: 0.85 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: false, amount: 0.3 }}
+      transition={{ duration: 0.7, ease: [0.25, 0.4, 0.25, 1] }}
+    ></motion.section>
+  );
 };
 
 export default Contact;

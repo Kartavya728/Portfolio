@@ -5,6 +5,7 @@ import { projects } from "@/data";
 import { PinContainer } from "./ui/Pin";
 import Image from "next/image";
 import ThreeBackground from "./ThreeBackground";
+import { motion } from "framer-motion";
 
 const TechnicalProjects = () => {
   return (
@@ -20,10 +21,21 @@ const TechnicalProjects = () => {
       </h1>
 
       <div className="flex flex-wrap items-center justify-center p-4 gap-16 mt-10">
-        {projects.map((item) => (
-          <div
+        {projects.map((item, index) => (
+          <motion.div
             className="lg:min-h-[32.5rem] h-[25rem] flex items-center justify-center sm:w-96 w-[80vw] bg-color-blue-900"
             key={item.id}
+            initial={{ 
+              opacity: 0, 
+              x: index % 2 === 0 ? -100 : 100  // Even cards from left, odd from right
+            }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: false, amount: 0.3 }}
+            transition={{ 
+              duration: 0.7, 
+              delay: (index % 4) * 0.1, // Stagger animation
+              ease: [0.25, 0.4, 0.25, 1] 
+            }}
           >
             <PinContainer
               title={item.link}
@@ -88,7 +100,7 @@ const TechnicalProjects = () => {
                 </div>
               </div>
             </PinContainer>
-          </div>
+          </motion.div>
         ))}
       </div>
     </section>

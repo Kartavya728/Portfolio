@@ -82,20 +82,57 @@ const HomeContent = () => {
       >
         <div className="max-w-7xl w-full">
           <FloatingNav navItems={navItems} />
+          
+          {/* Hero Section */}
           <div id="hero">
             <Hero />
           </div>
-          <AboutMe />
-          <Skills />
-          <CoreExpertise />
-          <div id="projects">
+
+          {/* About Me - Fade Up */}
+          <div className="py-20">
+            <AboutMe />
+          </div>
+
+          {/* Skills - Fade Up */}
+          <div className="py-20">
+            <Skills />
+          </div>
+
+          {/* Core Expertise - Fade Up */}
+          <div className="py-20">
+            <CoreExpertise />
+          </div>
+
+          {/* Projects Section */}
+          <div id="projects" className="py-20">
             <FeaturedProjects />
+          </div>
+
+          {/* Technical Projects */}
+          <div className="py-20">
             <TechnicalProjects />
           </div>
-          <Achievements />
-          <Certifications />
-          <Leadership />
-          <Contact />
+
+          {/* Achievements - Fade Up */}
+          <div className="py-20">
+            <Achievements />
+          </div>
+
+          {/* Certifications - Fade Up */}
+          <div className="py-20">
+            <Certifications />
+          </div>
+
+          {/* Leadership - Fade Up */}
+          <div className="py-20">
+            <Leadership />
+          </div>
+
+          {/* Contact */}
+          <div className="py-20">
+            <Contact />
+          </div>
+
           <Footer />
         </div>
       </main>

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 
 const Skills = () => {
   const skillCategories = [
@@ -63,16 +64,31 @@ const Skills = () => {
   };
 
   return (
-    <section id="skills" className="py-20">
+    <motion.section
+      id="skills"
+      className="py-20"
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: false, amount: 0.2 }}
+      transition={{ duration: 0.6, ease: [0.25, 0.4, 0.25, 1] }}
+    >
       <h1 className="heading">
         My Technical <span className="text-purple">Skills</span>
       </h1>
 
       <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
         {skillCategories.map((category, idx) => (
-          <div
+          <motion.div
             key={idx}
             className="rounded-xl bg-gradient-to-br from-slate-900 to-black-100 p-6 border border-purple-500/20 hover:border-purple-500/50 transition-colors"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.3 }}
+            transition={{ 
+              duration: 0.5, 
+              delay: idx * 0.1,
+              ease: [0.25, 0.4, 0.25, 1] 
+            }}
           >
             <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
               <div className="h-2 w-2 rounded-full bg-gradient-to-r from-purple-400 to-purple-600" />
@@ -110,10 +126,10 @@ const Skills = () => {
                 </div>
               ))}
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
-    </section>
+    </motion.section>
   );
 };
 

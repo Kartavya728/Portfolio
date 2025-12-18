@@ -3,6 +3,7 @@
 import React from "react";
 import { certifications } from "@/public/data/certifications_data";
 import { FaAward, FaDownload } from "react-icons/fa";
+import { motion } from "framer-motion";
 
 const Certifications = () => {
   const handleDownload = async (url: string, filename: string) => {
@@ -26,16 +27,35 @@ const Certifications = () => {
   };
 
   return (
-    <section id="certifications" className="py-20">
+    <motion.section
+      id="certifications"
+      className="py-20"
+      initial={{ opacity: 0, scale: 0.9 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: false, amount: 0.2 }}
+      transition={{ duration: 0.7, ease: [0.25, 0.4, 0.25, 1] }}
+    >
       <h1 className="heading">
-        My <span className="text-purple">Certifications</span>
+        My <span className="text-purple">Certificates</span>
       </h1>
 
       <div className="mt-12 grid gap-8 md:grid-cols-2 max-w-5xl mx-auto">
-        {certifications.map((cert) => (
-          <div
+        {certifications.map((cert, index) => (
+          <motion.div
             key={cert.id}
             className="group relative rounded-xl overflow-hidden bg-gradient-to-br from-slate-900 via-black-100 to-black-200 border border-purple-500/20 hover:border-purple-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20 flex flex-col h-full"
+            initial={{
+              opacity: 0,
+              x: index % 2 === 0 ? -80 : 80,
+              y: 30,
+            }}
+            whileInView={{ opacity: 1, x: 0, y: 0 }}
+            viewport={{ once: false, amount: 0.3 }}
+            transition={{
+              duration: 0.6,
+              delay: (index % 2) * 0.15,
+              ease: [0.25, 0.4, 0.25, 1],
+            }}
           >
             {/* Animated background */}
             <div className="absolute inset-0 bg-gradient-to-br from-purple-600/0 to-blue-600/0 group-hover:from-purple-600/10 group-hover:to-blue-600/10 transition-all" />
@@ -89,10 +109,10 @@ const Certifications = () => {
                 )}
               </div>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
-    </section>
+    </motion.section>
   );
 };
 

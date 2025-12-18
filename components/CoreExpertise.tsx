@@ -2,19 +2,35 @@
 
 import React from "react";
 import { coreExpertise } from "@/public/data/core_expertise_data";
+import { motion } from "framer-motion";
 
 const CoreExpertise = () => {
   return (
-    <section id="expertise" className="py-20">
+    <motion.section
+      id="expertise"
+      className="py-20"
+      initial={{ opacity: 0, scale: 0.95 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: false, amount: 0.2 }}
+      transition={{ duration: 0.6, ease: [0.25, 0.4, 0.25, 1] }}
+    >
       <h1 className="heading">
         My <span className="text-purple">Core Expertise</span>
       </h1>
 
       <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {coreExpertise.map((expertise) => (
-          <div
+        {coreExpertise.map((expertise, index) => (
+          <motion.div
             key={expertise.id}
             className="group relative rounded-2xl bg-gradient-to-br from-slate-900 via-black-100 to-black-200 p-8 border border-purple-500/20 hover:border-purple-500/60 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/20"
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: false, amount: 0.3 }}
+            transition={{
+              duration: 0.5,
+              delay: index * 0.1,
+              ease: [0.34, 1.56, 0.64, 1], // Spring-like easing for pop effect
+            }}
           >
             {/* Gradient background on hover */}
             <div className="absolute inset-0 bg-gradient-to-br from-purple-600/0 to-blue-600/0 group-hover:from-purple-600/10 group-hover:to-blue-600/10 rounded-2xl transition-all duration-300" />
@@ -58,10 +74,10 @@ const CoreExpertise = () => {
                 ))}
               </div>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
-    </section>
+    </motion.section>
   );
 };
 
