@@ -111,12 +111,15 @@ export const Header = () => {
   return (
     <div className="max-w-7xl relative mx-auto py-20 md:py-40 px-4 w-full  left-0 top-0">
       <h1 className="text-2xl md:text-7xl font-bold dark:text-white">
-        Campus Leadership <br /> & Innovation
+        Here Are My<br /> Awards & Achievements
       </h1>
-      <p className="max-w-2xl text-base md:text-xl mt-8 dark:text-neutral-200">
-        I lead AI/ML learning, technical events, and high-impact student initiatives across IIT Mandi.
-        A mentor and collaborator driving research, coding culture, and real-world project execution.
-      </p>
+<p className="max-w-2xl text-base md:text-xl mt-8 dark:text-neutral-200">
+  Winner of NASA Space Apps Challenge 2025 for an AI-driven lunar exploration system, 
+  and 1st place at the iHub Multimodal AI Hackathon among 1,600+ teams (80,000+ students). 
+  Active in competitive programming with 500+ problems across LeetCode, Codeforces, and HackerRank. 
+  Recently received a Letter of Recommendation from IIT Mandi officials for leading a real-time Finance Pipeline initiative integrating AI and streaming-based risk automation.
+</p>
+
     </div>
   );
 };
