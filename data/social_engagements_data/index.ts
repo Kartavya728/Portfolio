@@ -14,7 +14,6 @@ export const socialEngagements = [
     quote:
       "Part of the core web development team for IIT Mandi's annual tech fest, building responsive and interactive web applications",
     name: "Web Development Team",
-    title: "IIT Mandi Tech Fest",
   },
   {
     id: 2,
@@ -30,7 +29,6 @@ export const socialEngagements = [
     quote:
       "Developed and maintained the official website for Research Society, IIT Mandi",
     name: "Research Society",
-    title: "Frontend Developer",
   },
   {
     id: 3,
@@ -46,7 +44,6 @@ export const socialEngagements = [
     quote:
       "Contributed to the development of Literary Society website as part of winter project",
     name: "Literary Society",
-    title: "Web Developer",
   },
   {
     id: 4,
@@ -62,6 +59,5 @@ export const socialEngagements = [
     quote:
       "Participate in coding competitions, hackathons, and organize workshops for juniors",
     name: "Coding Club",
-    title: "Active Member",
   },
 ];
