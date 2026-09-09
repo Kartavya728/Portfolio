@@ -37,3 +37,6 @@ next-env.d.ts
 
 # Sentry Config File
 .sentryclirc
+
+# Ignore large media files
+*.mp4

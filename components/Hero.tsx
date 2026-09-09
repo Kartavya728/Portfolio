@@ -1,7 +1,7 @@
 "use client";
 
 import { FaLocationArrow } from "react-icons/fa6";
-import img from "../data/profile.jpg";
+import img from "../git-profile.jpeg";
 import MagicButton from "./MagicButton";
 import { Spotlight } from "./ui/Spotlight";
 import { TextGenerateEffect } from "./ui/TextGenerateEffect";
@@ -78,7 +78,7 @@ const Hero = () => {
       </div>
 
       <div className="relative z-10 flex justify-center items-center">
-        <div className="relative w-24 h-24 rounded-full border-4 border-white overflow-hidden shadow-md">
+        <div className="relative w-48 h-48 rounded-full border-4 border-white overflow-hidden shadow-md">
           <Image
             src={img} // Replace with your image path
             alt="Centered Circle Image"
