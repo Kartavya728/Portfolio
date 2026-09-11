@@ -6,48 +6,49 @@ import { motion } from "framer-motion";
 const Skills = () => {
   const skillCategories = [
     {
-      category: "Programming Languages",
+      category: "Core CS Fundamentals",
+      skills: [
+        { name: "Data Structures & Algorithms", level: "Advanced" },
+        { name: "Object-Oriented Programming", level: "Advanced" },
+        { name: "System Design", level: "Intermediate" },
+        { name: "Distributed Systems", level: "Intermediate" },
+        { name: "Problem Solving", level: "Advanced" },
+      ],
+    },
+    {
+      category: "Languages",
       skills: [
         { name: "Python", level: "Advanced" },
-        { name: "JavaScript", level: "Advanced" },
-        { name: "C++", level: "Intermediate" },
-        { name: "HTML/CSS", level: "Advanced" },
-        { name: "Dart", level: "Intermediate" },
-        { name: "Solidity", level: "Intermediate" },
-      ],
-    },
-    {
-      category: "Frameworks & Tools",
-      skills: [
-        { name: "Next.js", level: "Advanced" },
-        { name: "React", level: "Advanced" },
-        { name: "Flutter", level: "Intermediate" },
-        { name: "Flask", level: "Intermediate" },
-        { name: "Firebase", level: "Intermediate" },
-        { name: "LaTeX", level: "Intermediate" },
-      ],
-    },
-
-    {
-      category: "Platforms & Systems",
-      skills: [
-        { name: "Windows", level: "Advanced" },
-        { name: "Linux", level: "Intermediate" },
-        { name: "Visual Studio Code", level: "Advanced" },
-        { name: "Android Studio", level: "Intermediate" },
-        { name: "Raspberry Pi", level: "Intermediate" },
-        { name: "IoT Systems", level: "Intermediate" },
-      ],
-    },
-    {
-      category: "Cloud & Database",
-      skills: [
-        { name: "Cloud Services", level: "Intermediate" },
-        { name: "MongoDB", level: "Intermediate" },
-        { name: "Node.js", level: "Advanced" },
-        { name: "Express.js", level: "Advanced" },
-        { name: "RESTful APIs", level: "Advanced" },
+        { name: "C/C++", level: "Advanced" },
         { name: "TypeScript", level: "Advanced" },
+        { name: "JavaScript", level: "Advanced" },
+        { name: "Java", level: "Intermediate" },
+        { name: "SQL", level: "Intermediate" },
+        { name: "Bash", level: "Intermediate" },
+      ],
+    },
+    {
+      category: "Frameworks, APIs & Cloud",
+      skills: [
+        { name: "React / Next.js", level: "Advanced" },
+        { name: "FastAPI / Django", level: "Advanced" },
+        { name: "PyTorch / TensorFlow", level: "Advanced" },
+        { name: "REST APIs", level: "Advanced" },
+        { name: "Docker / Kubernetes", level: "Intermediate" },
+        { name: "AWS", level: "Intermediate" },
+        { name: "PostgreSQL / Redis", level: "Intermediate" },
+      ],
+    },
+    {
+      category: "Tools, Practices & Applied AI",
+      skills: [
+        { name: "Git & Linux", level: "Advanced" },
+        { name: "CI/CD", level: "Intermediate" },
+        { name: "Agile/Scrum", level: "Intermediate" },
+        { name: "GitHub Copilot", level: "Advanced" },
+        { name: "Prompt Engineering", level: "Advanced" },
+        { name: "RAG", level: "Advanced" },
+        { name: "LaTeX", level: "Intermediate" },
       ],
     },
   ];

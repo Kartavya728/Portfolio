@@ -5,6 +5,7 @@ export const runtime = "edge";
 import Hero from "@/components/Hero";
 import AboutMe from "@/components/AboutMe";
 import Skills from "@/components/Skills";
+import WorkExperience from "@/components/WorkExperience";
 import CoreExpertise from "@/components/CoreExpertise";
 import FeaturedProjects from "@/components/FeaturedProjects";
 import TechnicalProjects from "@/components/TechnicalProjects";
@@ -29,6 +30,7 @@ const HomeContent = () => {
         "hero",
         "about",
         "skills",
+        "experience",
         "expertise",
         "projects",
         "achievements",
@@ -96,6 +98,11 @@ const HomeContent = () => {
           {/* Skills - Fade Up */}
           <div className="py-20">
             <Skills />
+          </div>
+
+          {/* Work Experience - Fade Up */}
+          <div className="py-20">
+            <WorkExperience />
           </div>
 
           {/* Core Expertise - Fade Up */}

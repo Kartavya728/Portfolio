@@ -7,6 +7,7 @@ export type SectionId =
   | "hero"
   | "about"
   | "skills"
+  | "experience"
   | "expertise"
   | "projects"
   | "achievements"
@@ -41,6 +42,12 @@ export const SECTION_THEMES: Record<SectionId, SectionTheme> = {
     backgroundColor: "#000000ff", // Slate dark
     textColor: "#E2E8F0",
     accentColor: "#3B82F6",
+  },
+  experience: {
+    id: "experience",
+    backgroundColor: "#0c0033ff", // Deep violet
+    textColor: "#EDE9FE",
+    accentColor: "#A78BFA",
   },
   expertise: {
     id: "expertise",

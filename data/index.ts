@@ -20,6 +20,7 @@ import pathwayImg from "./projects_data/pathway.png.jpeg";
 export const navItems = [
   { name: "About Me", link: "#about" },
   { name: "Skills", link: "#skills" },
+  { name: "Experience", link: "#experience" },
   { name: "Projects", link: "#projects" },
   { name: "Achievements", link: "#achievements" },
   { name: "Certifications", link: "#certifications" },
@@ -134,11 +135,11 @@ export const projects = [
   },
   {
     id: 5,
-    title: "Lunar DEM Generation using Photoclinometry",
-    des: "Developed a system to generate high-resolution Digital Elevation Models (DEM) of the lunar surface using photoclinometry. Processed NASA lunar datasets with ML, computer vision, and GIS tools to create accurate 3D topographic maps.",
+    title: "LunaDEM – Lightweight Lunar Terrain Analysis",
+    des: "Published a lightweight Python library for 3D lunar terrain analysis using NumPy and SciPy with zero-configuration setup. Programmed 4 DEM reconstruction algorithms to generate 3D lunar topography from 2D orbital imagery, with rover-aware landing site evaluation for 9+ real-world rovers.",
     img: demImg,
     iconLists: ["/python.svg", "/opencv.svg", "/tensorflow.svg", "/gis.svg", "/nasa.svg"],
-    link: "ISRO Hackathon - Jul 2025",
+    link: "ISRO Hackathon - Oct 2025",
     github: "https://github.com/Kartavya728",
     website: "#"
   },
@@ -219,11 +220,31 @@ export const projects = [
   },
   {
     id: 14,
-    title: "F.L.O.W. – Fraud & Loan Optimization Workbench",
-    des: "Twin-pipeline financial intelligence system with real-time fraud detection (97% accuracy, <2s latency) and AI-powered customer targeting. Features Pathway streaming, NATS messaging, River online ML, adaptive learning, and explainable decisions. Processes 1.9M transactions with GMM models and sentiment analysis.",
+    title: "FLOW – Fraud and Loan Optimization Workbench",
+    des: "Event-driven, distributed ML pipeline for real-time fraud detection using Pathway, Redis and NATS JetStream. Deployed adaptive online-learning models (Hoeffding Trees, Online GMM) with human-in-the-loop feedback, attaining sub-5ms latency and 88% F1-score with Prometheus/Grafana observability.",
     img: pathwayImg,
     iconLists: ["/python.svg", "/redis.svg", "/prometheus.svg", "/ai.svg", "/stream.svg"],
-    link: "Financial AI System - 2024",
+    link: "Financial AI System - Nov 2025",
+    github: "https://github.com/Kartavya728",
+    website: "#"
+  },
+  {
+    id: 15,
+    title: "Anatomy-Aware DoseFlow",
+    des: "A three-stage deep learning pipeline for reconstructing CT images from arbitrary dose levels (5%-100%). Devised a dose-conditioned flow trajectory model integrating MedSAM, ViT encoders and four loss functions, achieving 48.15 dB PSNR and 0.9991 SSIM with zero-shot generalization across three unseen anatomical regions.",
+    img: tumorNewImg,
+    iconLists: ["/python.svg", "/tensorflow.svg", "/opencv.svg", "/react.svg", "/flask.svg"],
+    link: "Deep Learning Research - Feb 2026",
+    github: "https://github.com/Kartavya728",
+    website: "#"
+  },
+  {
+    id: 16,
+    title: "LokMitra AI",
+    des: "Engineered a multilingual voice AI platform (Twilio, Qwen2-Audio) using prompt engineering for audio-text reasoning. Orchestrated a ReAct-based agentic system with RAG, database querying, tool calling and human handoff, with asynchronous cloud-native webhooks for audio streaming and transcript processing.",
+    img: legalImg,
+    iconLists: ["/next.svg", "/ts.svg", "/tail.svg", "/python.svg", "/supabase.svg"],
+    link: "Voice AI Platform - Sep 2025",
     github: "https://github.com/Kartavya728",
     website: "#"
   },

@@ -22,31 +22,31 @@ export const leadershipRoles = [
     organization: "Programming Club",
     duration: "2023 - Present",
     description:
-      "Organized ML workshops, coding contests, and peer-learning sessions to grow the competitive programming culture.",
+      "Conducted 15+ algorithms workshops impacting 300+ students.",
     icon: "💻",
     type: "Leadership",
     img: "/role2.svg",
     // For InfiniteCards compatibility
     quote:
-      "Organized ML workshops, coding contests, and peer-learning sessions to grow the competitive programming culture.",
+      "Conducted 15+ algorithms workshops impacting 300+ students.",
     name: "Programming Club",
     leadTitle: "Core Member",
   },
   {
     id: 3,
-    title: "Core Member",
+    title: "Technical Lead",
     organization: "STAC (Space Technology & Astronomy Cell)",
     duration: "2023 - Present",
     description:
-      "Coordinated research-driven initiatives and public outreach programs.",
+      "Owned technical initiatives, mentored the student research team, and organized events.",
     icon: "🚀",
     type: "Leadership",
     img: "/role3.svg",
     // For InfiniteCards compatibility
     quote:
-      "Coordinated research-driven initiatives and public outreach programs.",
+      "Owned technical initiatives, mentored the student research team, and organized events.",
     name: "STAC",
-    leadTitle: "Core Member",
+    leadTitle: "Technical Lead",
   },
   {
     id: 4,

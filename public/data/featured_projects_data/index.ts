@@ -1,6 +1,16 @@
 // Featured Projects - Separate from Technical Projects
 export const featuredProjects = [
   {
+    id: 0,
+    title: "Anatomy-Aware DoseFlow",
+    des: "A three-stage deep learning pipeline reconstructing CT images from arbitrary dose levels (5%-100%). A dose-conditioned flow trajectory model integrating MedSAM, ViT encoders and four loss functions achieved 48.15 dB PSNR and 0.9991 SSIM with zero-shot generalization across three unseen anatomical regions.",
+    img: "/data/projects_data/tumor.png",
+    iconLists: ["/python.svg", "/tensorflow.svg", "/opencv.svg", "/react.svg", "/flask.svg"],
+    link: "Deep Learning Research - Feb 2026",
+    github: "https://github.com/Kartavya728",
+    website: "#"
+  },
+  {
     id: 1,
     title: "Multimodal Lecture Understanding System (Smart Scribe)",
     des: "Advanced learning platform with multimodal understanding (video, audio, PDFs). Features lecture summarization, Q&A generation, slides management, student & professor dashboards, and structured planning mode. Built with Next.js, Supabase, and Python pipelines for embedding extraction.",
