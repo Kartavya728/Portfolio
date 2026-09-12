@@ -15,6 +15,19 @@ export const workExperienceTimeline = [
   },
   {
     id: 2,
+    role: "Semester Exchange Student – Computer Science",
+    company: "Technical University of Munich (TUM)",
+    location: "Munich, Germany",
+    duration: "Oct 2026 – Mar 2027",
+    status: "Upcoming",
+    tag: "Exchange Semester",
+    bullets: [
+      "Undertaking a semester exchange in Computer Science at the Technical University of Munich (TUM), Germany.",
+    ],
+    icon: "🇩🇪",
+  },
+  {
+    id: 3,
     role: "Data Analytics Intern",
     company: "Nomura Real Estate Holdings, Inc.",
     location: "Tokyo, Japan",
@@ -28,7 +41,7 @@ export const workExperienceTimeline = [
     icon: "📊",
   },
   {
-    id: 3,
+    id: 4,
     role: "Full-Stack Developer",
     company: "IIT Mandi Finance Department",
     location: "Mandi, India",
