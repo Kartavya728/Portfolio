@@ -2,9 +2,16 @@
 
 # dependencies
 /node_modules
+**/node_modules
 /.pnp
 .pnp.js
 .yarn/install-state.gz
+
+# local backup of the previous Next.js site
+/old-ui/
+
+# build output
+/dist
 
 # testing
 /coverage
