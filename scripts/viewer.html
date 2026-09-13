@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>html,body{margin:0;background:#1a1020;overflow:hidden}</style>
+</head>
+<body>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+window.__ready = false;
+window.__error = null;
+
+const params = new URLSearchParams(location.search);
+const url = params.get("model") || "/character.glb";
+const mode = params.get("mode") || "face"; // face | full
+const blinkWeight = parseFloat(params.get("blink") || "0");
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x1a1020);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setSize(1000, 1000);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.1;
+document.body.appendChild(renderer.domElement);
+
+const camera = new THREE.PerspectiveCamera(35, 1, 0.05, 100);
+
+scene.add(new THREE.AmbientLight(0xffffff, 1.2));
+const dir = new THREE.DirectionalLight(0xffffff, 2.2);
+dir.position.set(1, 2, 3);
+scene.add(dir);
+const dir2 = new THREE.DirectionalLight(0xffffff, 1.0);
+dir2.position.set(-2, 1, -1);
+scene.add(dir2);
+
+if (params.has("testcube")) {
+  const cube = new THREE.Mesh(
+    new THREE.BoxGeometry(2, 2, 2),
+    new THREE.MeshStandardMaterial({ color: 0xff0000 })
+  );
+  scene.add(cube);
+  camera.position.set(0, 0, 6);
+  camera.lookAt(0, 0, 0);
+  renderer.render(scene, camera);
+  window.__ready = true;
+} else {
+
+const loader = new GLTFLoader();
+loader.load(
+  url,
+  (gltf) => {
+    const character = gltf.scene;
+    scene.add(character);
+
+    // Hide the desk/monitor/keyboard props (top-level siblings of the
+    // character's own armature) unless explicitly requested, so a bind-pose
+    // (T-pose, no animation applied) render isn't obstructed by static desk
+    // geometry that's normally only sensible once the sitting/typing
+    // animation clips have posed the body.
+    window.__topLevelNames = character.children.map((c) => c.name + (c.visible ? "" : "(hidden)"));
+    let meshCount = 0;
+    character.traverse((c) => { if (c.isMesh) meshCount++; });
+    window.__meshCount = meshCount;
+    if (!params.has("showProps")) {
+      character.children.forEach((child) => {
+        if (child.name !== "metarig002" && child.name !== "metarig.002") child.visible = false;
+      });
+    }
+
+    // Find the head bone to frame the camera on, regardless of body pose.
+    let headBone = character.getObjectByName("spine.006") || character.getObjectByName("spine006");
+    window.__headFound = !!headBone;
+    if (headBone) {
+      headBone.updateWorldMatrix(true, false);
+      window.__headPos = new THREE.Vector3().setFromMatrixPosition(headBone.matrixWorld).toArray();
+    }
+    const box = new THREE.Box3();
+    const headMeshNode = character.getObjectByName("AvatarHead");
+    if (mode === "face" && headMeshNode) {
+      box.setFromObject(headMeshNode);
+      const center = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(new THREE.Vector3());
+      const dist = Math.max(size.x, size.y, size.z) * 2.0;
+      camera.position.set(center.x, center.y, center.z + dist);
+      camera.lookAt(center);
+      window.__debugBox = { min: box.min.toArray(), max: box.max.toArray(), center: center.toArray(), size: size.toArray(), camPos: camera.position.toArray() };
+    } else {
+      box.setFromObject(character);
+      const center = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(new THREE.Vector3());
+      const dist = Math.max(size.x, size.y, size.z) * 1.4;
+      camera.position.set(center.x, center.y + size.y * 0.1, center.z + dist);
+      camera.lookAt(center);
+      window.__debugBox = { min: box.min.toArray(), max: box.max.toArray(), center: center.toArray(), size: size.toArray(), camPos: camera.position.toArray() };
+    }
+
+    // Optionally drive the Blink morph so we can inspect eye-closed state too.
+    if (blinkWeight > 0) {
+      character.traverse((child) => {
+        if (child.isMesh && child.morphTargetDictionary) {
+          const li = child.morphTargetDictionary["eyeBlinkLeft"];
+          const ri = child.morphTargetDictionary["eyeBlinkRight"];
+          if (li !== undefined) child.morphTargetInfluences[li] = blinkWeight;
+          if (ri !== undefined) child.morphTargetInfluences[ri] = blinkWeight;
+        }
+      });
+    }
+
+    let frames = 0;
+    function loop() {
+      renderer.render(scene, camera);
+      frames++;
+      if (frames < 5) {
+        requestAnimationFrame(loop);
+      } else {
+        window.__ready = true;
+      }
+    }
+    loop();
+  },
+  undefined,
+  (err) => {
+    window.__error = String(err);
+    window.__ready = true;
+  }
+);
+}
+</script>
+</body>
+</html>
