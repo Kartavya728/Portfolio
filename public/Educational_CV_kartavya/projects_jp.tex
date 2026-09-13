@@ -1,0 +1,152 @@
+\documentclass[10pt,a4paper]{article}
+
+% ── Packages ──────────────────────────────────────────────────────────────────
+\usepackage[
+  a4paper,
+  top=0.45cm,
+  bottom=0.45cm,
+  left=0.6cm,
+  right=0.6cm
+]{geometry}
+\usepackage{fontspec}
+\usepackage[sfdefault]{inter}      % Latin / numerals — Overleaf: TeX Live 2023+
+\usepackage{xeCJK}                 % Japanese typesetting engine (compile with XeLaTeX)
+\setCJKmainfont{Noto Sans CJK JP}  % swap for "Hiragino Kaku Gothic Pro" / "Yu Gothic" / "IPAexGothic" if unavailable
+\setCJKsansfont{Noto Sans CJK JP}
+\XeTeXlinebreaklocale "ja"
+\XeTeXlinebreakskip = 0pt plus 1pt minus 0.1pt
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{xcolor}
+
+% ── Styling & Colors ──────────────────────────────────────────────────────────
+\definecolor{primaryblue}{RGB}{0, 75, 160}
+\definecolor{darkgray}{RGB}{35, 35, 35}
+\definecolor{subtext}{RGB}{100, 100, 100}
+
+\setlength{\parindent}{0pt}
+\setlist[itemize]{leftmargin=10pt, itemsep=0pt, topsep=0.5pt, parsep=0pt, partopsep=0pt}
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=primaryblue,
+  linkcolor=primaryblue
+}
+
+% ── Project Macro Definition (Updated for #6 Image Parameter) ─────────────────
+\newcommand{\project}[6]{%
+\noindent
+\begin{tabular}{@{}p{0.62\linewidth}@{\hspace{0.01\linewidth}}p{0.35\linewidth}@{}}
+\raggedright
+{\large\bfseries\color{primaryblue} #1}
+\hfill {\scriptsize\color{subtext}\itshape #2}
+\quad {\scriptsize\href{#3}{\textbf{[GitHub]}}}\\[1pt]
+{\normalsize\color{darkgray} #4}%
+{\small #5}
+&
+\vspace{-2pt}%
+\centering
+\fbox{\includegraphics[width=\linewidth,height=2.9cm]{#6}}
+\end{tabular}%
+\par\vspace{2pt}%
+}
+
+\begin{document}
+
+% ── Header ────────────────────────────────────────────────────────────────────
+\begin{center}
+{\Large\bfseries\color{primaryblue} Kartavya Mahesh Suryawanshi（カルタヴィヤ・マヘーシュ・スーリヤワンシー）}
+\quad{\color{subtext}\textbf{\textbullet}}\quad
+{\Large\bfseries ポートフォリオ}
+\end{center}
+\vspace{-2mm}
+
+% ── Projects List ─────────────────────────────────────────────────────────────
+
+\project
+{Smart-Scribes}
+{2025年3月}
+{https://github.com/Kartavya728/Smart-Scribes}
+{授業内容をAIが自動で文字起こしし、要約と意味検索を可能にするクラスルーム向けAIプラットフォーム。}
+{\begin{itemize}
+\item iHub Multimodal AIハッカソン2025（参加1,600チーム以上）にて優勝。
+\item 5名から成る学際的チームを率いてプロジェクトを主導。
+\end{itemize}}
+{ss.png}
+
+\project
+{Anatomy-Aware DoseFlow}
+{2026年2月}
+{https://github.com/Kartavya728}
+{Flow Matching、MedSAM、独自のCUDAカーネルを組み合わせた低線量CTノイズ除去のための医用画像処理研究パイプライン。最先端水準の再構成品質を実現。}
+{\begin{itemize}
+\item 10,000枚以上のCTスライスを処理。
+\item 診断精度を維持しながら被ばく線量を低減する臨床画像処理パイプラインへ応用。
+\end{itemize}}
+{dose.png}
+
+\project
+{LunaDEM}
+{2025年10月}
+{https://github.com/Kartavya728/LunaDEM}
+{フォトクリノメトリー（写真測光法）、OpenCV、Open3Dを用いて高解像度の月面数値標高モデル（DEM）を生成する、PyPI公開のオープンソースPythonライブラリ。}
+{\begin{itemize}
+\item 惑星科学者やローバー航法チームによる月面地形および着陸地点の正確なマッピングを支援。
+\end{itemize}}
+{luna.png}
+
+\project
+{FLOW -- 不正取引・融資最適化ワークベンチ}
+{2025年11月}
+{https://github.com/Kartavya728/FLOW-InterIIT14-TechMeet}
+{FastAPI、Redis、AWSを用い、ストリーミング型の異常検知を組み込んだリアルタイム銀行監視・不正検知プラットフォーム。}
+{\begin{itemize}
+\item 不正な取引パターンおよびストリーミング上の異常をミリ秒単位の低遅延で検知し、金融機関を保護。
+\end{itemize}}
+{flow.png}
+
+\project
+{LokMitra AI}
+{2025年9月}
+{https://github.com/Kartavya728/LokMitra-AI}
+{Gemini APIと公的データセットに基づく検索拡張生成（RAG）を活用した、行政サービス向け多言語AI音声アシスタント。}
+{\begin{itemize}
+\item プロジェクト開発チームを主導。
+\item 10以上の地域言語による音声対話を通じて、地方在住者が福祉制度を利用しやすくすることでデジタル格差の解消に貢献。
+\end{itemize}}
+{lok.png}
+
+\project
+{AutoReach AI}
+{2025年3月}
+{https://github.com/Kartavya728/AutoReach-AI}
+{インテリジェントなLLMエージェントを活用した自律型AIワークフロー自動化プラットフォーム。}
+{\begin{itemize}
+\item FrostHack IIT Mandiにて準優勝。
+\item リード獲得、顧客アウトリーチ、CRMへの動的データ入力など、企業の複雑な業務プロセスを自動化。
+\end{itemize}}
+{auto.png}
+
+\project
+{音声クローニング・なりすまし検知のためのデュアルシステム・フレームワーク}
+{2025年4月}
+{https://github.com/Kartavya728/Dual-System-Framework-for-Neural-Voice-Cloning-and-Anti-Spoofing-Detection}
+{安全なニューラル音声クローニングとなりすまし（スプーフィング）検知のための深層学習フレームワーク。}
+{\begin{itemize}
+\item 高忠実度の合成音声生成とリアルタイムのAI音声ディープフェイク検知を組み合わせ、生体認証における不正を防止。
+\item 銀行・セキュリティ分野の音声認証システムを、合成音声によるリプレイ攻撃から保護。
+\end{itemize}}
+{aud.png}
+
+\project
+{Vision Drive}
+{2025年2月}
+{https://github.com/Kartavya728/Vision-Drive}
+{インタラクティブな推論ダッシュボードを備えた、YOLOベースの自動運転向け認識システム。}
+{\begin{itemize}
+\item 多様な照明条件下でのリアルタイム複数クラス物体検知、車両追跡、車線セグメンテーションを実現。
+\end{itemize}}
+{vd.png}
+
+\end{document}

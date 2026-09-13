@@ -1,0 +1,152 @@
+\documentclass[10pt,a4paper]{article}
+
+% ── Packages ──────────────────────────────────────────────────────────────────
+\usepackage[
+  a4paper,
+  top=0.45cm,
+  bottom=0.45cm,
+  left=0.6cm,
+  right=0.6cm
+]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[sfdefault]{inter}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{xcolor}
+
+% ── Styling & Colors ──────────────────────────────────────────────────────────
+\definecolor{primaryblue}{RGB}{0, 75, 160}
+\definecolor{darkgray}{RGB}{35, 35, 35}
+\definecolor{subtext}{RGB}{100, 100, 100}
+
+\setlength{\parindent}{0pt}
+\setlist[itemize]{leftmargin=10pt, itemsep=0pt, topsep=0.5pt, parsep=0pt, partopsep=0pt}
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=primaryblue,
+  linkcolor=primaryblue
+}
+
+% ── Project Macro Definition (Updated for #6 Image Parameter) ─────────────────
+\newcommand{\project}[6]{%
+\noindent
+\begin{tabular}{@{}p{0.62\linewidth}@{\hspace{0.01\linewidth}}p{0.35\linewidth}@{}}
+  \raggedright
+  {\large\bfseries\color{primaryblue} #1} 
+  \hfill {\scriptsize\color{subtext}\itshape #2} 
+  \quad {\scriptsize\href{#3}{\textbf{[GitHub]}}}\\[1pt]
+  {\normalsize\color{darkgray} #4}%
+  {\small #5}
+  &
+  \vspace{-2pt}%
+  \centering
+  \fbox{\includegraphics[width=\linewidth,height=2.9cm]{#6}}
+\end{tabular}%
+\par\vspace{2pt}%
+}
+
+\begin{document}
+
+% ── Header ────────────────────────────────────────────────────────────────────
+\begin{center}
+  {\Large\bfseries\color{primaryblue} Kartavya Mahesh Suryawanshi}
+  \quad{\color{subtext}\textbf{\textbullet}}\quad
+  {\Large\bfseries Projects Portfolio}
+\end{center}
+\vspace{-2mm}
+
+% ── Projects List ─────────────────────────────────────────────────────────────
+
+\project
+{Smart-Scribes}
+{Mar 2025}
+{https://github.com/Kartavya728/Smart-Scribes}
+{AI-powered classroom transcription and semantic lecture search platform that generates summaries and enables intelligent retrieval across recorded lectures.}
+{\begin{itemize}
+\item Won 1st Place at iHub Multimodal Hackathon 2025 (1600+ teams).
+\item Led a 5-member multidisciplinary team.
+\end{itemize}}
+{ss.png}
+
+\project
+{Anatomy-Aware DoseFlow}
+{Feb 2026}
+{https://github.com/Kartavya728}
+{Medical imaging research pipeline for low-dose CT denoising using flow matching, MedSAM, and custom CUDA kernels achieving state-of-the-art reconstruction quality.}
+{\begin{itemize}
+\item Processed 10,000+ CT slices.
+\item Applied in clinical imaging pipelines to reduce patient radiation dosage while maintaining diagnostic reconstruction accuracy.
+\end{itemize}}
+{dose.png}
+
+\project
+{LunaDEM}
+{Oct 2025}
+{https://github.com/Kartavya728/LunaDEM}
+{Open-source Python library published on PyPI for generating high-resolution lunar Digital Elevation Models using photoclinometry, OpenCV, and Open3D.}
+{\begin{itemize}
+\item Enables planetary scientists and rover navigation teams to accurately map lunar surface topography and landing sites.
+\end{itemize}}
+{luna.png}
+
+\project
+{FLOW -- Fraud \& Loan Optimization Workbench}
+{Nov 2025}
+{https://github.com/Kartavya728/FLOW-InterIIT14-TechMeet}
+{Real-time banking surveillance and fraud detection platform using FastAPI, Redis, and AWS with streaming anomaly detection.}
+{\begin{itemize}
+\item Protects financial institutions by identifying illicit transaction patterns and streaming anomalies with sub-second latency.
+\end{itemize}}
+{flow.png}
+
+\project
+{LokMitra AI}
+{Sep 2025}
+{https://github.com/Kartavya728/LokMitra-AI}
+{Multilingual AI voice assistant for government services using Gemini API and Retrieval-Augmented Generation over official datasets.}
+{\begin{itemize}
+\item Led the project development team.
+\item Bridges the digital divide by enabling rural citizens to query welfare schemes via natural voice speech in 10+ regional languages.
+\end{itemize}}
+{lok.png}
+
+\project
+{AutoReach AI}
+{Mar 2025}
+{https://github.com/Kartavya728/AutoReach-AI}
+{Autonomous AI workflow automation platform powered by intelligent LLM agents.}
+{\begin{itemize}
+\item Runner-up at FrostHack IIT Mandi.
+\item Automates complex enterprise business processes such as lead qualification, customer outreach, and dynamic CRM data entry.
+\end{itemize}}
+{auto.png}
+
+\project
+{Dual-System Framework for Neural Voice Cloning \& Anti-Spoofing}
+{Apr 2025}
+{https://github.com/Kartavya728/Dual-System-Framework-for-Neural-Voice-Cloning-and-Anti-Spoofing-Detection}
+{Deep learning framework for secure neural voice cloning and anti-spoofing detection.}
+{\begin{itemize}
+\item Combines high-fidelity synthetic voice generation with real-time audio deepfake detection to prevent biometric fraud.
+\item Safeguards voice authentication systems in banking and security domains against synthetic speech replay attacks.
+\end{itemize}}
+{aud.png}
+
+
+
+
+
+\project
+{Vision Drive}
+{Feb 2025}
+{https://github.com/Kartavya728/Vision-Drive}
+{YOLO-based autonomous driving perception system with an interactive inference dashboard.}
+{\begin{itemize}
+\item Performs real-time multi-class object detection, vehicle tracking, and lane segmentation under diverse lighting conditions.
+\end{itemize}}
+{vd.png}
+
+\end{document}
