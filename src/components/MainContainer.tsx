@@ -45,15 +45,15 @@ const MainContainer = ({ children }: PropsWithChildren) => {
             <About />
             <WhatIDo />
             <Career />
-            <Research />
-            <Work />
-            <Achievements />
-            <Certificates />
             {isDesktopView && (
               <Suspense fallback={<div>Loading....</div>}>
                 <TechStack />
               </Suspense>
             )}
+            <Work />
+            <Achievements />
+            <Certificates />
+            <Research />
             <Contact />
           </div>
         </div>

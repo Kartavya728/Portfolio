@@ -75,6 +75,26 @@
   color: #0b080c;
 }
 
+.pdf-viewer-contact {
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  height: 36px;
+  border-radius: 20px;
+  border: 1px solid var(--accentColor);
+  color: var(--accentColor);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.pdf-viewer-contact:hover {
+  background: var(--accentColor);
+  color: #0b080c;
+}
+
 .pdf-viewer-frame-wrap {
   flex: 1;
   background: #fff;

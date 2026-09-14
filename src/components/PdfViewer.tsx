@@ -10,9 +10,10 @@ interface PdfViewerProps {
   title: string;
   onClose: () => void;
   layoutId?: string;
+  contactEmail?: string;
 }
 
-const PdfViewer = ({ src, title, onClose, layoutId }: PdfViewerProps) => {
+const PdfViewer = ({ src, title, onClose, layoutId, contactEmail }: PdfViewerProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -80,6 +81,15 @@ const PdfViewer = ({ src, title, onClose, layoutId }: PdfViewerProps) => {
           <div className="pdf-viewer-toolbar">
             <span className="pdf-viewer-title">{title}</span>
             <div className="pdf-viewer-actions">
+              {contactEmail && (
+                <a
+                  href={`mailto:${contactEmail}`}
+                  className="pdf-viewer-contact"
+                  data-cursor="disable"
+                >
+                  Contact
+                </a>
+              )}
               <button
                 type="button"
                 className="pdf-viewer-btn"

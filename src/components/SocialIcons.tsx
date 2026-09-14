@@ -1,10 +1,12 @@
 import { FaGithub, FaLinkedinIn } from "react-icons/fa6";
 import "./styles/SocialIcons.css";
 import { TbNotes } from "react-icons/tb";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import HoverLinks from "./HoverLinks";
+import PdfViewer from "./PdfViewer";
 
 const SocialIcons = () => {
+  const [isResumeOpen, setIsResumeOpen] = useState(false);
   useEffect(() => {
     const social = document.getElementById("social") as HTMLElement;
 
@@ -65,12 +67,24 @@ const SocialIcons = () => {
           </a>
         </span>
       </div>
-      <a className="resume-button" href="#">
+      <button
+        type="button"
+        className="resume-button"
+        onClick={() => setIsResumeOpen(true)}
+      >
         <HoverLinks text="RESUME" />
         <span>
           <TbNotes />
         </span>
-      </a>
+      </button>
+      {isResumeOpen && (
+        <PdfViewer
+          src="/Kartavya_Suryawanshi_Resume.pdf"
+          title="Resume — Kartavya Suryawanshi"
+          contactEmail="b24199@students.iitmandi.ac.in"
+          onClose={() => setIsResumeOpen(false)}
+        />
+      )}
     </div>
   );
 };
