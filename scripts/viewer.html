@@ -72,6 +72,8 @@ loader.load(
     let meshCount = 0;
     character.traverse((c) => { if (c.isMesh) meshCount++; });
     window.__meshCount = meshCount;
+    const yaw = parseFloat(params.get("yaw") || "0");
+    if (yaw) character.rotation.y = yaw;
     if (!params.has("showProps")) {
       character.children.forEach((child) => {
         if (child.name !== "metarig002" && child.name !== "metarig.002") child.visible = false;
@@ -87,7 +89,22 @@ loader.load(
     }
     const box = new THREE.Box3();
     const headMeshNode = character.getObjectByName("AvatarHead");
-    if (mode === "face" && headMeshNode) {
+    const earMeshNode = character.getObjectByName("Ear001") || character.getObjectByName("Ear.001");
+    const allNames = [];
+    character.traverse((c) => allNames.push(c.name));
+    window.__allNames = allNames;
+    if (mode === "ear" && earMeshNode) {
+      const hairNode = character.getObjectByName("hair");
+      if (hairNode && !params.has("showHair")) hairNode.visible = false;
+      box.setFromObject(earMeshNode);
+      const center = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(new THREE.Vector3());
+      const dist = Math.max(size.x, size.y, size.z) * 1.1;
+      // 3/4 angle from the right side so the right ear reads clearly in profile.
+      camera.position.set(center.x + size.x * 0.55, center.y + size.y * 0.15, center.z + dist * 0.9);
+      camera.lookAt(center.x + size.x * 0.2, center.y, center.z);
+      window.__debugBox = { min: box.min.toArray(), max: box.max.toArray(), center: center.toArray(), size: size.toArray(), camPos: camera.position.toArray() };
+    } else if (mode === "face" && headMeshNode) {
       box.setFromObject(headMeshNode);
       const center = box.getCenter(new THREE.Vector3());
       const size = box.getSize(new THREE.Vector3());

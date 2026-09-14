@@ -88,10 +88,30 @@
   margin: 0 0 4px;
 }
 
+.project-modal-description {
+  color: #d7d3d8;
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0 0 20px;
+}
+
 .project-modal-tools {
+  margin: 0 0 24px;
+}
+
+.project-modal-tools h4 {
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  opacity: 0.5;
+  font-weight: 500;
+  margin: 0 0 6px;
+}
+
+.project-modal-tools p {
   color: #adacac;
   font-size: 14px;
-  margin: 0 0 20px;
+  margin: 0;
 }
 
 .project-modal-github {

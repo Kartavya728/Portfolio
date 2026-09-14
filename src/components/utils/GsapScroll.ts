@@ -172,7 +172,7 @@ export function setAllTimeline() {
     scrollTrigger: {
       trigger: ".career-section",
       start: "top 30%",
-      end: "100% bottom+=400",
+      end: "+=1800",
       scrub: true,
       invalidateOnRefresh: true,
     },

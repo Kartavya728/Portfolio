@@ -18,9 +18,39 @@ const MORE_LINKS = [
   { href: "#techstack", text: "TECH STACK" },
 ];
 
+interface Highlight {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+  opacity: number;
+}
+
 const Navbar = () => {
   const [isMoreOpen, setIsMoreOpen] = useState(false);
   const moreRef = useRef<HTMLLIElement | null>(null);
+  const [highlight, setHighlight] = useState<Highlight>({
+    left: 0,
+    top: 0,
+    width: 0,
+    height: 0,
+    opacity: 0,
+  });
+
+  const handleNavItemHover = (e: React.MouseEvent<HTMLLIElement>) => {
+    const li = e.currentTarget;
+    setHighlight({
+      left: li.offsetLeft,
+      top: li.offsetTop,
+      width: li.offsetWidth,
+      height: li.offsetHeight,
+      opacity: 1,
+    });
+  };
+
+  const handleNavListLeave = () => {
+    setHighlight((prev) => ({ ...prev, opacity: 0 }));
+  };
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -75,48 +105,59 @@ const Navbar = () => {
         >
           kartavya.suryawanshi7@gmail.com
         </a>
-        <ul>
-          <li>
-            <a data-href="#about" href="#about">
-              <HoverLinks text="ABOUT" />
-            </a>
-          </li>
-          <li>
-            <a data-href="#work" href="#work">
-              <HoverLinks text="WORK" />
-            </a>
-          </li>
-          <li>
-            <a data-href="#contact" href="#contact">
-              <HoverLinks text="CONTACT" />
-            </a>
-          </li>
-          <li className="nav-more" ref={moreRef}>
-            <button
-              type="button"
-              className="nav-more-toggle"
-              onClick={() => setIsMoreOpen((prev) => !prev)}
-            >
-              <HoverLinks text="MORE" />
-              <MdKeyboardArrowDown
-                className={`nav-more-arrow ${isMoreOpen ? "nav-more-arrow-open" : ""}`}
-              />
-            </button>
-            <ul className={`nav-more-dropdown ${isMoreOpen ? "nav-more-dropdown-open" : ""}`}>
-              {MORE_LINKS.map((link) => (
-                <li key={link.href}>
-                  <a
-                    data-href={link.href}
-                    href={link.href}
-                    onClick={() => setIsMoreOpen(false)}
-                  >
-                    {link.text}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </li>
-        </ul>
+        <div className="nav-list-wrap" onMouseLeave={handleNavListLeave}>
+          <span
+            className="nav-highlight"
+            style={{
+              transform: `translate(${highlight.left}px, ${highlight.top}px)`,
+              width: highlight.width,
+              height: highlight.height,
+              opacity: highlight.opacity,
+            }}
+          />
+          <ul>
+            <li onMouseEnter={handleNavItemHover}>
+              <a data-href="#about" href="#about">
+                <HoverLinks text="ABOUT" />
+              </a>
+            </li>
+            <li onMouseEnter={handleNavItemHover}>
+              <a data-href="#work" href="#work">
+                <HoverLinks text="WORK" />
+              </a>
+            </li>
+            <li onMouseEnter={handleNavItemHover}>
+              <a data-href="#contact" href="#contact">
+                <HoverLinks text="CONTACT" />
+              </a>
+            </li>
+            <li className="nav-more" ref={moreRef} onMouseEnter={handleNavItemHover}>
+              <button
+                type="button"
+                className="nav-more-toggle"
+                onClick={() => setIsMoreOpen((prev) => !prev)}
+              >
+                <HoverLinks text="MORE" />
+                <MdKeyboardArrowDown
+                  className={`nav-more-arrow ${isMoreOpen ? "nav-more-arrow-open" : ""}`}
+                />
+              </button>
+              <ul className={`nav-more-dropdown ${isMoreOpen ? "nav-more-dropdown-open" : ""}`}>
+                {MORE_LINKS.map((link) => (
+                  <li key={link.href}>
+                    <a
+                      data-href={link.href}
+                      href={link.href}
+                      onClick={() => setIsMoreOpen(false)}
+                    >
+                      {link.text}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          </ul>
+        </div>
       </div>
 
       <div className="landing-circle1"></div>

@@ -12,6 +12,7 @@ marked.setOptions({ breaks: true, gfm: true });
 export interface ProjectData {
   name: string;
   category: string;
+  description: string;
   tools: string;
   image: string;
   link: string;
@@ -115,13 +116,22 @@ const ProjectModal = ({ project, layoutId, onClose }: ProjectModalProps) => {
                   {project.category}
                 </motion.p>
                 <motion.p
+                  className="project-modal-description"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.18 }}
+                >
+                  {project.description}
+                </motion.p>
+                <motion.div
                   className="project-modal-tools"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
                 >
-                  {project.tools}
-                </motion.p>
+                  <h4>Tools &amp; Features</h4>
+                  <p>{project.tools}</p>
+                </motion.div>
                 {project.link && (
                   <motion.a
                     href={project.link}

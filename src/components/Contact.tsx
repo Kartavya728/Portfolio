@@ -70,7 +70,7 @@ const Contact = () => {
             <span className="contact-deco contact-deco-3" />
             <span className="contact-deco contact-deco-4" />
             <div className="contact-photo">
-              <img src="/git-profile.jpeg" alt="Kartavya Suryawanshi" />
+              <img src="/git-prf.png" alt="Kartavya Suryawanshi" />
             </div>
           </div>
 

@@ -24,11 +24,33 @@
   align-items: end;
 }
 .header ul li {
+  position: relative;
+  z-index: 1;
   margin-left: 0px;
+  padding: 8px 14px;
   letter-spacing: 1px;
   color: #ccc;
   font-weight: 600;
   cursor: pointer;
+}
+
+.nav-list-wrap {
+  position: relative;
+}
+
+.nav-highlight {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 0;
+  display: block;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    width 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
 }
 .navbar-connect {
   position: absolute;
