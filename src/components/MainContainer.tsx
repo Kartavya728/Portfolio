@@ -9,6 +9,7 @@ import Landing from "./Landing";
 import Navbar from "./Navbar";
 import Research from "./Research";
 import SocialIcons from "./SocialIcons";
+import StarBackground from "./StarBackground";
 import WhatIDo from "./WhatIDo";
 import Work from "./Work";
 import setSplitText from "./utils/splitText";
@@ -34,6 +35,7 @@ const MainContainer = ({ children }: PropsWithChildren) => {
 
   return (
     <div className="container-main">
+      <StarBackground />
       <Cursor />
       <Navbar />
       <SocialIcons />

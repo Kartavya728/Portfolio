@@ -1,0 +1,16 @@
+/* No explicit z-index: this is the very first element in the DOM, so
+   among the other siblings that don't set an explicit z-index either
+   (the actual page sections), plain DOM order keeps it painted behind
+   them - while elements that DO set a real z-index (the 3D character,
+   Navbar, modals) still correctly paint above it regardless of order. */
+.star-background {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+.star-background canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
