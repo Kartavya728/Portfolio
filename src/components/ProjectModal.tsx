@@ -1,8 +1,13 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
+import { marked } from "marked";
 import { MdClose } from "react-icons/md";
 import { useOutsideClick } from "../hooks/use-outside-click";
+import { smoother } from "./Navbar";
 import "./styles/ProjectModal.css";
+
+marked.setOptions({ breaks: true, gfm: true });
 
 export interface ProjectData {
   name: string;
@@ -35,11 +40,17 @@ const ProjectModal = ({ project, layoutId, onClose }: ProjectModalProps) => {
     function onKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") onClose();
     }
-    document.body.style.overflow = project ? "hidden" : "";
-    window.addEventListener("keydown", onKeyDown);
+    // This site scrolls via GSAP ScrollSmoother (a transformed wrapper),
+    // not native body scrolling, so `document.body.style.overflow` does
+    // nothing useful here and can confuse ScrollSmoother's own height
+    // bookkeeping. Pause/resume the smoother itself instead.
+    if (project) {
+      smoother?.paused(true);
+      window.addEventListener("keydown", onKeyDown);
+    }
     return () => {
       window.removeEventListener("keydown", onKeyDown);
-      document.body.style.overflow = "";
+      smoother?.paused(false);
     };
   }, [project, onClose]);
 
@@ -58,7 +69,12 @@ const ProjectModal = ({ project, layoutId, onClose }: ProjectModalProps) => {
       .finally(() => setReadmeLoading(false));
   }, [project]);
 
-  return (
+  // Portaled to <body> because ScrollSmoother's `transform` on
+  // `#smooth-content` would otherwise become the containing block for
+  // this modal's `position: fixed` elements, rendering them off-screen
+  // instead of pinned to the actual viewport (see PdfViewer.tsx for the
+  // same fix).
+  const modal = (
     <AnimatePresence>
       {project && (
         <>
@@ -127,7 +143,12 @@ const ProjectModal = ({ project, layoutId, onClose }: ProjectModalProps) => {
                 >
                   <h4>README</h4>
                   {readmeLoading && <p className="project-modal-muted">Loading README…</p>}
-                  {!readmeLoading && readme && <pre>{readme}</pre>}
+                  {!readmeLoading && readme && (
+                    <div
+                      className="project-modal-markdown"
+                      dangerouslySetInnerHTML={{ __html: marked.parse(readme) as string }}
+                    />
+                  )}
                   {!readmeLoading && !readme && (
                     <p className="project-modal-muted">README not available.</p>
                   )}
@@ -139,6 +160,8 @@ const ProjectModal = ({ project, layoutId, onClose }: ProjectModalProps) => {
       )}
     </AnimatePresence>
   );
+
+  return createPortal(modal, document.body);
 };
 
 export default ProjectModal;

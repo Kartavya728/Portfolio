@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { MdClose, MdFullscreen, MdFullscreenExit } from "react-icons/md";
+import { smoother } from "./Navbar";
 import "./styles/PdfViewer.css";
 
 interface PdfViewerProps {
@@ -28,10 +30,14 @@ const PdfViewer = ({ src, title, onClose, layoutId }: PdfViewerProps) => {
       if (e.key === "Escape" && !document.fullscreenElement) onClose();
     };
     document.addEventListener("keydown", handleKeyDown);
-    document.body.style.overflow = "hidden";
+    // Pause the GSAP ScrollSmoother instance instead of toggling
+    // `document.body.style.overflow` - this site doesn't scroll the body
+    // natively, so that had no real effect and could upset ScrollSmoother's
+    // own height bookkeeping, breaking scroll after the modal closed.
+    smoother?.paused(true);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "";
+      smoother?.paused(false);
     };
   }, [onClose]);
 
@@ -47,7 +53,15 @@ const PdfViewer = ({ src, title, onClose, layoutId }: PdfViewerProps) => {
   // (which otherwise exposes a download button) in Chromium-based browsers.
   const fileUrl = `${encodeURI(src)}#toolbar=0&navpanes=0&statusbar=0`;
 
-  return (
+  // GSAP ScrollSmoother applies a CSS `transform` to `#smooth-content` to
+  // drive the smooth-scroll effect. A `transform` on any ancestor makes
+  // that ancestor the containing block for `position: fixed` descendants
+  // (per the CSS spec), so if this modal rendered in place inside that
+  // tree, it would be positioned relative to the (very tall, scrolled)
+  // content box instead of the real viewport - shoving it far off-screen.
+  // Portaling straight to <body> (which is never transformed) keeps it
+  // correctly fixed to the viewport regardless of scroll position.
+  const modal = (
     <AnimatePresence>
       <motion.div
         className="pdf-viewer-overlay"
@@ -91,6 +105,8 @@ const PdfViewer = ({ src, title, onClose, layoutId }: PdfViewerProps) => {
       </motion.div>
     </AnimatePresence>
   );
+
+  return createPortal(modal, document.body);
 };
 
 export default PdfViewer;

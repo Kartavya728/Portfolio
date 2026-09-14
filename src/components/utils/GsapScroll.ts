@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export function setCharTimeline(
   character: THREE.Object3D<THREE.Object3DEventMap> | null,
@@ -117,6 +118,40 @@ export function setCharTimeline(
         )
         .fromTo(".whatIDO", { y: 0 }, { y: "15%", duration: 2 }, 0)
         .to(character.rotation, { x: -0.04, duration: 2, delay: 1 }, 0);
+
+      // Hard hide/show, independent of the scrub tween above. The scrub
+      // tween only *visually* slides the character out via `y: -100%`,
+      // but if a ScrollTrigger refresh (e.g. from a resize, or content
+      // below changing height) ever recreates these timelines while
+      // already scrolled past this section, the scrub can get stuck
+      // showing an earlier (visible) frame until the next scroll event.
+      // Since the character sits outside the scrollable content (so it
+      // can be pinned during the intro), when "stuck visible" it also
+      // floats on top of - and intercepts clicks on - every section
+      // below. This ScrollTrigger only fires on actual enter/leave
+      // crossings and forces the container fully out of the way
+      // (display: none, not just transformed), so it can never block
+      // clicks on later sections regardless of scrub timing.
+      const setCharacterHidden = (hidden: boolean) => {
+        const el = document.querySelector(".character-container") as HTMLElement | null;
+        if (el) el.style.display = hidden ? "none" : "";
+      };
+      ScrollTrigger.create({
+        trigger: ".whatIDO",
+        start: "top top",
+        end: "bottom top",
+        onLeave: () => setCharacterHidden(true),
+        onEnterBack: () => setCharacterHidden(false),
+      });
+      // A freshly (re)created trigger only fires the callbacks above on
+      // future enter/leave *crossings* - if this runs while already
+      // scrolled past ".whatIDO" (e.g. a resize-triggered timeline
+      // rebuild), nothing would crossed and the container could stay
+      // stuck visible. Set the correct state immediately too.
+      const whatIdoEl = document.querySelector(".whatIDO");
+      if (whatIdoEl) {
+        setCharacterHidden(whatIdoEl.getBoundingClientRect().bottom < 0);
+      }
     }
   } else {
     if (character) {

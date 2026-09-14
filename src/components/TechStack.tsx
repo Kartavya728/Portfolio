@@ -39,27 +39,24 @@ const TECHS = [
 ];
 
 const PADDING = 10; // minimum gap kept between ball edges, so they never touch/overlap
-const POINTER_RADIUS = 160; // how close the cursor has to be to push a ball away
-const POINTER_STRENGTH = 7500; // strong enough to clearly win over the home-spring on contact
+const POINTER_RADIUS = 300; // how close the cursor has to be to push a ball away
+const POINTER_STRENGTH = 34000; // strong scatter - sends balls flying clear of the cursor
 const TOP_MARGIN = 200; // keeps balls from ever sitting above/on the "My Techstack" title
-// Spring pulling each ball back toward its own home position (its
-// non-overlapping starting spot) - critically damped
-// (SPRING_DAMPING ~= 2 * sqrt(SPRING_STIFFNESS)) so a ball pushed away by
-// the pointer glides back briskly without overshoot, instead of the slow
-// crawl a plain-damping approach gives. Springing to its own home (rather
-// than one shared center point) also means balls never fight each other
-// by all converging on the same spot.
-const SPRING_STIFFNESS = 70;
-const SPRING_DAMPING = 16.7;
-const COLLISION_ITERATIONS = 4;
+// Balls are pulled toward one shared cluster point (like the old 3D
+// version's inward "gravity"), so at rest they sit aligned together; the
+// pointer scatters them apart, and afterwards this (deliberately gentle)
+// pull gradually gathers them back into the cluster. Collision resolution
+// runs many iterations per frame so the cluster stays tightly packed
+// without overlapping, even while under this continuous inward pull.
+const CLUSTER_STIFFNESS = 10;
+const CLUSTER_DAMPING = 6;
+const COLLISION_ITERATIONS = 8;
 
 type Ball = {
   x: number;
   y: number;
   vx: number;
   vy: number;
-  homeX: number;
-  homeY: number;
   r: number;
 };
 
@@ -79,31 +76,23 @@ const TechStack = () => {
     isActiveRef.current = isActive;
   }, [isActive]);
 
-  // Scroll-based activation - identical gating to the previous 3D version,
-  // so the balls only start moving once the tech stack section is in view.
+  // Activation gating - only animate once the tech stack section is
+  // actually in view. The previous 3D version (and my first pass at this)
+  // used a `window.addEventListener("scroll", ...)` + `window.scrollY`
+  // check, but this site's GSAP ScrollSmoother drives scrolling through a
+  // transformed wrapper rather than native document scrolling, so native
+  // `scroll` events on `window` don't reliably fire and `window.scrollY`
+  // can stay stuck at 0. An IntersectionObserver watches actual visibility
+  // directly and works regardless of how scrolling is implemented.
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY || document.documentElement.scrollTop;
-      const workEl = document.getElementById("work");
-      if (!workEl) return;
-      const threshold = workEl.getBoundingClientRect().top;
-      setIsActive(scrollY > threshold);
-    };
-    document.querySelectorAll(".header a").forEach((elem) => {
-      const element = elem as HTMLAnchorElement;
-      element.addEventListener("click", () => {
-        const interval = setInterval(() => {
-          handleScroll();
-        }, 10);
-        setTimeout(() => {
-          clearInterval(interval);
-        }, 1000);
-      });
-    });
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    const sectionEl = document.getElementById("techstack");
+    if (!sectionEl) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsActive(entry.isIntersecting),
+      { threshold: 0.15 }
+    );
+    observer.observe(sectionEl);
+    return () => observer.disconnect();
   }, []);
 
   // Lay the balls out with no initial overlap, then run a lightweight
@@ -132,7 +121,7 @@ const TechStack = () => {
               Math.hypot(b.x - x, b.y - y) < b.r + tech.r + PADDING
           )
         );
-        placed.push({ x, y, vx: 0, vy: 0, r: tech.r, homeX: x, homeY: y });
+        placed.push({ x, y, vx: 0, vy: 0, r: tech.r });
       }
       balls.current = placed;
       writeTransforms();
@@ -176,17 +165,16 @@ const TechStack = () => {
       if (isActiveRef.current) {
         const { width, height } = container!.getBoundingClientRect();
         const list = balls.current;
+        const clusterX = width / 2;
+        const clusterY = TOP_MARGIN + (height - TOP_MARGIN) / 2;
 
         for (let i = 0; i < list.length; i++) {
           const b = list[i];
 
-          // Spring back toward this ball's own home position (critically
-          // damped), so a ball knocked away by the pointer returns briskly
-          // and settles without oscillating. Springing to its own home
-          // (rather than one shared center point) also keeps balls from
-          // ever converging on the same spot and jamming into each other.
-          b.vx += ((b.homeX - b.x) * SPRING_STIFFNESS - b.vx * SPRING_DAMPING) * dt;
-          b.vy += ((b.homeY - b.y) * SPRING_STIFFNESS - b.vy * SPRING_DAMPING) * dt;
+          // Pull toward the shared cluster point (damped, so it gathers
+          // smoothly instead of oscillating or snapping instantly).
+          b.vx += ((clusterX - b.x) * CLUSTER_STIFFNESS - b.vx * CLUSTER_DAMPING) * dt;
+          b.vy += ((clusterY - b.y) * CLUSTER_STIFFNESS - b.vy * CLUSTER_DAMPING) * dt;
 
           // Pointer repulsion - balls get pushed away as the cursor nears,
           // same interaction the 3D version had with its physics pointer.
