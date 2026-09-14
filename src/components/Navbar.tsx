@@ -37,12 +37,19 @@ const Navbar = () => {
     opacity: 0,
   });
 
+  // The highlight is padded a bit wider than the <li>'s own box (rather
+  // than padding the <li> itself), so it reads as a nice pill without
+  // growing the nav's real layout width - which would shift the whole
+  // right-aligned nav list further left and risk overlapping the
+  // absolutely-centered email link next to it.
+  const HIGHLIGHT_PAD_X = 12;
+
   const handleNavItemHover = (e: React.MouseEvent<HTMLLIElement>) => {
     const li = e.currentTarget;
     setHighlight({
-      left: li.offsetLeft,
+      left: li.offsetLeft - HIGHLIGHT_PAD_X,
       top: li.offsetTop,
-      width: li.offsetWidth,
+      width: li.offsetWidth + HIGHLIGHT_PAD_X * 2,
       height: li.offsetHeight,
       opacity: 1,
     });
