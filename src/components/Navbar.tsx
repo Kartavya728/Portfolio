@@ -16,6 +16,7 @@ const MORE_LINKS = [
   { href: "#achievements", text: "ACHIEVEMENTS" },
   { href: "#certificates", text: "CERTIFICATES" },
   { href: "#techstack", text: "TECH STACK" },
+  { href: "#featured", text: "FEATURED PROJECTS" },
 ];
 
 interface Highlight {

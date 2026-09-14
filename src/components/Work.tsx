@@ -1,7 +1,6 @@
-import { useState } from "react";
-import Marquee from "react-fast-marquee";
+import { useRef, useState } from "react";
 import { motion } from "motion/react";
-import { MdArrowOutward } from "react-icons/md";
+import { MdArrowOutward, MdChevronLeft, MdChevronRight } from "react-icons/md";
 import "./styles/Work.css";
 import ProjectModal, { ProjectData } from "./ProjectModal";
 
@@ -123,6 +122,129 @@ function ProjectCard({
   );
 }
 
+function ProjectSlider({
+  onViewMore,
+}: {
+  onViewMore: (index: number) => void;
+}) {
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const [activeSlide, setActiveSlide] = useState(0);
+  const drag = useRef({ active: false, startX: 0, startScroll: 0, moved: false });
+
+  const scrollToIndex = (index: number) => {
+    const track = trackRef.current;
+    if (!track) return;
+    const card = track.children[index] as HTMLElement | undefined;
+    if (!card) return;
+    track.scrollTo({ left: card.offsetLeft - track.offsetLeft, behavior: "smooth" });
+  };
+
+  const handlePrev = () => scrollToIndex(Math.max(0, activeSlide - 1));
+  const handleNext = () =>
+    scrollToIndex(Math.min(projects.length - 1, activeSlide + 1));
+
+  const updateActiveFromScroll = () => {
+    const track = trackRef.current;
+    if (!track) return;
+    const cards = [...track.children] as HTMLElement[];
+    const center = track.scrollLeft + track.offsetWidth / 2;
+    let closest = 0;
+    let closestDist = Infinity;
+    cards.forEach((card, i) => {
+      const cardCenter = card.offsetLeft - track.offsetLeft + card.offsetWidth / 2;
+      const dist = Math.abs(cardCenter - center);
+      if (dist < closestDist) {
+        closestDist = dist;
+        closest = i;
+      }
+    });
+    setActiveSlide(closest);
+  };
+
+  // Plain window-level mouse listeners rather than the Pointer Capture
+  // API: capturing the pointer on the track redirects the eventual
+  // "click" event's target to the track itself (per spec), so a simple
+  // click on "View More" never reaches the button underneath. This
+  // achieves the same click-and-drag behavior without hijacking clicks.
+  const onMouseDown = (e: React.MouseEvent) => {
+    const track = trackRef.current;
+    if (!track) return;
+    drag.current = {
+      active: true,
+      startX: e.clientX,
+      startScroll: track.scrollLeft,
+      moved: false,
+    };
+
+    const onMove = (ev: MouseEvent) => {
+      if (!drag.current.active) return;
+      const dx = ev.clientX - drag.current.startX;
+      if (Math.abs(dx) > 4) drag.current.moved = true;
+      track.scrollLeft = drag.current.startScroll - dx;
+    };
+    const onUp = () => {
+      drag.current.active = false;
+      updateActiveFromScroll();
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+  };
+
+  return (
+    <div className="project-slider">
+      <button
+        type="button"
+        className="project-slider-arrow project-slider-arrow-left"
+        onClick={handlePrev}
+        aria-label="Previous project"
+        disabled={activeSlide === 0}
+      >
+        <MdChevronLeft />
+      </button>
+      <div
+        className="project-slider-track"
+        ref={trackRef}
+        onScroll={updateActiveFromScroll}
+        onMouseDown={onMouseDown}
+      >
+        {projects.map((project, index) => (
+          <div className="project-slider-slide" key={project.name}>
+            <ProjectCard
+              project={project}
+              index={index}
+              onViewMore={() => {
+                if (!drag.current.moved) onViewMore(index);
+              }}
+            />
+          </div>
+        ))}
+      </div>
+      <button
+        type="button"
+        className="project-slider-arrow project-slider-arrow-right"
+        onClick={handleNext}
+        aria-label="Next project"
+        disabled={activeSlide === projects.length - 1}
+      >
+        <MdChevronRight />
+      </button>
+      <div className="project-slider-dots">
+        {projects.map((project, index) => (
+          <button
+            key={project.name}
+            type="button"
+            className={index === activeSlide ? "project-slider-dot-active" : ""}
+            onClick={() => scrollToIndex(index)}
+            aria-label={`Go to ${project.name}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const Work = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [showAll, setShowAll] = useState(false);
@@ -133,16 +255,7 @@ const Work = () => {
         <h2>
           My <span>Work</span>
         </h2>
-        <Marquee pauseOnHover speed={45} gradient={false} className="work-marquee">
-          {projects.map((project, index) => (
-            <ProjectCard
-              key={project.name}
-              project={project}
-              index={index}
-              onViewMore={() => setActiveIndex(index)}
-            />
-          ))}
-        </Marquee>
+        <ProjectSlider onViewMore={(index) => setActiveIndex(index)} />
 
         <button
           type="button"

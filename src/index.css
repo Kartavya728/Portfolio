@@ -94,7 +94,7 @@ body {
 .techstack {
   width: 100%;
   position: relative;
-  height: var(--vh);
+  height: calc(var(--vh) * 1.4);
   margin: auto;
   margin-top: 50px;
   margin-bottom: -100px;

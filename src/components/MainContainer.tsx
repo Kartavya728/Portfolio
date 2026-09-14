@@ -5,6 +5,7 @@ import Career from "./Career";
 import Certificates from "./Certificates";
 import Contact from "./Contact";
 import Cursor from "./Cursor";
+import FeaturedProjects from "./FeaturedProjects";
 import Landing from "./Landing";
 import Navbar from "./Navbar";
 import Research from "./Research";
@@ -53,6 +54,7 @@ const MainContainer = ({ children }: PropsWithChildren) => {
               </Suspense>
             )}
             <Work />
+            <FeaturedProjects />
             <Achievements />
             <Certificates />
             <Research />

@@ -45,5 +45,7 @@ next-env.d.ts
 # Sentry Config File
 .sentryclirc
 
-# Ignore large media files
+# Ignore large media files, except the featured-project demo videos that
+# actually need to ship with the site.
 *.mp4
+!public/featured/*.mp4

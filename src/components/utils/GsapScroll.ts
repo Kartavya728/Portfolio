@@ -172,7 +172,13 @@ export function setAllTimeline() {
     scrollTrigger: {
       trigger: ".career-section",
       start: "top 30%",
-      end: "+=1800",
+      // Ties the beam's growth to how far the user has actually scrolled
+      // through the section (rather than a fixed pixel distance, which
+      // finished the whole animation almost immediately for a section
+      // this tall) - it reaches 100% exactly as the section's bottom
+      // scrolls up to 70% of the viewport height, so the growing tip
+      // never has to travel further down the screen than that.
+      end: "bottom 70%",
       scrub: true,
       invalidateOnRefresh: true,
     },
