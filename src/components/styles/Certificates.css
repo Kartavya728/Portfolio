@@ -1,0 +1,110 @@
+.certificates-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+  padding: 120px 0px;
+}
+
+.certificates-section h2 {
+  font-size: 70px;
+  line-height: 70px;
+  font-weight: 400;
+  text-align: center;
+  margin-bottom: 70px;
+}
+
+.certificates-section h2 > span {
+  color: var(--accentColor);
+}
+
+.certificates-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.certificate-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  color: inherit;
+  transition: border-color 0.25s ease, background 0.25s ease,
+    transform 0.25s ease;
+}
+
+.certificate-card:hover {
+  border-color: var(--accentColor);
+  background: rgba(194, 164, 255, 0.08);
+  transform: translateY(-3px);
+}
+
+.certificate-preview {
+  width: 100%;
+  height: 170px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.certificate-preview iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  pointer-events: none;
+}
+
+.certificate-info h4 {
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0 0 4px;
+}
+
+.certificate-info p {
+  font-size: 14px;
+  font-weight: 300;
+  color: #adacac;
+  margin: 0 0 8px;
+}
+
+.certificate-year {
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  color: var(--accentColor);
+}
+
+@media only screen and (max-width: 1400px) {
+  .certificates-section h2 {
+    font-size: 50px;
+    line-height: 50px;
+  }
+  .certificates-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  .certificates-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .certificates-section h2 {
+    font-size: 40px;
+    line-height: 40px;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .certificates-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -2,7 +2,7 @@ import "./styles/Career.css";
 
 const Career = () => {
   return (
-    <div className="career-section section-container">
+    <div className="career-section section-container" id="career">
       <div className="career-container">
         <h2>
           My career <span>&</span>
@@ -11,6 +11,21 @@ const Career = () => {
         <div className="career-info">
           <div className="career-timeline">
             <div className="career-dot"></div>
+          </div>
+          <div className="career-info-box">
+            <div className="career-info-in">
+              <div className="career-role">
+                <h4>B.Tech in Data Science</h4>
+                <h5>Indian Institute of Technology, Mandi</h5>
+              </div>
+              <h3>2024</h3>
+            </div>
+            <p>
+              Began a B.Tech in Data Science (CGPA 9.27/10.0), with
+              coursework spanning Design of Algorithms, Machine Learning,
+              Deep Learning, Computer Organization and Matrix Computation
+              for DS.
+            </p>
           </div>
           <div className="career-info-box">
             <div className="career-info-in">
@@ -45,17 +60,25 @@ const Career = () => {
           <div className="career-info-box">
             <div className="career-info-in">
               <div className="career-role">
-                <h4>B.Tech in Data Science</h4>
-                <h5>Indian Institute of Technology, Mandi</h5>
+                <h4>Exchange Student</h4>
+                <h5>Technical University of Munich (TUM), Germany</h5>
               </div>
-              <h3>NOW</h3>
+              <h3>2026</h3>
             </div>
             <p>
-              Pursuing a B.Tech in Data Science (CGPA 9.27/10.0), with
-              coursework spanning Design of Algorithms, Machine Learning,
-              Deep Learning, Computer Organization and Matrix Computation
-              for DS.
+              Upcoming exchange semester (Oct 2026 – Mar 2027) at TUM's School
+              of Computation, Information and Technology (CIT — Informatics).
             </p>
+          </div>
+          <div className="career-info-box">
+            <div className="career-info-in">
+              <div className="career-role">
+                <h4>Software Engineering Intern</h4>
+                <h5>Microsoft</h5>
+              </div>
+              <h3>2027</h3>
+            </div>
+            <p>Upcoming internship at Microsoft.</p>
           </div>
         </div>
       </div>

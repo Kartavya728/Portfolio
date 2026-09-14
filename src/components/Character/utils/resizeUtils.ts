@@ -15,12 +15,7 @@ export default function handleResize(
   renderer.setSize(width, height);
   camera.aspect = width / height;
   camera.updateProjectionMatrix();
-  const workTrigger = ScrollTrigger.getById("work");
-  ScrollTrigger.getAll().forEach((trigger) => {
-    if (trigger != workTrigger) {
-      trigger.kill();
-    }
-  });
+  ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
   setCharTimeline(character, camera);
   setAllTimeline();
 }

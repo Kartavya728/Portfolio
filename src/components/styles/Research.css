@@ -1,0 +1,147 @@
+.research-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+  padding: 120px 0px;
+}
+
+.research-section h2 {
+  font-size: 70px;
+  line-height: 70px;
+  font-weight: 400;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.research-section h2 > span {
+  color: var(--accentColor);
+}
+
+.research-intro {
+  max-width: 720px;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 300;
+  color: #adacac;
+  margin-bottom: 60px;
+}
+
+.research-card {
+  width: 100%;
+  display: flex;
+  gap: 50px;
+  align-items: flex-start;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 36px;
+  background: rgba(255, 255, 255, 0.03);
+  box-sizing: border-box;
+}
+
+.research-image {
+  flex-shrink: 0;
+  width: 40%;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.research-image img {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.research-content {
+  flex: 1;
+}
+
+.research-tag {
+  font-size: 13px;
+  color: var(--accentColor);
+  letter-spacing: 0.5px;
+}
+
+.research-content h3 {
+  font-size: 32px;
+  font-weight: 600;
+  margin: 8px 0 4px;
+}
+
+.research-subtitle {
+  font-size: 16px;
+  font-weight: 400;
+  color: #eae5ec;
+  margin: 0 0 16px;
+}
+
+.research-content > p {
+  font-size: 15px;
+  font-weight: 300;
+  color: #adacac;
+  line-height: 1.6;
+  margin: 0 0 18px;
+}
+
+.research-results {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.research-results li {
+  font-size: 14px;
+  font-weight: 300;
+  color: #adacac;
+  padding-left: 18px;
+  position: relative;
+}
+
+.research-results li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accentColor);
+}
+
+.research-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.research-chip {
+  font-size: 13px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #eae5ec;
+}
+
+@media only screen and (max-width: 1400px) {
+  .research-section h2 {
+    font-size: 50px;
+    line-height: 50px;
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  .research-section h2 {
+    font-size: 40px;
+    line-height: 40px;
+  }
+  .research-card {
+    flex-direction: column;
+    padding: 20px;
+  }
+  .research-image {
+    width: 100%;
+  }
+}
