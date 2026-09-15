@@ -1,4 +1,12 @@
+/* The home page disables native body scrolling globally (`body {
+   overflow: hidden }` in index.css) since it scrolls via GSAP
+   ScrollSmoother instead. This route has no ScrollSmoother, so without
+   its own fixed + scrollable container, that global rule leaves it
+   completely unscrollable. */
 .all-projects-page {
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
   min-height: 100vh;
   background: var(--backgroundColor);
   padding: 60px 0 120px;

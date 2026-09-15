@@ -122,6 +122,7 @@ const ProjectModal = ({ project, layoutId, onClose }: ProjectModalProps) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
             onClick={onClose}
           />
           <div className="project-modal-wrap" data-cursor="disable">
@@ -129,6 +130,10 @@ const ProjectModal = ({ project, layoutId, onClose }: ProjectModalProps) => {
               layoutId={layoutId}
               ref={ref}
               className="project-modal"
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              transition={{ duration: 0.22, ease: "easeOut" }}
               style={
                 {
                   "--cat-color": theme.color,

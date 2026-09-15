@@ -176,6 +176,14 @@ function ProjectGallery({
       onMouseEnter={() => (pausedRef.current = true)}
       onMouseLeave={() => (pausedRef.current = false)}
     >
+      <div className="work-scrollbar" onMouseDown={onScrollbarDown}>
+        <div
+          className="work-scrollbar-thumb"
+          ref={thumbRef}
+          style={{ width: `${thumb.width}%`, left: `${thumb.left}%` }}
+        />
+      </div>
+
       <div
         className="project-gallery-track"
         ref={trackRef}
@@ -193,14 +201,6 @@ function ProjectGallery({
             />
           </div>
         ))}
-      </div>
-
-      <div className="work-scrollbar" onMouseDown={onScrollbarDown}>
-        <div
-          className="work-scrollbar-thumb"
-          ref={thumbRef}
-          style={{ width: `${thumb.width}%`, left: `${thumb.left}%` }}
-        />
       </div>
     </div>
   );

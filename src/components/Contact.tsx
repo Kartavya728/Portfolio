@@ -59,6 +59,27 @@ const Contact = () => {
               </div>
             ))}
           </div>
+
+          <div className="contact-social-actions">
+            <a
+              href="https://github.com/Kartavya728"
+              target="_blank"
+              rel="noreferrer"
+              className="contact-btn-secondary"
+              data-cursor="disable"
+            >
+              <FaGithub /> View GitHub
+            </a>
+            <a
+              href="https://linkedin.com"
+              target="_blank"
+              rel="noreferrer"
+              className="contact-btn-secondary"
+              data-cursor="disable"
+            >
+              <FaLinkedin /> View LinkedIn Profile
+            </a>
+          </div>
         </div>
 
         <div className="contact-hero-right">

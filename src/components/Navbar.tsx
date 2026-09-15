@@ -130,7 +130,7 @@ const Navbar = () => {
               </a>
             </li>
             <li onMouseEnter={handleNavItemHover}>
-              <a data-href="#work" href="#work">
+              <a data-href="#career" href="#career">
                 <HoverLinks text="WORK" />
               </a>
             </li>
