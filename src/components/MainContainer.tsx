@@ -53,8 +53,8 @@ const MainContainer = ({ children }: PropsWithChildren) => {
                 <TechStack />
               </Suspense>
             )}
-            <Work />
             <FeaturedProjects />
+            <Work />
             <Achievements />
             <Certificates />
             <Research />

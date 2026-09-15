@@ -39,6 +39,13 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 85px;
+  /* GSAP's staggered scroll-scrubbed reveal only writes an inline
+     opacity once the timeline's playhead actually reaches each box's
+     (staggered) start offset - the first box's start coincides with
+     the timeline's own creation so it renders immediately, but later
+     boxes sit with no inline style at all until then, falling back to
+     this default. Without it they'd flash fully visible at rest. */
+  opacity: 0;
 }
 .career-info-box p {
   width: 40%;

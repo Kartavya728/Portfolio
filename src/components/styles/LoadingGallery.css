@@ -1,0 +1,74 @@
+/* Full-bleed parallax photo wall behind the loading screen. Sits under
+   the loading text/bar, so it must never intercept pointer events. */
+.loading-gallery {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  z-index: 0;
+}
+
+.loading-gallery-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  will-change: transform;
+}
+
+/* Each column holds its list twice, so translating by exactly -50%
+   (or from -50% back to 0) loops without a visible seam. */
+.loading-gallery-col-up {
+  animation-name: loadingGalleryUp;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.loading-gallery-col-down {
+  animation-name: loadingGalleryDown;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes loadingGalleryUp {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes loadingGalleryDown {
+  from {
+    transform: translateY(-50%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.loading-gallery-item {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.loading-gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+@media only screen and (max-width: 900px) {
+  .loading-gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

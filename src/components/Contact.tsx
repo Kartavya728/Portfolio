@@ -63,15 +63,40 @@ const Contact = () => {
 
         <div className="contact-hero-right">
           <div className="contact-photo-wrap">
-            <div className="contact-orbit contact-orbit-1" />
-            <div className="contact-orbit contact-orbit-2" />
-            <span className="contact-deco contact-deco-1" />
-            <span className="contact-deco contact-deco-2" />
-            <span className="contact-deco contact-deco-3" />
-            <span className="contact-deco contact-deco-4" />
-            <div className="contact-photo">
-              <img src="/git-prf.png" alt="Kartavya Suryawanshi" />
+            {/* Lit rings + orbiting particles (each ring spins its own
+                particle around the circumference via a rotating wrapper). */}
+            <div className="contact-rings" aria-hidden="true">
+              <div className="contact-ring contact-ring-1">
+                <span className="contact-ring-glow" />
+              </div>
+              <div className="contact-ring contact-ring-2">
+                <span className="contact-ring-glow" />
+              </div>
+              <div className="contact-ring contact-ring-3">
+                <span className="contact-ring-glow" />
+              </div>
+
+              <div className="contact-orbit-spin contact-orbit-spin-1">
+                <span className="contact-particle" />
+              </div>
+              <div className="contact-orbit-spin contact-orbit-spin-2">
+                <span className="contact-particle contact-particle-sm" />
+              </div>
+              <div className="contact-orbit-spin contact-orbit-spin-3">
+                <span className="contact-particle contact-particle-lg" />
+              </div>
+              <div className="contact-orbit-spin contact-orbit-spin-4">
+                <span className="contact-particle contact-particle-sm" />
+              </div>
+              <div className="contact-orbit-spin contact-orbit-spin-5">
+                <span className="contact-particle" />
+              </div>
             </div>
+            <img
+              src="/git-prf.png"
+              alt="Kartavya Suryawanshi"
+              className="contact-photo"
+            />
           </div>
 
           <div className="contact-card">

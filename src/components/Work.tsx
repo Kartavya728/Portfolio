@@ -1,85 +1,12 @@
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
-import { MdArrowOutward, MdChevronLeft, MdChevronRight } from "react-icons/md";
+import { MdArrowOutward } from "react-icons/md";
 import "./styles/Work.css";
-import ProjectModal, { ProjectData } from "./ProjectModal";
+import ProjectModal from "./ProjectModal";
+import { projects, ProjectData } from "../data/projects";
+import { CATEGORIES, CATEGORY_KEYS, CategoryKey } from "../data/categories";
 
-const projects: ProjectData[] = [
-  {
-    name: "Anatomy-Aware DoseFlow",
-    category: "Medical Imaging / Deep Learning",
-    description:
-      "A deep learning pipeline that models CT dose distributions as a continuous flow between low and target doses. Combines MedSAM segmentation with a ViT-Mamba backbone to keep predictions anatomically consistent.",
-    tools: "PyTorch, MedSAM, ViT, Mamba",
-    image: "/dose.png",
-    link: "https://github.com/Kartavya728",
-  },
-  {
-    name: "FLOW — Fraud & Loan Optimization Workbench",
-    category: "Distributed ML Systems",
-    description:
-      "A production-grade streaming platform for real-time fraud detection and intelligent loan targeting in banking. Built on an event-driven architecture with live model scoring and low-latency caching.",
-    tools: "Pathway, NATS JetStream, Redis, FastAPI, React",
-    image: "/flow.png",
-    link: "https://github.com/Kartavya728/FLOW-InterIIT14-TechMeet",
-  },
-  {
-    name: "LunaDEM",
-    category: "Scientific Computing",
-    description:
-      "A discrete element method simulator for lunar regolith, modeling grain-scale mechanics for rover-terrain interaction studies. Includes a custom physics core with 3D visualization for inspecting particle behavior.",
-    tools: "Python, NumPy, SciPy, OpenCV, Open3D",
-    image: "/luna.png",
-    link: "https://github.com/Kartavya728/LunaDEM",
-  },
-  {
-    name: "LokMitra AI",
-    category: "Voice AI Platform",
-    description:
-      "A voice-first AI assistant for vernacular users, pairing Gemini-powered RAG with a Django/Next.js stack. Lets users ask questions and get grounded answers entirely by voice in their own language.",
-    tools: "Django, Next.js, Gemini API, RAG, PostgreSQL",
-    image: "/lok.png",
-    link: "https://github.com/Kartavya728/LokMitra-AI",
-  },
-  {
-    name: "Smart-Scribes",
-    category: "Multimodal Lecture Intelligence",
-    description:
-      "A multimodal lecture assistant that transcribes, summarizes, and answers questions over recorded lectures. Won 1st place overall among 1,600+ teams at the iHub Multimodal AI Hackathon.",
-    tools: "RAG, Whisper, Next.js",
-    image: "/ss.png",
-    link: "https://github.com/Kartavya728/Smart-Scribes",
-  },
-  {
-    name: "AutoReach AI",
-    category: "Agentic Workflow Automation",
-    description:
-      "An agentic workflow system that plans and executes multi-step outreach tasks using LLM agents. Built with LangGraph to coordinate tool use, retries, and human-in-the-loop checkpoints.",
-    tools: "LLM Agents, LangGraph",
-    image: "/auto.png",
-    link: "https://github.com/Kartavya728/AutoReach-AI",
-  },
-  {
-    name: "Dual-System Voice Cloning & Anti-Spoofing",
-    category: "Audio Deep Learning / Security",
-    description:
-      "A dual-system framework pairing neural voice cloning with real-time deepfake and audio anti-spoofing detection. Won the Deep Learning track at Hack 60 (HCLTech x IIT Mandi).",
-    tools: "PyTorch, Speaker Verification",
-    image: "/aud.png",
-    link: "https://github.com/Kartavya728/Dual-System-Framework-for-Neural-Voice-Cloning-and-Anti-Spoofing-Detection",
-  },
-  {
-    name: "Vision Drive",
-    category: "Autonomous Driving Perception",
-    description:
-      "A perception stack for autonomous driving built on YOLO and OpenCV, handling real-time object detection and lane/obstacle awareness from live video feeds.",
-    tools: "YOLO, OpenCV",
-    image: "/vd.png",
-    link: "https://github.com/Kartavya728/Vision-Drive",
-  },
-];
-
-function ProjectCard({
+export function ProjectCard({
   project,
   index,
   onViewMore,
@@ -88,6 +15,7 @@ function ProjectCard({
   index: number;
   onViewMore: () => void;
 }) {
+  const theme = CATEGORIES[project.categoryKey];
   return (
     <div className="work-box">
       <div className="work-info">
@@ -98,6 +26,16 @@ function ProjectCard({
             <p>{project.category}</p>
           </div>
         </div>
+        <span
+          className="work-tag"
+          style={{
+            color: theme.color,
+            background: theme.soft,
+            borderColor: theme.color,
+          }}
+        >
+          {theme.label}
+        </span>
         <h4>Description</h4>
         <p>{project.description}</p>
         <div className="work-actions">
@@ -122,50 +60,55 @@ function ProjectCard({
   );
 }
 
-function ProjectSlider({
+const AUTO_SCROLL_SPEED = 0.6; // px per frame
+
+function ProjectGallery({
+  items,
   onViewMore,
 }: {
+  items: { project: ProjectData; index: number }[];
   onViewMore: (index: number) => void;
 }) {
   const trackRef = useRef<HTMLDivElement | null>(null);
-  const [activeSlide, setActiveSlide] = useState(0);
+  const thumbRef = useRef<HTMLDivElement | null>(null);
+  const pausedRef = useRef(false);
   const drag = useRef({ active: false, startX: 0, startScroll: 0, moved: false });
+  const scrollbarDrag = useRef({ active: false, startX: 0, startScroll: 0 });
+  const [thumb, setThumb] = useState({ width: 20, left: 0 });
 
-  const scrollToIndex = (index: number) => {
+  // Rendering the list twice lets the auto-scroll wrap back to the start
+  // without a visible jump once the first copy has scrolled past.
+  const loopItems = useMemo(() => [...items, ...items], [items]);
+
+  const syncThumb = () => {
     const track = trackRef.current;
     if (!track) return;
-    const card = track.children[index] as HTMLElement | undefined;
-    if (!card) return;
-    track.scrollTo({ left: card.offsetLeft - track.offsetLeft, behavior: "smooth" });
+    const halfWidth = track.scrollWidth / 2 || 1;
+    const ratio = Math.min(1, track.clientWidth / halfWidth);
+    const progress = Math.min(1, (track.scrollLeft % halfWidth) / halfWidth);
+    setThumb({ width: Math.max(8, ratio * 100), left: progress * 100 });
   };
 
-  const handlePrev = () => scrollToIndex(Math.max(0, activeSlide - 1));
-  const handleNext = () =>
-    scrollToIndex(Math.min(projects.length - 1, activeSlide + 1));
-
-  const updateActiveFromScroll = () => {
+  useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
-    const cards = [...track.children] as HTMLElement[];
-    const center = track.scrollLeft + track.offsetWidth / 2;
-    let closest = 0;
-    let closestDist = Infinity;
-    cards.forEach((card, i) => {
-      const cardCenter = card.offsetLeft - track.offsetLeft + card.offsetWidth / 2;
-      const dist = Math.abs(cardCenter - center);
-      if (dist < closestDist) {
-        closestDist = dist;
-        closest = i;
+    let rafId: number;
+
+    const tick = () => {
+      if (!pausedRef.current && !drag.current.active && !scrollbarDrag.current.active) {
+        const halfWidth = track.scrollWidth / 2;
+        track.scrollLeft += AUTO_SCROLL_SPEED;
+        if (halfWidth > 0 && track.scrollLeft >= halfWidth) {
+          track.scrollLeft -= halfWidth;
+        }
       }
-    });
-    setActiveSlide(closest);
-  };
+      rafId = requestAnimationFrame(tick);
+    };
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
+  }, [loopItems.length]);
 
-  // Plain window-level mouse listeners rather than the Pointer Capture
-  // API: capturing the pointer on the track redirects the eventual
-  // "click" event's target to the track itself (per spec), so a simple
-  // click on "View More" never reaches the button underneath. This
-  // achieves the same click-and-drag behavior without hijacking clicks.
+  // --- card drag-to-scroll (plain window listeners so clicks still land) ---
   const onMouseDown = (e: React.MouseEvent) => {
     const track = trackRef.current;
     if (!track) return;
@@ -184,7 +127,42 @@ function ProjectSlider({
     };
     const onUp = () => {
       drag.current.active = false;
-      updateActiveFromScroll();
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+  };
+
+  // --- custom scrollbar ---
+  const onScrollbarDown = (e: React.MouseEvent) => {
+    const track = trackRef.current;
+    const bar = e.currentTarget as HTMLElement;
+    if (!track) return;
+    const barRect = bar.getBoundingClientRect();
+    const halfWidth = track.scrollWidth / 2;
+
+    const jumpTo = (clientX: number) => {
+      const pct = Math.min(1, Math.max(0, (clientX - barRect.left) / barRect.width));
+      track.scrollLeft = pct * halfWidth;
+    };
+
+    // Clicking anywhere on the bar jumps there, then keeps tracking.
+    if (!(e.target as HTMLElement).classList.contains("work-scrollbar-thumb")) {
+      jumpTo(e.clientX);
+    }
+    scrollbarDrag.current = {
+      active: true,
+      startX: e.clientX,
+      startScroll: track.scrollLeft,
+    };
+
+    const onMove = (ev: MouseEvent) => {
+      if (!scrollbarDrag.current.active) return;
+      jumpTo(ev.clientX);
+    };
+    const onUp = () => {
+      scrollbarDrag.current.active = false;
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", onUp);
     };
@@ -193,53 +171,36 @@ function ProjectSlider({
   };
 
   return (
-    <div className="project-slider">
-      <button
-        type="button"
-        className="project-slider-arrow project-slider-arrow-left"
-        onClick={handlePrev}
-        aria-label="Previous project"
-        disabled={activeSlide === 0}
-      >
-        <MdChevronLeft />
-      </button>
+    <div
+      className="project-gallery"
+      onMouseEnter={() => (pausedRef.current = true)}
+      onMouseLeave={() => (pausedRef.current = false)}
+    >
       <div
-        className="project-slider-track"
+        className="project-gallery-track"
         ref={trackRef}
-        onScroll={updateActiveFromScroll}
+        onScroll={syncThumb}
         onMouseDown={onMouseDown}
       >
-        {projects.map((project, index) => (
-          <div className="project-slider-slide" key={project.name}>
+        {loopItems.map((item, i) => (
+          <div className="project-gallery-slide" key={`${item.project.name}-${i}`}>
             <ProjectCard
-              project={project}
-              index={index}
+              project={item.project}
+              index={item.index}
               onViewMore={() => {
-                if (!drag.current.moved) onViewMore(index);
+                if (!drag.current.moved) onViewMore(item.index);
               }}
             />
           </div>
         ))}
       </div>
-      <button
-        type="button"
-        className="project-slider-arrow project-slider-arrow-right"
-        onClick={handleNext}
-        aria-label="Next project"
-        disabled={activeSlide === projects.length - 1}
-      >
-        <MdChevronRight />
-      </button>
-      <div className="project-slider-dots">
-        {projects.map((project, index) => (
-          <button
-            key={project.name}
-            type="button"
-            className={index === activeSlide ? "project-slider-dot-active" : ""}
-            onClick={() => scrollToIndex(index)}
-            aria-label={`Go to ${project.name}`}
-          />
-        ))}
+
+      <div className="work-scrollbar" onMouseDown={onScrollbarDown}>
+        <div
+          className="work-scrollbar-thumb"
+          ref={thumbRef}
+          style={{ width: `${thumb.width}%`, left: `${thumb.left}%` }}
+        />
       </div>
     </div>
   );
@@ -247,36 +208,70 @@ function ProjectSlider({
 
 const Work = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [showAll, setShowAll] = useState(false);
+  const [filter, setFilter] = useState<CategoryKey | "all">("all");
+
+  const usedCategories = useMemo(
+    () => CATEGORY_KEYS.filter((key) => projects.some((p) => p.categoryKey === key)),
+    []
+  );
+
+  const visible = useMemo(
+    () =>
+      projects
+        .map((project, index) => ({ project, index }))
+        .filter(({ project }) => filter === "all" || project.categoryKey === filter),
+    [filter]
+  );
 
   return (
     <div className="work-section" id="work">
       <div className="work-container section-container">
         <h2>
-          My <span>Work</span>
+          Project <span>Gallery</span>
         </h2>
-        <ProjectSlider onViewMore={(index) => setActiveIndex(index)} />
 
-        <button
-          type="button"
-          className="work-view-all"
-          onClick={() => setShowAll((prev) => !prev)}
-        >
-          {showAll ? "Hide Projects" : "View All Projects"}
-        </button>
+        <div className="work-filters">
+          <button
+            type="button"
+            className={`work-filter ${filter === "all" ? "work-filter-active" : ""}`}
+            onClick={() => setFilter("all")}
+          >
+            All
+          </button>
+          {usedCategories.map((key) => {
+            const theme = CATEGORIES[key];
+            const isActive = filter === key;
+            return (
+              <button
+                key={key}
+                type="button"
+                className={`work-filter ${isActive ? "work-filter-active" : ""}`}
+                onClick={() => setFilter(key)}
+                style={
+                  isActive
+                    ? {
+                        color: theme.color,
+                        borderColor: theme.color,
+                        background: theme.soft,
+                      }
+                    : undefined
+                }
+              >
+                {theme.label}
+              </button>
+            );
+          })}
+        </div>
 
-        {showAll && (
-          <div className="work-all-list">
-            {projects.map((project, index) => (
-              <ProjectCard
-                key={`all-${project.name}`}
-                project={project}
-                index={index}
-                onViewMore={() => setActiveIndex(index)}
-              />
-            ))}
-          </div>
-        )}
+        <ProjectGallery
+          key={filter}
+          items={visible}
+          onViewMore={(index) => setActiveIndex(index)}
+        />
+
+        <a className="work-view-all" href="/projects" data-cursor="disable">
+          View All Projects
+        </a>
       </div>
 
       <ProjectModal

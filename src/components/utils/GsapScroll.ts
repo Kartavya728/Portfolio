@@ -176,18 +176,31 @@ export function setAllTimeline() {
       // through the section (rather than a fixed pixel distance, which
       // finished the whole animation almost immediately for a section
       // this tall) - it reaches 100% exactly as the section's bottom
-      // scrolls up to 70% of the viewport height, so the growing tip
+      // scrolls up to 50% of the viewport height, so the growing tip
       // never has to travel further down the screen than that.
-      end: "bottom 70%",
+      end: "bottom 50%",
       scrub: true,
       invalidateOnRefresh: true,
     },
   });
+  // The 5 career-info-box entries fade in staggered by 0.1 with their own
+  // 0.5 duration each, so the LAST one doesn't finish revealing until
+  // t=0.9 of this timeline. The beam's own growth previously finished at
+  // t=0.5 - fully extending long before the later entries had even
+  // appeared. Growing it over the same 0-0.9 span keeps its tip's
+  // progress visually in step with how many entries have actually
+  // appeared, rather than racing ahead of the text.
+  const infoBoxCount = document.querySelectorAll(".career-info-box").length;
+  const infoBoxStagger = 0.1;
+  const infoBoxDuration = 0.5;
+  const revealSpan =
+    Math.max(0, infoBoxCount - 1) * infoBoxStagger + infoBoxDuration;
+
   careerTimeline
     .fromTo(
       ".career-timeline",
       { maxHeight: "10%" },
-      { maxHeight: "100%", duration: 0.5 },
+      { maxHeight: "100%", duration: revealSpan, ease: "none" },
       0
     )
 
@@ -200,7 +213,7 @@ export function setAllTimeline() {
     .fromTo(
       ".career-info-box",
       { opacity: 0 },
-      { opacity: 1, stagger: 0.1, duration: 0.5 },
+      { opacity: 1, stagger: infoBoxStagger, duration: infoBoxDuration },
       0
     )
     .fromTo(

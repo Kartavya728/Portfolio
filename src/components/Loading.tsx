@@ -3,6 +3,7 @@ import "./styles/Loading.css";
 import { useLoading } from "../context/LoadingProvider";
 
 import Marquee from "react-fast-marquee";
+import LoadingGallery from "./LoadingGallery";
 
 const Loading = ({ percent }: { percent: number }) => {
   const { setIsLoading } = useLoading();
@@ -46,7 +47,12 @@ const Loading = ({ percent }: { percent: number }) => {
     <>
       <div className="loading-header">
         <a href="/#" className="loader-title" data-cursor="disable">
-          Logo
+          <img
+            src="/git-profile.jpeg"
+            alt="Kartavya Suryawanshi"
+            className="loader-avatar"
+          />
+          <span>KARTAVYA28</span>
         </a>
         <div className={`loaderGame ${clicked && "loader-out"}`}>
           <div className="loaderGame-container">
@@ -60,6 +66,7 @@ const Loading = ({ percent }: { percent: number }) => {
         </div>
       </div>
       <div className="loading-screen">
+        <LoadingGallery />
         <div className="loading-marquee">
           <Marquee>
             <span> A Creative Developer</span> <span>A Creative Designer</span>

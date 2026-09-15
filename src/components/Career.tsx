@@ -21,7 +21,7 @@ const Career = () => {
               <h3>2024</h3>
             </div>
             <p>
-              Began a B.Tech in Data Science (CGPA 9.27/10.0), with
+              Began a B.Tech in Data Science, with
               coursework spanning Design of Algorithms, Machine Learning,
               Deep Learning, Computer Organization and Matrix Computation
               for DS.

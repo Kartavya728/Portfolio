@@ -134,74 +134,157 @@
   justify-content: center;
 }
 
-.contact-orbit {
+/* ---- lit rings + orbiting particles behind the photo ---- */
+.contact-rings {
   position: absolute;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  inset: -70px;
+  z-index: 0;
+  pointer-events: none;
 }
 
-.contact-orbit-1 {
-  inset: -30px;
-}
-
-.contact-orbit-2 {
-  inset: -68px;
-  border-color: rgba(255, 255, 255, 0.08);
-}
-
-.contact-deco {
+.contact-ring {
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: var(--accentColor);
+  border: 1px solid rgba(255, 255, 255, 0.13);
 }
 
-.contact-deco-1 {
+/* A bright arc riding each ring, so the ring reads as lit rather than flat. */
+.contact-ring-glow {
+  position: absolute;
+  inset: -1px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  border-top-color: var(--accentColor);
+  border-right-color: rgba(194, 164, 255, 0.45);
+  filter: drop-shadow(0 0 6px rgba(194, 164, 255, 0.75));
+  animation: contactRingSpin 9s linear infinite;
+}
+
+.contact-ring-1 {
+  width: 300px;
+  height: 300px;
+}
+.contact-ring-2 {
+  width: 380px;
+  height: 380px;
+  border-color: rgba(255, 255, 255, 0.09);
+}
+.contact-ring-2 .contact-ring-glow {
+  animation-duration: 14s;
+  animation-direction: reverse;
+  border-top-color: #6a3bd6;
+  border-right-color: rgba(106, 59, 214, 0.4);
+}
+.contact-ring-3 {
+  width: 460px;
+  height: 460px;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+.contact-ring-3 .contact-ring-glow {
+  animation-duration: 20s;
+  border-top-color: #d63b8f;
+  border-right-color: rgba(214, 59, 143, 0.35);
+}
+
+@keyframes contactRingSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Each spinner is a full-size square centred on the photo; rotating it
+   carries the particle pinned to its top edge around the circumference. */
+.contact-orbit-spin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  animation: contactRingSpin linear infinite;
+}
+
+.contact-particle {
+  position: absolute;
+  top: -5px;
+  left: 50%;
   width: 10px;
   height: 10px;
-  top: -8px;
-  left: 30%;
-  box-shadow: 0 0 12px var(--accentColor);
+  margin-left: -5px;
+  border-radius: 50%;
+  background: var(--accentColor);
+  box-shadow: 0 0 14px 2px rgba(194, 164, 255, 0.8);
 }
 
-.contact-deco-2 {
+.contact-particle-sm {
   width: 6px;
   height: 6px;
-  bottom: 10%;
-  right: -14px;
-  opacity: 0.7;
+  top: -3px;
+  margin-left: -3px;
+  box-shadow: 0 0 10px 1px rgba(194, 164, 255, 0.7);
 }
 
-.contact-deco-3 {
-  width: 8px;
-  height: 8px;
-  top: 12%;
-  right: -30px;
-  opacity: 0.5;
+.contact-particle-lg {
+  width: 13px;
+  height: 13px;
+  top: -6px;
+  margin-left: -6px;
 }
 
-.contact-deco-4 {
-  width: 5px;
-  height: 5px;
-  bottom: -6px;
-  left: 18%;
-  opacity: 0.6;
+.contact-orbit-spin-1 {
+  width: 300px;
+  height: 300px;
+  animation-duration: 11s;
+}
+.contact-orbit-spin-2 {
+  width: 380px;
+  height: 380px;
+  animation-duration: 17s;
+  animation-direction: reverse;
+}
+.contact-orbit-spin-2 .contact-particle {
+  background: #7fd1ff;
+  box-shadow: 0 0 12px 2px rgba(127, 209, 255, 0.75);
+}
+.contact-orbit-spin-3 {
+  width: 460px;
+  height: 460px;
+  animation-duration: 23s;
+}
+.contact-orbit-spin-3 .contact-particle {
+  background: #ff7ac6;
+  box-shadow: 0 0 16px 3px rgba(255, 122, 198, 0.7);
+}
+.contact-orbit-spin-4 {
+  width: 340px;
+  height: 340px;
+  animation-duration: 14s;
+  animation-delay: -5s;
+}
+.contact-orbit-spin-5 {
+  width: 420px;
+  height: 420px;
+  animation-duration: 19s;
+  animation-delay: -9s;
+  animation-direction: reverse;
+}
+.contact-orbit-spin-5 .contact-particle {
+  background: #ffd580;
+  box-shadow: 0 0 12px 2px rgba(255, 213, 128, 0.7);
 }
 
 .contact-photo {
   position: relative;
-  width: 280px;
-  height: 280px;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 2px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 0 60px rgba(194, 164, 255, 0.25);
-}
-
-.contact-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top center;
+  z-index: 2;
+  width: 260px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 45px rgba(194, 164, 255, 0.3));
 }
 
 .contact-card {
@@ -340,8 +423,8 @@ a.contact-card-value:hover {
     height: 280px;
   }
   .contact-photo {
-    width: 240px;
-    height: 240px;
+    width: 220px;
+    height: auto;
   }
 }
 
