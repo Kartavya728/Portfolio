@@ -116,17 +116,24 @@ const ProjectModal = ({ project, onClose }: ProjectModalProps) => {
   const repo = renderedProject ? parseGitHubRepo(renderedProject.link) : null;
 
   useEffect(() => {
+    // Read `project` (the prop) directly here rather than the `repo`
+    // derived from `renderedProject` above: when a new project opens,
+    // this effect fires on the same render where `project` changes, but
+    // `renderedProject` (and anything derived from it) still holds the
+    // *previous* project until its own state update commits a render
+    // later. Depending on `repo` here made every fetch see a stale/null
+    // repo and silently bail out, so the README stopped loading.
     setReadme(null);
-    if (!project || !repo) return;
+    const targetRepo = project ? parseGitHubRepo(project.link) : null;
+    if (!project || !targetRepo) return;
     setReadmeLoading(true);
-    fetch(`https://api.github.com/repos/${repo.owner}/${repo.repo}/readme`, {
+    fetch(`https://api.github.com/repos/${targetRepo.owner}/${targetRepo.repo}/readme`, {
       headers: { Accept: "application/vnd.github.raw+json" },
     })
       .then((res) => (res.ok ? res.text() : null))
       .then((text) => setReadme(text))
       .catch(() => setReadme(null))
       .finally(() => setReadmeLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project]);
 
   const theme = renderedProject ? CATEGORIES[renderedProject.categoryKey] : null;
