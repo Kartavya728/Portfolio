@@ -3,12 +3,12 @@ import { createPortal } from "react-dom";
 import { motion } from "motion/react";
 import { marked } from "marked";
 import { MdClose, MdPlayArrow } from "react-icons/md";
-import { FaGithub } from "react-icons/fa6";
+import { FaGithub, FaLinkedin } from "react-icons/fa6";
 import { useOutsideClick } from "../hooks/use-outside-click";
 import { smoother } from "./Navbar";
 import ProjectObject3D from "./ProjectObject3D";
 import { CATEGORIES } from "../data/categories";
-import { DEFAULT_PROJECT_VIDEO, ProjectData } from "../data/projects";
+import { DEFAULT_LINKEDIN_POST, DEFAULT_PROJECT_VIDEO, ProjectData } from "../data/projects";
 import "./styles/ProjectModal.css";
 
 marked.setOptions({ breaks: true, gfm: true });
@@ -63,12 +63,12 @@ const ProjectModal = ({ project, onClose }: ProjectModalProps) => {
   const [readmeLoading, setReadmeLoading] = useState(false);
 
   // Driving open/close with a plain CSS transition (toggled via this
-  // `visible` class) rather than Framer's AnimatePresence: the previous
-  // version paired AnimatePresence with a shared `layoutId` grow-from-card
-  // effect, and reliably took 600-800ms to actually unmount regardless of
-  // the transition duration passed to it - closing felt laggy. A manual
-  // timeout tied to the CSS transition's own duration guarantees the DOM
-  // is gone in exactly CLOSE_DURATION_MS, independent of Framer internals.
+  // `visible` class) rather than Framer's AnimatePresence: pairing
+  // AnimatePresence with a shared `layoutId` grow-from-card effect took
+  // 600-800ms to actually unmount regardless of the transition duration
+  // passed to it - closing felt laggy. A manual timeout tied to the CSS
+  // transition's own duration guarantees the DOM is gone in exactly
+  // CLOSE_DURATION_MS, independent of Framer internals.
   const [renderedProject, setRenderedProject] = useState<ProjectData | null>(null);
   const [visible, setVisible] = useState(false);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
@@ -178,8 +178,16 @@ const ProjectModal = ({ project, onClose }: ProjectModalProps) => {
           </button>
 
           <div className="pm-bento">
-            {/* ---- box 1: title + tech stack + scrollable README ---- */}
-            <div className="pm-card pm-card-readme">
+            {/* ---- box 1: title + tech stack + structured description ---- */}
+            <div className="pm-card pm-card-description">
+              {/* Decorative, still-interactive 3D object drifting behind the
+                  text - kept from the earlier bento-card version but now as
+                  background flavor instead of its own slot. */}
+              <ProjectObject3D
+                category={project_.categoryKey}
+                color={theme.color}
+                className="pm-3d-bg"
+              />
               <span className="pm-cat-tag">{theme.label}</span>
               <h3 className="pm-title">{project_.name}</h3>
               <p className="pm-subtitle">{project_.category}</p>
@@ -188,37 +196,74 @@ const ProjectModal = ({ project, onClose }: ProjectModalProps) => {
                   <span key={tool}>{tool}</span>
                 ))}
               </div>
-              {project_.link && (
+
+              <div className="pm-links">
+                {project_.link && (
+                  <a href={project_.link} target="_blank" rel="noreferrer" className="pm-github">
+                    <FaGithub /> View on GitHub
+                  </a>
+                )}
                 <a
-                  href={project_.link}
+                  href={project_.linkedinPost || DEFAULT_LINKEDIN_POST}
                   target="_blank"
                   rel="noreferrer"
-                  className="pm-github"
+                  className="pm-github pm-linkedin"
                 >
-                  <FaGithub /> View on GitHub
+                  <FaLinkedin /> View LinkedIn Post
                 </a>
-              )}
-              <div className="pm-readme-scroll">
-                <h4>README</h4>
-                {readmeLoading && <p className="pm-muted">Loading README…</p>}
-                {!readmeLoading && readme && (
-                  <div
-                    className="project-modal-markdown"
-                    dangerouslySetInnerHTML={{
-                      __html: marked.parse(readme) as string,
-                    }}
-                  />
+                {project_.deployedUrl ? (
+                  <a
+                    href={project_.deployedUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="pm-github pm-deployed"
+                  >
+                    View Deployed Site
+                  </a>
+                ) : (
+                  <span className="pm-github pm-deployed pm-disabled" aria-disabled="true">
+                    View Deployed Site
+                  </span>
                 )}
-                {!readmeLoading && !readme && (
-                  <p className="pm-muted">{project_.description}</p>
-                )}
+              </div>
+
+              <div className="pm-readme-scroll pm-detail-scroll">
+                <dl className="pm-detail-list">
+                  <div className="pm-detail-row">
+                    <dt>Problem</dt>
+                    <dd>{project_.problem}</dd>
+                  </div>
+                  <div className="pm-detail-row">
+                    <dt>Category</dt>
+                    <dd>{theme.label}</dd>
+                  </div>
+                  <div className="pm-detail-row">
+                    <dt>Solution</dt>
+                    <dd>{project_.solution}</dd>
+                  </div>
+                  <div className="pm-detail-row">
+                    <dt>USP</dt>
+                    <dd>{project_.usp}</dd>
+                  </div>
+                  <div className="pm-detail-row">
+                    <dt>Quantitative Results</dt>
+                    <dd>{project_.results}</dd>
+                  </div>
+                </dl>
               </div>
             </div>
 
-            {/* ---- box 2: image gallery ---- */}
+            {/* ---- box 2: image gallery (1 large + 4 small) ---- */}
             <div className="pm-card pm-card-gallery">
               <h4 className="pm-card-title">Snapshots</h4>
               <div className="pm-gallery">
+                <motion.div
+                  className="pm-gallery-item pm-gallery-item-large"
+                  whileHover={{ scale: 1.05, zIndex: 20 }}
+                  whileTap={{ scale: 1.05, zIndex: 20 }}
+                >
+                  <img src={galleryImage} alt={`${project_.name} large preview`} />
+                </motion.div>
                 {[0, 1, 2, 3].map((i) => (
                   <motion.div
                     key={i}
@@ -247,11 +292,23 @@ const ProjectModal = ({ project, onClose }: ProjectModalProps) => {
               </div>
             </a>
 
-            {/* ---- box 4: interactive 3D object ---- */}
-            <div className="pm-card pm-card-3d">
-              <h4 className="pm-card-title">{theme.label} in 3D</h4>
-              <p className="pm-muted pm-3d-hint">Hover to interact</p>
-              <ProjectObject3D category={project_.categoryKey} color={theme.color} />
+            {/* ---- box 4: full README ---- */}
+            <div className="pm-card pm-card-readme">
+              <h4 className="pm-card-title">README</h4>
+              <div className="pm-readme-scroll">
+                {readmeLoading && <p className="pm-muted">Loading README…</p>}
+                {!readmeLoading && readme && (
+                  <div
+                    className="project-modal-markdown"
+                    dangerouslySetInnerHTML={{
+                      __html: marked.parse(readme) as string,
+                    }}
+                  />
+                )}
+                {!readmeLoading && !readme && (
+                  <p className="pm-muted">README not available for this project.</p>
+                )}
+              </div>
             </div>
           </div>
         </div>

@@ -112,8 +112,34 @@
   min-height: 460px;
 }
 
-.pm-card-readme {
+.pm-card-description {
   grid-column: span 4;
+}
+
+/* The decorative 3D object sits behind the description card's text as a
+   drifting background layer - visible but not competing for attention,
+   and still interactive (pointer-tilt/hover) since it keeps pointer
+   events even though it's positioned behind the text. */
+.pm-3d-bg {
+  position: absolute;
+  top: -30px;
+  right: -40px;
+  width: 260px;
+  height: 260px;
+  opacity: 0.45;
+  z-index: 0;
+  pointer-events: auto;
+  mix-blend-mode: screen;
+}
+
+.pm-3d-bg canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.pm-card-description > *:not(.pm-3d-bg) {
+  position: relative;
+  z-index: 1;
 }
 .pm-card-gallery {
   grid-column: span 2;
@@ -123,7 +149,7 @@
   text-decoration: none;
   color: inherit;
 }
-.pm-card-3d {
+.pm-card-readme {
   grid-column: span 3;
 }
 
@@ -175,23 +201,65 @@
   color: #cfcbd4;
 }
 
+.pm-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
 .pm-github {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  align-self: flex-start;
   padding: 9px 18px;
   border-radius: 24px;
   border: 1px solid var(--cat-color);
   color: var(--cat-color);
   font-size: 13px;
-  margin-bottom: 18px;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease, opacity 0.2s ease;
 }
 
 .pm-github:hover {
   background: var(--cat-color);
   color: #0b080c;
+}
+
+/* Disabled "View Deployed Site" placeholder - visually faded, no
+   pointer affordance, until a real deployment link is added per-project. */
+.pm-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.pm-detail-list {
+  margin: 0;
+}
+
+.pm-detail-row {
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pm-detail-row:last-child {
+  border-bottom: none;
+}
+
+.pm-detail-row dt {
+  font-size: 12px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--cat-color);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.pm-detail-row dd {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #d7d3d8;
 }
 
 .pm-readme-scroll {
@@ -215,28 +283,19 @@
   border-radius: 3px;
 }
 
-.pm-readme-scroll h4 {
-  font-size: 13px;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  color: #8f8a96;
-  margin: 0 0 10px;
-}
-
 /* ---- gallery ---- */
 .pm-gallery {
   flex: 1;
   min-height: 0;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 6px 0;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 6px 2px;
 }
 
 .pm-gallery-item {
-  width: 46%;
+  grid-column: span 2;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -244,6 +303,15 @@
   padding: 4px;
   box-sizing: border-box;
   cursor: pointer;
+}
+
+/* The one larger snapshot, spanning the full row above the other four. */
+.pm-gallery-item-large {
+  grid-column: span 4;
+}
+
+.pm-gallery-item-large img {
+  aspect-ratio: 21 / 10;
 }
 
 .pm-gallery-item img {
@@ -295,25 +363,6 @@
   transform: translate(-50%, -50%) scale(1.15);
 }
 
-/* ---- 3d object ---- */
-.pm-3d-hint {
-  margin: 0 0 4px;
-  font-size: 12px;
-}
-
-.project-object3d {
-  flex: 1;
-  min-height: 0;
-  width: 100%;
-  cursor: grab;
-}
-
-.project-object3d canvas {
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
-}
-
 @media screen and (max-width: 1100px) {
   .project-modal {
     width: 94vw;
@@ -322,10 +371,10 @@
   .pm-bento {
     grid-template-columns: 1fr;
   }
-  .pm-card-readme,
+  .pm-card-description,
   .pm-card-gallery,
   .pm-card-video,
-  .pm-card-3d {
+  .pm-card-readme {
     grid-column: span 1;
     min-height: 380px;
   }

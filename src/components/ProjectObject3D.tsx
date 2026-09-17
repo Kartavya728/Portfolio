@@ -31,9 +31,11 @@ function buildGeometry(category: CategoryKey): THREE.BufferGeometry {
 const ProjectObject3D = ({
   category,
   color,
+  className,
 }: {
   category: CategoryKey;
   color: string;
+  className?: string;
 }) => {
   const mountRef = useRef<HTMLDivElement | null>(null);
 
@@ -158,7 +160,7 @@ const ProjectObject3D = ({
     };
   }, [category, color]);
 
-  return <div className="project-object3d" ref={mountRef} />;
+  return <div className={`project-object3d ${className || ""}`} ref={mountRef} />;
 };
 
 export default ProjectObject3D;
