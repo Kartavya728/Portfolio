@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { AnimatePresence, motion } from "motion/react";
+import { motion } from "motion/react";
 import { marked } from "marked";
 import { MdClose, MdPlayArrow } from "react-icons/md";
 import { FaGithub } from "react-icons/fa6";
@@ -17,9 +17,10 @@ export type { ProjectData };
 
 interface ProjectModalProps {
   project: ProjectData | null;
-  layoutId: string;
   onClose: () => void;
 }
+
+const CLOSE_DURATION_MS = 200;
 
 function parseGitHubRepo(url: string) {
   const match = url.match(/github\.com\/([^/]+)\/([^/]+)\/?$/);
@@ -56,12 +57,43 @@ function youTubeThumb(url: string) {
   return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : null;
 }
 
-const ProjectModal = ({ project, layoutId, onClose }: ProjectModalProps) => {
+const ProjectModal = ({ project, onClose }: ProjectModalProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [readme, setReadme] = useState<string | null>(null);
   const [readmeLoading, setReadmeLoading] = useState(false);
 
+  // Driving open/close with a plain CSS transition (toggled via this
+  // `visible` class) rather than Framer's AnimatePresence: the previous
+  // version paired AnimatePresence with a shared `layoutId` grow-from-card
+  // effect, and reliably took 600-800ms to actually unmount regardless of
+  // the transition duration passed to it - closing felt laggy. A manual
+  // timeout tied to the CSS transition's own duration guarantees the DOM
+  // is gone in exactly CLOSE_DURATION_MS, independent of Framer internals.
+  const [renderedProject, setRenderedProject] = useState<ProjectData | null>(null);
+  const [visible, setVisible] = useState(false);
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
+
   useOutsideClick(ref, onClose);
+
+  useEffect(() => {
+    if (project) {
+      clearTimeout(closeTimeoutRef.current);
+      setRenderedProject(project);
+      // Two rAFs: the first commits the "hidden" starting styles, the
+      // second flips to "visible" on the next frame so the browser
+      // actually has a from-state to transition out of.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => setVisible(true));
+      });
+    } else if (renderedProject) {
+      setVisible(false);
+      closeTimeoutRef.current = setTimeout(() => {
+        setRenderedProject(null);
+      }, CLOSE_DURATION_MS);
+    }
+    return () => clearTimeout(closeTimeoutRef.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project]);
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -71,7 +103,7 @@ const ProjectModal = ({ project, layoutId, onClose }: ProjectModalProps) => {
     // not native body scrolling, so `document.body.style.overflow` does
     // nothing useful here and can confuse ScrollSmoother's own height
     // bookkeeping. Pause/resume the smoother itself instead.
-    if (project) {
+    if (renderedProject) {
       smoother?.paused(true);
       window.addEventListener("keydown", onKeyDown);
     }
@@ -79,9 +111,9 @@ const ProjectModal = ({ project, layoutId, onClose }: ProjectModalProps) => {
       window.removeEventListener("keydown", onKeyDown);
       smoother?.paused(false);
     };
-  }, [project, onClose]);
+  }, [renderedProject, onClose]);
 
-  const repo = project ? parseGitHubRepo(project.link) : null;
+  const repo = renderedProject ? parseGitHubRepo(renderedProject.link) : null;
 
   useEffect(() => {
     setReadme(null);
@@ -97,145 +129,134 @@ const ProjectModal = ({ project, layoutId, onClose }: ProjectModalProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project]);
 
-  const theme = project ? CATEGORIES[project.categoryKey] : null;
+  const theme = renderedProject ? CATEGORIES[renderedProject.categoryKey] : null;
 
   const repoRaw = repo
     ? `https://raw.githubusercontent.com/${repo.owner}/${repo.repo}/HEAD`
     : null;
 
   const galleryImage = useMemo(
-    () => extractReadmeImage(readme, repoRaw) || project?.image || "",
-    [readme, repoRaw, project]
+    () => extractReadmeImage(readme, repoRaw) || renderedProject?.image || "",
+    [readme, repoRaw, renderedProject]
   );
 
   const youtubeUrl = useMemo(() => extractYouTube(readme), [readme]);
   const youtubeThumb = youTubeThumb(youtubeUrl);
 
-  const tools = project ? project.tools.split(",").map((t) => t.trim()) : [];
+  const tools = renderedProject
+    ? renderedProject.tools.split(",").map((t) => t.trim())
+    : [];
+
+  if (!renderedProject || !theme) return null;
+  const project_ = renderedProject;
 
   const modal = (
-    <AnimatePresence>
-      {project && theme && (
-        <>
-          <motion.div
-            className="project-modal-overlay"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.22, ease: "easeOut" }}
+    <>
+      <div
+        className={`project-modal-overlay ${visible ? "project-modal-overlay-visible" : ""}`}
+        onClick={onClose}
+      />
+      <div className="project-modal-wrap" data-cursor="disable">
+        <div
+          ref={ref}
+          className={`project-modal ${visible ? "project-modal-visible" : ""}`}
+          style={
+            {
+              "--cat-color": theme.color,
+              "--cat-soft": theme.soft,
+              "--cat-gradient": theme.gradient,
+            } as React.CSSProperties
+          }
+        >
+          <button
+            type="button"
+            className="project-modal-close"
             onClick={onClose}
-          />
-          <div className="project-modal-wrap" data-cursor="disable">
-            <motion.div
-              layoutId={layoutId}
-              ref={ref}
-              className="project-modal"
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.96 }}
-              transition={{ duration: 0.22, ease: "easeOut" }}
-              style={
-                {
-                  "--cat-color": theme.color,
-                  "--cat-soft": theme.soft,
-                  "--cat-gradient": theme.gradient,
-                } as React.CSSProperties
-              }
-            >
-              <button
-                type="button"
-                className="project-modal-close"
-                onClick={onClose}
-                aria-label="Close"
-              >
-                <MdClose />
-              </button>
+            aria-label="Close"
+          >
+            <MdClose />
+          </button>
 
-              <div className="pm-bento">
-                {/* ---- box 1: title + tech stack + scrollable README ---- */}
-                <div className="pm-card pm-card-readme">
-                  <span className="pm-cat-tag">{theme.label}</span>
-                  <h3 className="pm-title">{project.name}</h3>
-                  <p className="pm-subtitle">{project.category}</p>
-                  <div className="pm-tools">
-                    {tools.map((tool) => (
-                      <span key={tool}>{tool}</span>
-                    ))}
-                  </div>
-                  {project.link && (
-                    <a
-                      href={project.link}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="pm-github"
-                    >
-                      <FaGithub /> View on GitHub
-                    </a>
-                  )}
-                  <div className="pm-readme-scroll">
-                    <h4>README</h4>
-                    {readmeLoading && <p className="pm-muted">Loading README…</p>}
-                    {!readmeLoading && readme && (
-                      <div
-                        className="project-modal-markdown"
-                        dangerouslySetInnerHTML={{
-                          __html: marked.parse(readme) as string,
-                        }}
-                      />
-                    )}
-                    {!readmeLoading && !readme && (
-                      <p className="pm-muted">{project.description}</p>
-                    )}
-                  </div>
-                </div>
-
-                {/* ---- box 2: image gallery ---- */}
-                <div className="pm-card pm-card-gallery">
-                  <h4 className="pm-card-title">Snapshots</h4>
-                  <div className="pm-gallery">
-                    {[0, 1, 2, 3].map((i) => (
-                      <motion.div
-                        key={i}
-                        className="pm-gallery-item"
-                        style={{ rotate: `${(i % 2 === 0 ? -1 : 1) * (4 + i * 2)}deg` }}
-                        whileHover={{ scale: 1.12, rotate: 0, zIndex: 20 }}
-                        whileTap={{ scale: 1.12, rotate: 0, zIndex: 20 }}
-                      >
-                        <img src={galleryImage} alt={`${project.name} ${i + 1}`} />
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* ---- box 3: video ---- */}
+          <div className="pm-bento">
+            {/* ---- box 1: title + tech stack + scrollable README ---- */}
+            <div className="pm-card pm-card-readme">
+              <span className="pm-cat-tag">{theme.label}</span>
+              <h3 className="pm-title">{project_.name}</h3>
+              <p className="pm-subtitle">{project_.category}</p>
+              <div className="pm-tools">
+                {tools.map((tool) => (
+                  <span key={tool}>{tool}</span>
+                ))}
+              </div>
+              {project_.link && (
                 <a
-                  className="pm-card pm-card-video"
-                  href={youtubeUrl}
+                  href={project_.link}
                   target="_blank"
                   rel="noreferrer"
+                  className="pm-github"
                 >
-                  <h4 className="pm-card-title">Watch the demo</h4>
-                  <div className="pm-video-thumb">
-                    <MdPlayArrow className="pm-play" />
-                    {youtubeThumb && <img src={youtubeThumb} alt="Video preview" />}
-                  </div>
+                  <FaGithub /> View on GitHub
                 </a>
-
-                {/* ---- box 4: interactive 3D object ---- */}
-                <div className="pm-card pm-card-3d">
-                  <h4 className="pm-card-title">{theme.label} in 3D</h4>
-                  <p className="pm-muted pm-3d-hint">Hover to interact</p>
-                  <ProjectObject3D
-                    category={project.categoryKey}
-                    color={theme.color}
+              )}
+              <div className="pm-readme-scroll">
+                <h4>README</h4>
+                {readmeLoading && <p className="pm-muted">Loading README…</p>}
+                {!readmeLoading && readme && (
+                  <div
+                    className="project-modal-markdown"
+                    dangerouslySetInnerHTML={{
+                      __html: marked.parse(readme) as string,
+                    }}
                   />
-                </div>
+                )}
+                {!readmeLoading && !readme && (
+                  <p className="pm-muted">{project_.description}</p>
+                )}
               </div>
-            </motion.div>
+            </div>
+
+            {/* ---- box 2: image gallery ---- */}
+            <div className="pm-card pm-card-gallery">
+              <h4 className="pm-card-title">Snapshots</h4>
+              <div className="pm-gallery">
+                {[0, 1, 2, 3].map((i) => (
+                  <motion.div
+                    key={i}
+                    className="pm-gallery-item"
+                    style={{ rotate: `${(i % 2 === 0 ? -1 : 1) * (4 + i * 2)}deg` }}
+                    whileHover={{ scale: 1.12, rotate: 0, zIndex: 20 }}
+                    whileTap={{ scale: 1.12, rotate: 0, zIndex: 20 }}
+                  >
+                    <img src={galleryImage} alt={`${project_.name} ${i + 1}`} />
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* ---- box 3: video ---- */}
+            <a
+              className="pm-card pm-card-video"
+              href={youtubeUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <h4 className="pm-card-title">Watch the demo</h4>
+              <div className="pm-video-thumb">
+                <MdPlayArrow className="pm-play" />
+                {youtubeThumb && <img src={youtubeThumb} alt="Video preview" />}
+              </div>
+            </a>
+
+            {/* ---- box 4: interactive 3D object ---- */}
+            <div className="pm-card pm-card-3d">
+              <h4 className="pm-card-title">{theme.label} in 3D</h4>
+              <p className="pm-muted pm-3d-hint">Hover to interact</p>
+              <ProjectObject3D category={project_.categoryKey} color={theme.color} />
+            </div>
           </div>
-        </>
-      )}
-    </AnimatePresence>
+        </div>
+      </div>
+    </>
   );
 
   return createPortal(modal, document.body);

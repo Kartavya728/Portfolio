@@ -4,6 +4,12 @@
   background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(6px);
   z-index: 10000;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.project-modal-overlay-visible {
+  opacity: 1;
 }
 
 .project-modal-wrap {
@@ -64,6 +70,14 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  opacity: 0;
+  transform: scale(0.96);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.project-modal-visible {
+  opacity: 1;
+  transform: scale(1);
 }
 
 /* A soft wash of the project's category colour over the whole surface. */

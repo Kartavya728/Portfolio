@@ -85,7 +85,6 @@ const AllProjects = () => {
 
       <ProjectModal
         project={activeIndex !== null ? projects[activeIndex] : null}
-        layoutId={`project-image-${activeIndex}`}
         onClose={() => setActiveIndex(null)}
       />
     </div>

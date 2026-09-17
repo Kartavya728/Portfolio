@@ -53,7 +53,7 @@ export function ProjectCard({
           </a>
         </div>
       </div>
-      <motion.div className="work-image" layoutId={`project-image-${index}`}>
+      <motion.div className="work-image">
         <img src={project.image} alt={project.name} className="work-image-zoom" />
       </motion.div>
     </div>
@@ -276,7 +276,6 @@ const Work = () => {
 
       <ProjectModal
         project={activeIndex !== null ? projects[activeIndex] : null}
-        layoutId={`project-image-${activeIndex}`}
         onClose={() => setActiveIndex(null)}
       />
     </div>
