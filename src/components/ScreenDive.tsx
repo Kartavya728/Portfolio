@@ -49,9 +49,10 @@ const ScreenDive = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const stickyRef = useRef<HTMLDivElement>(null);
   const deckRef = useRef<HTMLDivElement>(null);
+  const frameRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!sectionRef.current || !deckRef.current || !stickyRef.current) return;
+    if (!sectionRef.current || !deckRef.current || !stickyRef.current || !frameRef.current) return;
     if (window.innerWidth <= 1024) return;
 
     // Pinned via ScrollTrigger rather than `position: sticky`: this site
@@ -67,6 +68,13 @@ const ScreenDive = () => {
       invalidateOnRefresh: true,
     });
 
+    // Continues the same motion straight out of the camera dive: once the
+    // terminal is showing (GsapScroll.ts fades .screen-dive-stage in), a
+    // little more scroll tilts the screen back on its bottom edge - like
+    // a laptop lid settling into its normal viewing angle - while the
+    // keyboard deck rises into view underneath it. One scrub timeline
+    // driving both keeps them reading as a single connected motion
+    // rather than two separate effects.
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
@@ -77,6 +85,11 @@ const ScreenDive = () => {
       },
     });
     tl.fromTo(
+      frameRef.current,
+      { rotateX: 0, scale: 1 },
+      { rotateX: 9, scale: 0.94, duration: 1, ease: "none", immediateRender: false },
+      0
+    ).fromTo(
       deckRef.current,
       { opacity: 0, y: 40, scaleY: 0.9 },
       { opacity: 1, y: 0, scaleY: 1, duration: 1, ease: "none", immediateRender: false },
@@ -94,7 +107,7 @@ const ScreenDive = () => {
     <div className="screen-dive" id="screen-dive" ref={sectionRef}>
       <div className="screen-dive-sticky" ref={stickyRef}>
         <div className="screen-dive-stage">
-          <div className="screen-dive-frame">
+          <div className="screen-dive-frame" ref={frameRef}>
             <div className="screen-dive-webcam" />
             <div className="screen-dive-screen">
               <Terminal commands={COMMANDS} outputs={OUTPUTS} />

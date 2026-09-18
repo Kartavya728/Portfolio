@@ -38,6 +38,12 @@
   box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(194, 164, 255, 0.14),
     0 0 90px rgba(194, 164, 255, 0.12);
   overflow: hidden;
+  /* Hinges at the bottom edge, like a real laptop lid, so the rotateX
+     tilt-back added in ScreenDive.tsx pivots there instead of the
+     element's centre. */
+  transform-origin: bottom center;
+  transform-style: preserve-3d;
+  will-change: transform;
 }
 
 .screen-dive-webcam {

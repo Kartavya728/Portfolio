@@ -109,15 +109,24 @@ export function setCharTimeline(
           0.3
         );
 
+      // No character-model hide/slide here any more: ScreenDive picks up
+      // straight from wherever tl2 leaves the camera and turns from
+      // there, so the character has to stay visible and untransformed
+      // the whole way through - a slide-out-then-slide-back-in (the
+      // previous behaviour) read as the character leaving and a
+      // different one re-entering. What DOES need to happen here is the
+      // WhatIDo cards fading out of the way as their section ends, since
+      // they'd otherwise abruptly cut off mid-scroll instead of clearing
+      // the stage for the dive.
       tl3
-        .fromTo(
-          ".character-model",
-          { y: "0%" },
-          { y: "-100%", duration: 4, ease: "none", delay: 1 },
-          0
-        )
         .fromTo(".whatIDO", { y: 0 }, { y: "15%", duration: 2 }, 0)
-        .to(character.rotation, { x: -0.04, duration: 2, delay: 1 }, 0);
+        .to(character.rotation, { x: -0.04, duration: 2, delay: 1 }, 0)
+        .fromTo(
+          ".what-box-in",
+          { opacity: 1 },
+          { opacity: 0, duration: 1.2, ease: "none", immediateRender: false },
+          2.4
+        );
 
       // Hard hide/show, independent of the scrub tween above. The scrub
       // tween only *visually* slides the character out via `y: -100%`,
@@ -175,16 +184,23 @@ export function setCharTimeline(
 
 /**
  * ScreenDive: swings the camera from the front of the character's face
- * around to behind his head, then pushes forward into the monitor he's
- * typing on, handing off to the HTML terminal overlay "inside" the
- * screen.
+ * around behind his head, then lines up square with the monitor he's
+ * typing on and pushes into it, handing off to the HTML terminal.
  *
- * The orbit is driven by tweening polar coordinates (angle/radius) in an
- * onUpdate rather than tweening camera.position.x/z directly - a linear
- * tween between a front and a rear position would cut straight through
- * the character's head instead of arcing around it. camera.lookAt() each
- * frame keeps him framed throughout; nothing else in the render loop
- * touches camera.rotation, so there's no fight over it.
+ * Two things this has to be careful about:
+ *
+ * 1. Camera writes are gated on the section actually being active. This
+ *    section is pinned, and ScrollTrigger's pin measurement during
+ *    refresh renders scrub timelines at assorted progress values - which
+ *    moved the camera mid-measurement, and tl1/tl2 (which re-capture
+ *    their `to()` start values on refresh, having invalidateOnRefresh
+ *    set) then locked onto that displaced camera as their starting
+ *    point, wrecking the hero/about framing.
+ * 2. The final framing is derived from the monitor object's own world
+ *    transform rather than hardcoded coordinates, so the camera ends up
+ *    exactly on the screen's normal with its up vector matched - that's
+ *    what makes the screen read as a straight, axis-aligned rectangle
+ *    rather than a skewed quad at the moment we cut to the terminal.
  */
 export function setScreenDiveTimeline(
   character: THREE.Object3D<THREE.Object3DEventMap> | null,
@@ -193,37 +209,141 @@ export function setScreenDiveTimeline(
   if (!character || window.innerWidth <= 1024) return;
   if (!document.querySelector(".screen-dive")) return;
 
-  // Sits between his head and the monitor so both stay in frame as the
-  // camera comes around behind him.
-  const orbitCenter = new THREE.Vector3(0, 10.2, 3.4);
-  // The monitor plane he's typing at (Plane.004/screenlight sit here).
-  const screenPoint = new THREE.Vector3(0, 9.2, 5.12);
+  // ---- resolve the monitor + head in world space ------------------
+  // Same lookup the rest of this file uses: the screen is the child of
+  // the top-level "Plane004" node carrying Material.027. Searching the
+  // whole character for that material instead matched a different mesh
+  // (the dive ended up square-on to his keyboard hand).
+  let monitor: THREE.Object3D | null = null;
+  character.children.forEach((object: any) => {
+    if (object.name !== "Plane004") return;
+    object.children.forEach((child: any) => {
+      if (child.material?.name === "Material.027") monitor = child;
+    });
+  });
+  const headBone = character.getObjectByName("spine006");
+  if (!monitor || !headBone) return;
+  const monitorObj = monitor as THREE.Object3D;
 
-  const orbit = { angle: 0, radius: 66, height: 8.4 };
-  // Free-flight position/look used once the orbit hands over - the dive
-  // can't stay on the orbit path, since shrinking its radius drives the
-  // camera straight into his torso (the orbit centre sits behind the
-  // monitor, so "closer" meant "inside him"). These waypoints lift up
-  // over his shoulder instead and settle in front of the screen.
-  const fly = { x: 0, y: 11.4, z: -13.6, lookX: 0, lookY: 10.2, lookZ: 3.4 };
+  const worldUp = new THREE.Vector3(0, 1, 0);
+  const screenPos = new THREE.Vector3();
+  let facing = new THREE.Vector3(0, 0, 1);
+  let screenUp = worldUp.clone();
 
-  const applyOrbit = () => {
-    camera.position.set(
-      orbitCenter.x + Math.sin(orbit.angle) * orbit.radius,
-      orbit.height,
-      orbitCenter.z + Math.cos(orbit.angle) * orbit.radius
+  const squareOn = (distance: number) =>
+    screenPos.clone().add(facing.clone().multiplyScalar(distance));
+
+  // Resolved lazily rather than at setup: tl2 slides the monitor into
+  // place (monitor.position y/z) while the about section scrolls, so at
+  // setup time it isn't where it will be during the dive.
+  let screenResolved = false;
+  const resolveScreen = () => {
+    if (screenResolved) return;
+    screenResolved = true;
+
+    const screenQuat = new THREE.Quaternion();
+    monitorObj.getWorldQuaternion(screenQuat);
+    // Centre of the screen's bounds, not the object's origin - the
+    // monitor's origin sits down at desk level, so aiming at it framed
+    // the keyboard instead of the display.
+    const box = new THREE.Box3().setFromObject(monitorObj);
+    box.getCenter(screenPos);
+
+    const headPos = new THREE.Vector3();
+    headBone.getWorldPosition(headPos);
+
+    // Which way does the screen face? Pick whichever local axis points
+    // most directly at the person sitting in front of it, rather than
+    // assuming the exporter's axis convention.
+    const axes = [
+      new THREE.Vector3(0, 0, 1),
+      new THREE.Vector3(0, 0, -1),
+      new THREE.Vector3(0, 1, 0),
+      new THREE.Vector3(0, -1, 0),
+      new THREE.Vector3(1, 0, 0),
+      new THREE.Vector3(-1, 0, 0),
+    ].map((v) => v.applyQuaternion(screenQuat).normalize());
+    const toViewer = headPos.clone().sub(screenPos).normalize();
+    facing = axes.reduce((best, axis) =>
+      axis.dot(toViewer) > best.dot(toViewer) ? axis : best
     );
-    camera.lookAt(orbitCenter);
+    // Screen "up" = whichever remaining axis is closest to world up,
+    // squared off against the facing direction so the framing can't come
+    // out tilted.
+    screenUp = axes
+      .filter((axis) => Math.abs(axis.dot(facing)) < 0.9)
+      .reduce((best, axis) => (axis.dot(worldUp) > best.dot(worldUp) ? axis : best))
+      .clone()
+      .projectOnPlane(facing)
+      .normalize();
+
+    // How close do we have to get for the screen to fill the frame at the
+    // final FOV? Measured off the monitor rather than guessed, then held
+    // inside the gap between the screen and the person at the desk. Only
+    // the extents across the screen matter, so the (thin) depth along the
+    // facing axis is excluded.
+    const size = new THREE.Vector3();
+    box.getSize(size);
+    const extents = [size.x, size.y, size.z];
+    const facingComponents = [Math.abs(facing.x), Math.abs(facing.y), Math.abs(facing.z)];
+    const depthAxis = facingComponents.indexOf(Math.max(...facingComponents));
+    const screenHalf =
+      Math.max(...extents.filter((_, i) => i !== depthAxis)) / 2;
+    const fitDistance =
+      screenHalf / Math.tan(THREE.MathUtils.degToRad(FINAL_FOV) / 2);
+    pushDistance = Math.max(0.9, fitDistance * 0.62);
+    approachDistance = Math.min(3.6, pushDistance * 2.6);
   };
 
-  // The scene camera is a 14.5deg telephoto, which is fine for the wide
-  // intro framing but makes anything close to the lens enormous - flying
-  // past his shoulder at that focal length just fills the frame with
-  // shoulder. Widening it through the dive keeps the approach readable.
+  // ---- animated state ---------------------------------------------
+  const orbitCenter = new THREE.Vector3(0, 10.2, 3.4);
+  // angle/radius/height are placeholders until resolveOrbitStart() reads
+  // the camera's actual position (wherever tl2 left it) right as the
+  // dive begins - hardcoded guesses here previously didn't quite match,
+  // so the very first onUpdate call snapped the camera a little, right
+  // at the moment it was supposed to just start turning.
+  const orbit = { angle: 0, radius: 66, height: 8.4 };
+  let orbitStartResolved = false;
+  const resolveOrbitStart = () => {
+    if (orbitStartResolved) return;
+    orbitStartResolved = true;
+    const dx = camera.position.x - orbitCenter.x;
+    const dz = camera.position.z - orbitCenter.z;
+    orbit.radius = Math.max(1, Math.hypot(dx, dz));
+    orbit.height = camera.position.y;
+    orbit.angle = Math.atan2(dx, dz);
+  };
+  // Free-flight waypoints for everything after the orbit. The dive can't
+  // stay on the orbit path - shrinking its radius drove the camera
+  // straight into his torso, since the orbit centre sits behind him.
+  // Distances along the screen's normal, filled in by resolveScreen from
+  // the monitor's measured size. They have to stay inside the gap
+  // between the screen and the person sitting at it (only ~5 units) -
+  // a fixed 14 put the camera behind his chair, looking at the back of
+  // both him and the monitor.
+  let approachDistance = 3.4;
+  let pushDistance = 1.5;
+  const FINAL_FOV = 46;
+  const fly = {
+    x: 0,
+    y: 11.4,
+    z: -13.6,
+    lookX: orbitCenter.x,
+    lookY: orbitCenter.y,
+    lookZ: orbitCenter.z,
+  };
+  // 14.5deg telephoto suits the wide intro framing but makes anything
+  // near the lens enormous; widening through the dive keeps the approach
+  // readable and lets the screen fill the frame naturally.
   const lens = { fov: camera.fov };
+  const originalFov = camera.fov;
 
-  const applyFly = () => {
+  let diveActive = false;
+
+  const writeCamera = () => {
+    if (!diveActive) return;
     camera.position.set(fly.x, fly.y, fly.z);
+    camera.up.copy(worldUp);
     camera.lookAt(fly.lookX, fly.lookY, fly.lookZ);
     if (camera.fov !== lens.fov) {
       camera.fov = lens.fov;
@@ -231,104 +351,142 @@ export function setScreenDiveTimeline(
     }
   };
 
+  const applyOrbit = () => {
+    if (!diveActive) return;
+    fly.x = orbitCenter.x + Math.sin(orbit.angle) * orbit.radius;
+    fly.y = orbit.height;
+    fly.z = orbitCenter.z + Math.cos(orbit.angle) * orbit.radius;
+    fly.lookX = orbitCenter.x;
+    fly.lookY = orbitCenter.y;
+    fly.lookZ = orbitCenter.z;
+    writeCamera();
+  };
+
+  // Square-on: camera sits on the screen's normal, looking straight down
+  // it, with up matched to the screen's own up.
+  const applySquare = () => {
+    if (!diveActive) return;
+    camera.position.set(fly.x, fly.y, fly.z);
+    camera.up.copy(screenUp);
+    camera.lookAt(screenPos);
+    if (camera.fov !== lens.fov) {
+      camera.fov = lens.fov;
+      camera.updateProjectionMatrix();
+    }
+  };
+
+  const restoreCamera = () => {
+    camera.up.set(0, 1, 0);
+    camera.rotation.set(0, 0, 0);
+    camera.fov = originalFov;
+    camera.updateProjectionMatrix();
+  };
+
   const tl = gsap.timeline({
     scrollTrigger: {
       // Starts only once whatIDO has fully scrolled past (its own tl3
-      // runs to ".whatIDO" bottom/top). An earlier version started at
-      // "top bottom", overlapping tl3's range - both timelines then
-      // wrote ".character-model"'s y every frame and fought over it.
+      // runs to ".whatIDO" bottom/top). Starting at "top bottom" instead
+      // overlapped tl3's range, and both timelines then fought over
+      // ".character-model"'s y every frame.
       trigger: ".screen-dive",
       start: "top top",
       end: "bottom bottom",
       scrub: true,
       invalidateOnRefresh: true,
+      onEnter: () => {
+        resolveOrbitStart();
+        resolveScreen();
+        diveActive = true;
+      },
+      onEnterBack: () => {
+        resolveOrbitStart();
+        resolveScreen();
+        diveActive = true;
+      },
+      onLeave: () => {
+        diveActive = false;
+      },
+      onLeaveBack: () => {
+        diveActive = false;
+        restoreCamera();
+      },
     },
   });
 
   tl
-    // tl3 slid him out during whatIDO - bring him back for this section.
-    // immediateRender:false on every fromTo here: the default (true)
-    // applies the "from" values the moment the timeline is built, which
-    // yanked the character off-screen and skewed the camera during the
-    // intro sections, long before this section is reached.
-    .fromTo(
-      ".character-model",
-      { y: "-100%" },
-      { y: "0%", opacity: 1, duration: 1, ease: "none", immediateRender: false },
-      0
-    )
-    // Front of the face -> around behind the head, closing in.
+    // Front of the face -> around behind the head, closing in. The
+    // target angle is relative to wherever resolveOrbitStart() found the
+    // camera (tl2's end position) rather than a fixed Math.PI, so this
+    // is always a clean half-turn from whatever "front" actually was.
     .to(
       orbit,
       {
-        angle: Math.PI,
+        angle: () => orbit.angle + Math.PI,
         radius: 17,
         height: 11.4,
         duration: 3,
         ease: "none",
         onUpdate: applyOrbit,
       },
-      1
+      0.3
     )
-    // Climb well clear of his head (hair tops out near y=14.5) and look
-    // down over him at the monitor.
+    // Climb clear of his head (hair tops out near y=14.5) on the way over.
     .to(
       fly,
       {
         y: 19,
         z: -5.5,
         lookY: 9.6,
-        lookZ: screenPoint.z,
+        lookZ: screenPos.z,
         duration: 1.1,
         ease: "power1.inOut",
-        onUpdate: applyFly,
+        onUpdate: writeCamera,
       },
       4
     )
-    .to(lens, { fov: 34, duration: 1.1, onUpdate: applyFly }, 4)
-    // Travel forward past him while still high up - dropping and moving
-    // forward at the same time flew the camera straight through his head.
+    .to(lens, { fov: 34, duration: 1.1, onUpdate: writeCamera }, 4)
+    // Swing onto the screen's normal, still well back - from here on the
+    // framing is square to the screen.
     .to(
       fly,
       {
-        y: 16,
-        z: 3.4,
-        lookY: screenPoint.y,
-        lookZ: screenPoint.z + 0.3,
-        duration: 0.7,
+        // Function-based so they resolve when the tween actually runs -
+        // the screen's world transform isn't known until resolveScreen()
+        // has run inside this section.
+        x: () => squareOn(approachDistance).x,
+        y: () => squareOn(approachDistance).y,
+        z: () => squareOn(approachDistance).z,
+        duration: 0.9,
         ease: "power1.inOut",
-        onUpdate: applyFly,
+        onUpdate: applySquare,
       },
       5.1
     )
-    // Now clear of him, drop down in front of the screen and push in.
+    // Push straight down the normal until the screen fills the frame.
     .to(
       fly,
       {
-        y: 9.35,
-        z: 4.05,
-        lookY: screenPoint.y,
-        lookZ: screenPoint.z + 0.6,
-        duration: 0.8,
+        x: () => squareOn(pushDistance).x,
+        y: () => squareOn(pushDistance).y,
+        z: () => squareOn(pushDistance).z,
+        duration: 1,
         ease: "power2.in",
-        onUpdate: applyFly,
+        onUpdate: applySquare,
       },
-      5.8
+      6
     )
-    .to(lens, { fov: 52, duration: 1.5, onUpdate: applyFly }, 5.1)
+    .to(lens, { fov: FINAL_FOV, duration: 1.9, onUpdate: applySquare }, 5.1)
     // Hand off from the 3D canvas to the terminal "inside" the screen.
-    .to(".character-model", { opacity: 0, duration: 0.7 }, 6.3)
+    .to(".character-model", { opacity: 0, duration: 0.6 }, 6.6)
     .fromTo(
       ".screen-dive-stage",
-      { opacity: 0, scale: 0.88 },
-      { opacity: 1, scale: 1, duration: 0.9, immediateRender: false },
-      6.3
+      { opacity: 0, scale: 0.9 },
+      { opacity: 1, scale: 1, duration: 0.8, immediateRender: false },
+      6.6
     )
-    // Trailing hold: the sticky stage releases exactly when this trigger
-    // hits progress 1, so without padding the reveal only finished at the
-    // instant the stage scrolled away. This leaves roughly the last third
-    // of the section for the terminal to just sit there and be read.
-    .to({}, { duration: 3 }, 7.2);
+    // Trailing hold so the terminal has room to be read before the pin
+    // releases and it scrolls away into the career section.
+    .to({}, { duration: 2.6 }, 7.4);
 }
 
 export function setAllTimeline() {
