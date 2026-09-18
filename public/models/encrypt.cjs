@@ -13,4 +13,4 @@ const encryptFile = (inputFile, outputFile, password) => {
   input.pipe(cipher).pipe(output);
 };
 
-encryptFile("character_final_v16.glb", "character.enc", "Character3D#@");
+encryptFile("character_final_v17_stylized_realism.glb", "character.enc", "Character3D#@");
