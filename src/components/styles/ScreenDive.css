@@ -1,0 +1,110 @@
+/* Tall spacer: its scroll length is what drives the camera orbit + dive
+   in setScreenDiveTimeline. Transparent so the 3D character canvas
+   (which floats behind the scrollable content) stays visible through it. */
+.screen-dive {
+  position: relative;
+  height: 320vh;
+  background: transparent;
+  pointer-events: none;
+}
+
+/* Pinned by ScrollTrigger (see ScreenDive.tsx), not `position: sticky` -
+   ScrollSmoother's transform-based scrolling breaks sticky. */
+.screen-dive-sticky {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Faded/scaled in by setScreenDiveTimeline once the camera has pushed
+   into the monitor - before that the 3D character is what you see. */
+.screen-dive-stage {
+  position: relative;
+  width: min(760px, 92vw);
+  perspective: 1400px;
+  opacity: 0;
+  pointer-events: auto;
+}
+
+.screen-dive-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: #050409;
+  border: 10px solid #0c0a10;
+  border-radius: 12px;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(194, 164, 255, 0.14),
+    0 0 90px rgba(194, 164, 255, 0.12);
+  overflow: hidden;
+}
+
+.screen-dive-webcam {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #2a2530;
+  z-index: 2;
+}
+
+.screen-dive-screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: radial-gradient(circle at 50% 0%, rgba(194, 164, 255, 0.08), transparent 60%);
+}
+
+.screen-dive-deck {
+  position: relative;
+  width: 108%;
+  margin-left: -4%;
+  height: 120px;
+  background: #17131c;
+  border-radius: 0 0 16px 16px;
+  padding: 16px 30px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+  transform-origin: top center;
+  opacity: 0;
+}
+
+.screen-dive-keyboard {
+  height: 60px;
+  border-radius: 8px;
+  background: #0c0a10;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.screen-dive-trackpad {
+  margin: 10px auto 0;
+  width: 30%;
+  height: 28px;
+  border-radius: 8px;
+  background: #100d15;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+@media screen and (max-width: 1024px) {
+  /* The camera dive is desktop-only (setScreenDiveTimeline bails under
+     1024px, same as the rest of the 3D scroll work), so on mobile this
+     is just a normal, shorter terminal section with no dive. */
+  .screen-dive {
+    height: auto;
+    padding: 80px 0;
+  }
+  .screen-dive-sticky {
+    position: relative;
+    height: auto;
+  }
+  .screen-dive-stage {
+    opacity: 1;
+    width: 92vw;
+  }
+}

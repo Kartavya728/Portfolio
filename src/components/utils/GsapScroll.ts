@@ -136,8 +136,14 @@ export function setCharTimeline(
         const el = document.querySelector(".character-container") as HTMLElement | null;
         if (el) el.style.display = hidden ? "none" : "";
       };
+      // Keyed to the ScreenDive section rather than ".whatIDO": the
+      // character slides out of view during whatIDO (tl3 above) but is
+      // brought back for ScreenDive, which orbits the camera around
+      // behind his head and into the monitor - so it must stay mounted
+      // until that section is done, and only then be fully hidden for
+      // everything below it.
       ScrollTrigger.create({
-        trigger: ".whatIDO",
+        trigger: ".screen-dive",
         start: "top top",
         end: "bottom top",
         onLeave: () => setCharacterHidden(true),
@@ -145,12 +151,12 @@ export function setCharTimeline(
       });
       // A freshly (re)created trigger only fires the callbacks above on
       // future enter/leave *crossings* - if this runs while already
-      // scrolled past ".whatIDO" (e.g. a resize-triggered timeline
-      // rebuild), nothing would crossed and the container could stay
+      // scrolled past the section (e.g. a resize-triggered timeline
+      // rebuild), nothing would cross and the container could stay
       // stuck visible. Set the correct state immediately too.
-      const whatIdoEl = document.querySelector(".whatIDO");
-      if (whatIdoEl) {
-        setCharacterHidden(whatIdoEl.getBoundingClientRect().bottom < 0);
+      const screenDiveEl = document.querySelector(".screen-dive");
+      if (screenDiveEl) {
+        setCharacterHidden(screenDiveEl.getBoundingClientRect().bottom < 0);
       }
     }
   } else {
@@ -165,6 +171,164 @@ export function setCharTimeline(
       tM2.to(".what-box-in", { display: "flex", duration: 0.1, delay: 0 }, 0);
     }
   }
+}
+
+/**
+ * ScreenDive: swings the camera from the front of the character's face
+ * around to behind his head, then pushes forward into the monitor he's
+ * typing on, handing off to the HTML terminal overlay "inside" the
+ * screen.
+ *
+ * The orbit is driven by tweening polar coordinates (angle/radius) in an
+ * onUpdate rather than tweening camera.position.x/z directly - a linear
+ * tween between a front and a rear position would cut straight through
+ * the character's head instead of arcing around it. camera.lookAt() each
+ * frame keeps him framed throughout; nothing else in the render loop
+ * touches camera.rotation, so there's no fight over it.
+ */
+export function setScreenDiveTimeline(
+  character: THREE.Object3D<THREE.Object3DEventMap> | null,
+  camera: THREE.PerspectiveCamera
+) {
+  if (!character || window.innerWidth <= 1024) return;
+  if (!document.querySelector(".screen-dive")) return;
+
+  // Sits between his head and the monitor so both stay in frame as the
+  // camera comes around behind him.
+  const orbitCenter = new THREE.Vector3(0, 10.2, 3.4);
+  // The monitor plane he's typing at (Plane.004/screenlight sit here).
+  const screenPoint = new THREE.Vector3(0, 9.2, 5.12);
+
+  const orbit = { angle: 0, radius: 66, height: 8.4 };
+  // Free-flight position/look used once the orbit hands over - the dive
+  // can't stay on the orbit path, since shrinking its radius drives the
+  // camera straight into his torso (the orbit centre sits behind the
+  // monitor, so "closer" meant "inside him"). These waypoints lift up
+  // over his shoulder instead and settle in front of the screen.
+  const fly = { x: 0, y: 11.4, z: -13.6, lookX: 0, lookY: 10.2, lookZ: 3.4 };
+
+  const applyOrbit = () => {
+    camera.position.set(
+      orbitCenter.x + Math.sin(orbit.angle) * orbit.radius,
+      orbit.height,
+      orbitCenter.z + Math.cos(orbit.angle) * orbit.radius
+    );
+    camera.lookAt(orbitCenter);
+  };
+
+  // The scene camera is a 14.5deg telephoto, which is fine for the wide
+  // intro framing but makes anything close to the lens enormous - flying
+  // past his shoulder at that focal length just fills the frame with
+  // shoulder. Widening it through the dive keeps the approach readable.
+  const lens = { fov: camera.fov };
+
+  const applyFly = () => {
+    camera.position.set(fly.x, fly.y, fly.z);
+    camera.lookAt(fly.lookX, fly.lookY, fly.lookZ);
+    if (camera.fov !== lens.fov) {
+      camera.fov = lens.fov;
+      camera.updateProjectionMatrix();
+    }
+  };
+
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      // Starts only once whatIDO has fully scrolled past (its own tl3
+      // runs to ".whatIDO" bottom/top). An earlier version started at
+      // "top bottom", overlapping tl3's range - both timelines then
+      // wrote ".character-model"'s y every frame and fought over it.
+      trigger: ".screen-dive",
+      start: "top top",
+      end: "bottom bottom",
+      scrub: true,
+      invalidateOnRefresh: true,
+    },
+  });
+
+  tl
+    // tl3 slid him out during whatIDO - bring him back for this section.
+    // immediateRender:false on every fromTo here: the default (true)
+    // applies the "from" values the moment the timeline is built, which
+    // yanked the character off-screen and skewed the camera during the
+    // intro sections, long before this section is reached.
+    .fromTo(
+      ".character-model",
+      { y: "-100%" },
+      { y: "0%", opacity: 1, duration: 1, ease: "none", immediateRender: false },
+      0
+    )
+    // Front of the face -> around behind the head, closing in.
+    .to(
+      orbit,
+      {
+        angle: Math.PI,
+        radius: 17,
+        height: 11.4,
+        duration: 3,
+        ease: "none",
+        onUpdate: applyOrbit,
+      },
+      1
+    )
+    // Climb well clear of his head (hair tops out near y=14.5) and look
+    // down over him at the monitor.
+    .to(
+      fly,
+      {
+        y: 19,
+        z: -5.5,
+        lookY: 9.6,
+        lookZ: screenPoint.z,
+        duration: 1.1,
+        ease: "power1.inOut",
+        onUpdate: applyFly,
+      },
+      4
+    )
+    .to(lens, { fov: 34, duration: 1.1, onUpdate: applyFly }, 4)
+    // Travel forward past him while still high up - dropping and moving
+    // forward at the same time flew the camera straight through his head.
+    .to(
+      fly,
+      {
+        y: 16,
+        z: 3.4,
+        lookY: screenPoint.y,
+        lookZ: screenPoint.z + 0.3,
+        duration: 0.7,
+        ease: "power1.inOut",
+        onUpdate: applyFly,
+      },
+      5.1
+    )
+    // Now clear of him, drop down in front of the screen and push in.
+    .to(
+      fly,
+      {
+        y: 9.35,
+        z: 4.05,
+        lookY: screenPoint.y,
+        lookZ: screenPoint.z + 0.6,
+        duration: 0.8,
+        ease: "power2.in",
+        onUpdate: applyFly,
+      },
+      5.8
+    )
+    .to(lens, { fov: 52, duration: 1.5, onUpdate: applyFly }, 5.1)
+    // Hand off from the 3D canvas to the terminal "inside" the screen.
+    .to(".character-model", { opacity: 0, duration: 0.7 }, 6.3)
+    .fromTo(
+      ".screen-dive-stage",
+      { opacity: 0, scale: 0.88 },
+      { opacity: 1, scale: 1, duration: 0.9, immediateRender: false },
+      6.3
+    )
+    // Trailing hold: the sticky stage releases exactly when this trigger
+    // hits progress 1, so without padding the reveal only finished at the
+    // instant the stage scrolled away. This leaves roughly the last third
+    // of the section for the terminal to just sit there and be read.
+    .to({}, { duration: 3 }, 7.2);
 }
 
 export function setAllTimeline() {

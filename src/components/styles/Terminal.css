@@ -1,0 +1,118 @@
+.terminal-shell {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #0f0c12;
+  border: 1px solid rgba(194, 164, 255, 0.25);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(194, 164, 255, 0.06);
+  font-family: "Geist Mono", "SF Mono", Consolas, monospace;
+}
+
+.terminal-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: #16121b;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.terminal-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.term-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.term-dot-red {
+  background: #ff5f56;
+}
+.term-dot-yellow {
+  background: #ffbd2e;
+}
+.term-dot-green {
+  background: #27c93f;
+}
+
+.terminal-titlebar-label {
+  flex: 1;
+  text-align: center;
+  font-size: 12px;
+  color: #8f8a96;
+}
+
+.terminal-body {
+  height: 320px;
+  overflow-y: auto;
+  padding: 16px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.terminal-line {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.terminal-output {
+  color: #cfcbd4;
+}
+
+.term-prompt {
+  color: #8f8a96;
+}
+.term-user {
+  color: var(--accentColor);
+}
+.term-sep {
+  color: #7ee787;
+}
+.term-path {
+  color: #79c0ff;
+}
+.term-dollar {
+  color: #8f8a96;
+}
+
+.term-tok-command {
+  color: #7ee787;
+}
+.term-tok-flag {
+  color: #79c0ff;
+}
+.term-tok-string {
+  color: #ffa657;
+}
+.term-tok-path {
+  color: #79c0ff;
+}
+.term-tok-default {
+  color: #eae5ec;
+}
+
+.terminal-cursor {
+  display: inline-block;
+  width: 7px;
+  height: 15px;
+  margin-left: 2px;
+  background: #eae5ec;
+  vertical-align: middle;
+  transition: opacity 0.1s ease;
+}
+.terminal-cursor-hidden {
+  opacity: 0;
+}
+
+.terminal-body::-webkit-scrollbar {
+  width: 6px;
+}
+.terminal-body::-webkit-scrollbar-thumb {
+  background: rgba(194, 164, 255, 0.2);
+  border-radius: 3px;
+}

@@ -9,6 +9,7 @@ import FeaturedProjects from "./FeaturedProjects";
 import Landing from "./Landing";
 import Navbar from "./Navbar";
 import Research from "./Research";
+import ScreenDive from "./ScreenDive";
 import SocialIcons from "./SocialIcons";
 import StarBackground from "./StarBackground";
 import WhatIDo from "./WhatIDo";
@@ -47,6 +48,7 @@ const MainContainer = ({ children }: PropsWithChildren) => {
             <Landing>{!isDesktopView && children}</Landing>
             <About />
             <WhatIDo />
+            <ScreenDive />
             <Career />
             {isDesktopView && (
               <Suspense fallback={<div>Loading....</div>}>

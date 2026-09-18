@@ -49,3 +49,11 @@ next-env.d.ts
 # actually need to ship with the site.
 *.mp4
 !public/featured/*.mp4
+
+# Per-style meshes produced by scripts/style_gen (~116MB across all
+# styles). The PNG renders they're compared by are committed; the meshes
+# themselves are regenerable with `python scripts/style_gen/run_all.py`
+# and would bloat the repo permanently.
+public/models/*/model.glb
+public/models/character_final_v16_stylized_realism.glb
+public/models/character_final_v16_toon.glb
