@@ -202,6 +202,25 @@ export function setCharTimeline(
  *    what makes the screen read as a straight, axis-aligned rectangle
  *    rather than a skewed quad at the moment we cut to the terminal.
  */
+function smoothstep(t: number) {
+  const c = Math.max(0, Math.min(1, t));
+  return c * c * (3 - 2 * c);
+}
+
+/**
+ * One continuous spiral from wherever the About-section camera left off,
+ * around behind the character's head, and in until the monitor exactly
+ * fills the frame. This used to be four sequential tweens (orbit, then
+ * climb, then swing onto the screen's normal, then push in), each with
+ * its own onUpdate - smooth individually, but the seams between them
+ * showed up as a faint cut. Now it's a single GSAP tween driving one
+ * progress value from 0 to 1: position is a continuous lerp between a
+ * shrinking/rising orbit point and the square-on point on the screen's
+ * normal, with the lerp weight itself sliding from 0 to 1 across that
+ * same progress - so the turn and the zoom happen together as one
+ * spiral, and look-at / up-vector / FOV are all continuous functions of
+ * that same single progress value too. No phase boundaries anywhere.
+ */
 export function setScreenDiveTimeline(
   character: THREE.Object3D<THREE.Object3DEventMap> | null,
   camera: THREE.PerspectiveCamera
@@ -226,12 +245,26 @@ export function setScreenDiveTimeline(
   const monitorObj = monitor as THREE.Object3D;
 
   const worldUp = new THREE.Vector3(0, 1, 0);
+  const orbitCenter = new THREE.Vector3(0, 10.2, 3.4);
   const screenPos = new THREE.Vector3();
   let facing = new THREE.Vector3(0, 0, 1);
+  let right = new THREE.Vector3(1, 0, 0);
   let screenUp = worldUp.clone();
+  let pushDistance = 2.2;
+  let approachDistance = 6;
+  // The screen's own true width/height (see resolveScreen) - kept around
+  // so the HTML overlay can be projected onto the same corners every
+  // frame, not just faded in over a static box at the very end.
+  let screenWidth = 1;
+  let screenHeight = 1;
 
   const squareOn = (distance: number) =>
     screenPos.clone().add(facing.clone().multiplyScalar(distance));
+
+  const FINAL_FOV = 42;
+  // Extra margin beyond the exact contain-fit point so nothing is ever
+  // cropped by aspect/float rounding at the very final frame.
+  const FILL_MARGIN = 1.04;
 
   // Resolved lazily rather than at setup: tl2 slides the monitor into
   // place (monitor.position y/z) while the about section scrolls, so at
@@ -276,103 +309,257 @@ export function setScreenDiveTimeline(
       .clone()
       .projectOnPlane(facing)
       .normalize();
+    right = new THREE.Vector3().crossVectors(screenUp, facing).normalize();
 
-    // How close do we have to get for the screen to fill the frame at the
-    // final FOV? Measured off the monitor rather than guessed, then held
-    // inside the gap between the screen and the person at the desk. Only
-    // the extents across the screen matter, so the (thin) depth along the
-    // facing axis is excluded.
-    const size = new THREE.Vector3();
-    box.getSize(size);
-    const extents = [size.x, size.y, size.z];
-    const facingComponents = [Math.abs(facing.x), Math.abs(facing.y), Math.abs(facing.z)];
-    const depthAxis = facingComponents.indexOf(Math.max(...facingComponents));
-    const screenHalf =
-      Math.max(...extents.filter((_, i) => i !== depthAxis)) / 2;
-    const fitDistance =
-      screenHalf / Math.tan(THREE.MathUtils.degToRad(FINAL_FOV) / 2);
-    pushDistance = Math.max(0.9, fitDistance * 0.62);
-    approachDistance = Math.min(3.6, pushDistance * 2.6);
+    // True on-screen width/height of the monitor, measured by projecting
+    // every corner of its bounding box onto the screen's own up/right
+    // axes - not just picking two of the box's x/y/z extents, which only
+    // gives the right answer if the monitor happens to be world-axis
+    // aligned. This is what makes the "every edge stays inside the
+    // frame" distance below exact instead of an eyeballed guess.
+    const corners = [
+      new THREE.Vector3(box.min.x, box.min.y, box.min.z),
+      new THREE.Vector3(box.max.x, box.min.y, box.min.z),
+      new THREE.Vector3(box.min.x, box.max.y, box.min.z),
+      new THREE.Vector3(box.max.x, box.max.y, box.min.z),
+      new THREE.Vector3(box.min.x, box.min.y, box.max.z),
+      new THREE.Vector3(box.max.x, box.min.y, box.max.z),
+      new THREE.Vector3(box.min.x, box.max.y, box.max.z),
+      new THREE.Vector3(box.max.x, box.max.y, box.max.z),
+    ];
+    let minU = Infinity,
+      maxU = -Infinity,
+      minR = Infinity,
+      maxR = -Infinity;
+    for (const corner of corners) {
+      const rel = corner.clone().sub(screenPos);
+      const u = rel.dot(screenUp);
+      const r = rel.dot(right);
+      minU = Math.min(minU, u);
+      maxU = Math.max(maxU, u);
+      minR = Math.min(minR, r);
+      maxR = Math.max(maxR, r);
+    }
+    screenHeight = maxU - minU;
+    screenWidth = maxR - minR;
+
+    // Contain-fit: the smallest distance at which BOTH the width and the
+    // height stay within the frustum at this viewport's actual aspect
+    // ratio - the monitor's edges land right at (or just inside) the
+    // frame on whichever axis is tighter, and it's never so close that
+    // an edge gets cropped on the other.
+    const vFov = THREE.MathUtils.degToRad(FINAL_FOV);
+    const aspect = camera.aspect || window.innerWidth / window.innerHeight;
+    const distanceForHeight = (screenHeight / 2 / Math.tan(vFov / 2)) * FILL_MARGIN;
+    const distanceForWidth =
+      (screenWidth / 2 / (Math.tan(vFov / 2) * aspect)) * FILL_MARGIN;
+    pushDistance = Math.max(0.8, distanceForHeight, distanceForWidth);
+    approachDistance = pushDistance * 3.2;
   };
 
-  // ---- animated state ---------------------------------------------
-  const orbitCenter = new THREE.Vector3(0, 10.2, 3.4);
-  // angle/radius/height are placeholders until resolveOrbitStart() reads
-  // the camera's actual position (wherever tl2 left it) right as the
-  // dive begins - hardcoded guesses here previously didn't quite match,
-  // so the very first onUpdate call snapped the camera a little, right
-  // at the moment it was supposed to just start turning.
-  const orbit = { angle: 0, radius: 66, height: 8.4 };
-  let orbitStartResolved = false;
+  const originalFov = camera.fov;
+  let diveActive = false;
+  const state = { t: 0 };
+  // Orbit start (angle/radius/height) is read from the camera's actual
+  // live position each time the dive is (re-)entered, rather than a
+  // hardcoded guess - that's what keeps the spiral's very first frame
+  // glued to wherever tl2 actually left the camera, with no pop.
+  const orbitStart = { angle: 0, radius: 66, height: 8.4 };
+  // Where the orbit is aiming for: the exact cylindrical coordinates
+  // (around the same orbitCenter axis) of the final square-on point on
+  // the screen's normal, resolved once per dive-entry from the monitor's
+  // measured position. Driving the camera in these same angle/radius/
+  // height terms the whole way - rather than turning behind the head
+  // and only then jumping to a straight-line Cartesian blend toward the
+  // screen - is what makes this an actual spiral: the radius only gets
+  // small once the angle has already swung around to point at the
+  // screen, so the shrinking half of the move travels straight down a
+  // ray from the character's centre toward the monitor instead of
+  // cutting sideways through him to get there.
+  const target = { angle: 0, radius: 3, height: 9 };
+  const ORBIT_END_RADIUS = 24;
+
   const resolveOrbitStart = () => {
-    if (orbitStartResolved) return;
-    orbitStartResolved = true;
     const dx = camera.position.x - orbitCenter.x;
     const dz = camera.position.z - orbitCenter.z;
-    orbit.radius = Math.max(1, Math.hypot(dx, dz));
-    orbit.height = camera.position.y;
-    orbit.angle = Math.atan2(dx, dz);
+    orbitStart.radius = Math.max(1, Math.hypot(dx, dz));
+    orbitStart.height = camera.position.y;
+    orbitStart.angle = Math.atan2(dx, dz);
   };
-  // Free-flight waypoints for everything after the orbit. The dive can't
-  // stay on the orbit path - shrinking its radius drove the camera
-  // straight into his torso, since the orbit centre sits behind him.
-  // Distances along the screen's normal, filled in by resolveScreen from
-  // the monitor's measured size. They have to stay inside the gap
-  // between the screen and the person sitting at it (only ~5 units) -
-  // a fixed 14 put the camera behind his chair, looking at the back of
-  // both him and the monitor.
-  let approachDistance = 3.4;
-  let pushDistance = 1.5;
-  const FINAL_FOV = 46;
-  const fly = {
-    x: 0,
-    y: 11.4,
-    z: -13.6,
-    lookX: orbitCenter.x,
-    lookY: orbitCenter.y,
-    lookZ: orbitCenter.z,
+
+  const resolveTarget = () => {
+    const finalPoint = squareOn(pushDistance);
+    const dx = finalPoint.x - orbitCenter.x;
+    const dz = finalPoint.z - orbitCenter.z;
+    target.radius = Math.max(0.5, Math.hypot(dx, dz));
+    target.height = finalPoint.y;
+
+    // There are always two ways to sweep from the start angle to the
+    // screen's angle - the short way round and the long way round. Only
+    // one of them passes across the space in front of the character
+    // (between his face and the monitor); the other loops around behind
+    // his head and shoulders instead - which is the one a plain
+    // shortest-angle calculation actually picks here, since the
+    // "shortest" arc isn't the one that stays clear of him. `facing`
+    // (the screen's normal, pointing from the screen toward him) scores
+    // each candidate's midpoint against the FAR side of that direction,
+    // which is what the front-passing arc's midpoint lines up with.
+    const raw = Math.atan2(dx, dz);
+    let shortDiff = raw - orbitStart.angle;
+    shortDiff = ((shortDiff % (Math.PI * 2)) + Math.PI * 3) % (Math.PI * 2) - Math.PI;
+    const candidateShort = orbitStart.angle + shortDiff;
+    const candidateLong = shortDiff >= 0 ? candidateShort - Math.PI * 2 : candidateShort + Math.PI * 2;
+    const frontAngle = Math.atan2(facing.x, facing.z);
+    const frontScore = (candidate: number) =>
+      Math.cos((orbitStart.angle + candidate) / 2 - frontAngle);
+    target.angle = frontScore(candidateShort) >= frontScore(candidateLong) ? candidateLong : candidateShort;
   };
-  // 14.5deg telephoto suits the wide intro framing but makes anything
-  // near the lens enormous; widening through the dive keeps the approach
-  // readable and lets the screen fill the frame naturally.
-  const lens = { fov: camera.fov };
-  const originalFov = camera.fov;
 
-  let diveActive = false;
+  // The nav header and social/resume corner both float over the 3D
+  // canvas the entire time; left alone they sit on top of the monitor
+  // bezel once the camera is in close, so they fade out of the way for
+  // the dive and back in once it's past (either direction).
+  const chromeEls = ["header", "icons-section"]
+    .map((cls) => document.querySelector(`.${cls}`) as HTMLElement | null)
+    .filter((el): el is HTMLElement => !!el);
+  const setChromeVisible = (visible: boolean) => {
+    chromeEls.forEach((el) => {
+      el.style.pointerEvents = visible ? "" : "none";
+      el.style.opacity = visible ? "" : "0";
+      el.style.transition = "opacity 0.4s ease";
+    });
+  };
 
-  const writeCamera = () => {
+  // The HTML terminal overlay - rather than only fading in as a static,
+  // already-centred box right at the very end, this is kept visually
+  // locked onto the 3D monitor's own projected screen corners for the
+  // whole approach: it appears partway through the turn (already
+  // roughly where the monitor is), then rides those corners inward as
+  // the camera closes in, arriving exactly centred because that's where
+  // the monitor's corners themselves end up once resolveScreen's
+  // contain-fit framing is reached.
+  const stageEl = document.querySelector(".screen-dive-stage") as HTMLElement | null;
+  let stageHome: { cx: number; cy: number; w: number; h: number } | null = null;
+  const cornerA = new THREE.Vector3();
+  const cornerB = new THREE.Vector3();
+  const cornerC = new THREE.Vector3();
+  const cornerD = new THREE.Vector3();
+  const trackStage = (opacity: number) => {
+    if (!stageEl) return;
+    if (!stageHome) {
+      const r = stageEl.getBoundingClientRect();
+      stageHome = { cx: r.left + r.width / 2, cy: r.top + r.height / 2, w: r.width, h: r.height };
+    }
+    const halfW = screenWidth / 2;
+    const halfH = screenHeight / 2;
+    cornerA.copy(screenPos).addScaledVector(right, -halfW).addScaledVector(screenUp, halfH);
+    cornerB.copy(screenPos).addScaledVector(right, halfW).addScaledVector(screenUp, halfH);
+    cornerC.copy(screenPos).addScaledVector(right, -halfW).addScaledVector(screenUp, -halfH);
+    cornerD.copy(screenPos).addScaledVector(right, halfW).addScaledVector(screenUp, -halfH);
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    for (const corner of [cornerA, cornerB, cornerC, cornerD]) {
+      const ndc = corner.clone().project(camera);
+      const px = (ndc.x * 0.5 + 0.5) * window.innerWidth;
+      const py = (1 - (ndc.y * 0.5 + 0.5)) * window.innerHeight;
+      minX = Math.min(minX, px);
+      maxX = Math.max(maxX, px);
+      minY = Math.min(minY, py);
+      maxY = Math.max(maxY, py);
+    }
+    const targetCx = (minX + maxX) / 2;
+    const targetCy = (minY + maxY) / 2;
+    const targetW = maxX - minX;
+    const scale = Math.max(0.05, targetW / stageHome.w);
+    stageEl.style.opacity = String(opacity);
+    stageEl.style.transformOrigin = "center center";
+    stageEl.style.transform = `translate(${targetCx - stageHome.cx}px, ${
+      targetCy - stageHome.cy
+    }px) scale(${scale})`;
+  };
+
+  const beginDive = () => {
+    resolveOrbitStart();
+    resolveScreen();
+    resolveTarget();
+    diveActive = true;
+    setChromeVisible(false);
+  };
+
+  // The final stretch of the approach is the camera closing in on
+  // roughly where the character's own eyes are (it's arriving at his own
+  // view of the screen) - so it unavoidably passes very near his head on
+  // the way there. The 3D character fades out well before that point,
+  // once the HTML terminal (tracked onto the monitor's corners, above)
+  // is already substantially visible, so what's covering that close
+  // pass is the terminal overlay, not a view of him clipping through
+  // himself.
+  const characterEl = document.querySelector(".character-model") as HTMLElement | null;
+
+  // Windowed ease: 0 before `from`, 1 after `to`, smoothstepped between -
+  // lets several properties share one progress value `t` while still
+  // easing on their own overlapping windows, so the whole thing reads as
+  // one continuous gesture (never a hard cut) without every property
+  // having to move in lockstep the entire time.
+  const windowEase = (t: number, from: number, to: number) =>
+    smoothstep((t - from) / (to - from));
+
+  // One continuous function of progress `t`, entirely in the orbit's own
+  // cylindrical coordinates. The turn swings the SHORT way round to
+  // `target.angle` - across the space in front of the character, between
+  // him and the monitor, rather than looping behind his head - while the
+  // radius stays out at a safe berth (ORBIT_END_RADIUS) until that turn
+  // is basically done, and only shrinks toward the final push distance
+  // once the angle (and, separately, the height) are already lined up
+  // with the screen - so the close-in travels straight down a ray at the
+  // screen's own height, clear of him, instead of cutting through him
+  // partway round.
+  const applyCurve = () => {
     if (!diveActive) return;
-    camera.position.set(fly.x, fly.y, fly.z);
-    camera.up.copy(worldUp);
-    camera.lookAt(fly.lookX, fly.lookY, fly.lookZ);
-    if (camera.fov !== lens.fov) {
-      camera.fov = lens.fov;
+    const t = state.t;
+    const turn = windowEase(t, 0, 0.55);
+    const settle = windowEase(t, 0.3, 0.75);
+    const radiusShrink = windowEase(t, 0.75, 1);
+    const gaze = windowEase(t, 0.45, 1);
+    // Widens across nearly the whole move - the base lens is a 14.5deg
+    // telephoto, and staying that narrow through the whole turn made his
+    // head fill the frame purely from lens compression even while the
+    // camera was still physically well clear of him.
+    const fovEase = windowEase(t, 0, 0.85);
+    // The HTML terminal starts appearing mid-turn, already tracking the
+    // monitor's projected corners, rather than popping in only once the
+    // dive is basically finished.
+    const overlayEase = windowEase(t, 0.2, 0.6);
+    // The 3D character fades out right after the overlay above has
+    // fully taken over, and before the close-in gets uncomfortably near
+    // his head.
+    const characterFade = 1 - windowEase(t, 0.6, 0.8);
+
+    const angle = THREE.MathUtils.lerp(orbitStart.angle, target.angle, turn);
+    const radiusAfterTurn = THREE.MathUtils.lerp(orbitStart.radius, ORBIT_END_RADIUS, turn);
+    const radius = THREE.MathUtils.lerp(radiusAfterTurn, target.radius, radiusShrink);
+    const height = THREE.MathUtils.lerp(orbitStart.height, target.height, settle);
+
+    camera.position.set(
+      orbitCenter.x + Math.sin(angle) * radius,
+      height,
+      orbitCenter.z + Math.cos(angle) * radius
+    );
+
+    // Look-at target and up-vector settle onto the screen across the
+    // back half too, so the camera is already looking exactly at the
+    // monitor by the time it arrives.
+    const lookAt = orbitCenter.clone().lerp(screenPos, gaze);
+    camera.up.copy(worldUp.clone().lerp(screenUp, gaze).normalize());
+    camera.lookAt(lookAt);
+
+    const fov = THREE.MathUtils.lerp(originalFov, FINAL_FOV, fovEase);
+    if (Math.abs(camera.fov - fov) > 0.001) {
+      camera.fov = fov;
       camera.updateProjectionMatrix();
     }
-  };
 
-  const applyOrbit = () => {
-    if (!diveActive) return;
-    fly.x = orbitCenter.x + Math.sin(orbit.angle) * orbit.radius;
-    fly.y = orbit.height;
-    fly.z = orbitCenter.z + Math.cos(orbit.angle) * orbit.radius;
-    fly.lookX = orbitCenter.x;
-    fly.lookY = orbitCenter.y;
-    fly.lookZ = orbitCenter.z;
-    writeCamera();
-  };
-
-  // Square-on: camera sits on the screen's normal, looking straight down
-  // it, with up matched to the screen's own up.
-  const applySquare = () => {
-    if (!diveActive) return;
-    camera.position.set(fly.x, fly.y, fly.z);
-    camera.up.copy(screenUp);
-    camera.lookAt(screenPos);
-    if (camera.fov !== lens.fov) {
-      camera.fov = lens.fov;
-      camera.updateProjectionMatrix();
-    }
+    trackStage(overlayEase);
+    if (characterEl) characterEl.style.opacity = String(characterFade);
   };
 
   const restoreCamera = () => {
@@ -380,6 +567,12 @@ export function setScreenDiveTimeline(
     camera.rotation.set(0, 0, 0);
     camera.fov = originalFov;
     camera.updateProjectionMatrix();
+    if (stageEl) {
+      stageEl.style.opacity = "0";
+      stageEl.style.transform = "";
+    }
+    if (characterEl) characterEl.style.opacity = "";
+    setChromeVisible(true);
   };
 
   const tl = gsap.timeline({
@@ -393,18 +586,15 @@ export function setScreenDiveTimeline(
       end: "bottom bottom",
       scrub: true,
       invalidateOnRefresh: true,
-      onEnter: () => {
-        resolveOrbitStart();
-        resolveScreen();
-        diveActive = true;
-      },
-      onEnterBack: () => {
-        resolveOrbitStart();
-        resolveScreen();
-        diveActive = true;
-      },
+      onEnter: beginDive,
+      onEnterBack: beginDive,
       onLeave: () => {
         diveActive = false;
+        setChromeVisible(true);
+        if (stageEl) {
+          stageEl.style.transform = "";
+          stageEl.style.opacity = "1";
+        }
       },
       onLeaveBack: () => {
         diveActive = false;
@@ -414,76 +604,12 @@ export function setScreenDiveTimeline(
   });
 
   tl
-    // Front of the face -> around behind the head, closing in. The
-    // target angle is relative to wherever resolveOrbitStart() found the
-    // camera (tl2's end position) rather than a fixed Math.PI, so this
-    // is always a clean half-turn from whatever "front" actually was.
-    .to(
-      orbit,
-      {
-        angle: () => orbit.angle + Math.PI,
-        radius: 17,
-        height: 11.4,
-        duration: 3,
-        ease: "none",
-        onUpdate: applyOrbit,
-      },
-      0.3
-    )
-    // Climb clear of his head (hair tops out near y=14.5) on the way over.
-    .to(
-      fly,
-      {
-        y: 19,
-        z: -5.5,
-        lookY: 9.6,
-        lookZ: screenPos.z,
-        duration: 1.1,
-        ease: "power1.inOut",
-        onUpdate: writeCamera,
-      },
-      4
-    )
-    .to(lens, { fov: 34, duration: 1.1, onUpdate: writeCamera }, 4)
-    // Swing onto the screen's normal, still well back - from here on the
-    // framing is square to the screen.
-    .to(
-      fly,
-      {
-        // Function-based so they resolve when the tween actually runs -
-        // the screen's world transform isn't known until resolveScreen()
-        // has run inside this section.
-        x: () => squareOn(approachDistance).x,
-        y: () => squareOn(approachDistance).y,
-        z: () => squareOn(approachDistance).z,
-        duration: 0.9,
-        ease: "power1.inOut",
-        onUpdate: applySquare,
-      },
-      5.1
-    )
-    // Push straight down the normal until the screen fills the frame.
-    .to(
-      fly,
-      {
-        x: () => squareOn(pushDistance).x,
-        y: () => squareOn(pushDistance).y,
-        z: () => squareOn(pushDistance).z,
-        duration: 1,
-        ease: "power2.in",
-        onUpdate: applySquare,
-      },
-      6
-    )
-    .to(lens, { fov: FINAL_FOV, duration: 1.9, onUpdate: applySquare }, 5.1)
-    // Hand off from the 3D canvas to the terminal "inside" the screen.
-    .to(".character-model", { opacity: 0, duration: 0.6 }, 6.6)
-    .fromTo(
-      ".screen-dive-stage",
-      { opacity: 0, scale: 0.9 },
-      { opacity: 1, scale: 1, duration: 0.8, immediateRender: false },
-      6.6
-    )
+    // Both the terminal overlay's tracking/fade-in and the 3D
+    // character's fade-out are driven per-frame inside applyCurve
+    // itself (see overlayEase/characterFade above), tied directly to
+    // the same progress value as the camera move - not separate tweens
+    // bolted onto the end of this timeline.
+    .to(state, { t: 1, duration: 6.6, ease: "none", onUpdate: applyCurve }, 0.3)
     // Trailing hold so the terminal has room to be read before the pin
     // releases and it scrolls away into the career section.
     .to({}, { duration: 2.6 }, 7.4);

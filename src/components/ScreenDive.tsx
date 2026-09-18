@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Terminal from "./Terminal";
@@ -50,6 +50,30 @@ const ScreenDive = () => {
   const stickyRef = useRef<HTMLDivElement>(null);
   const deckRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
+  const screenRef = useRef<HTMLDivElement>(null);
+  const [windowOpen, setWindowOpen] = useState(false);
+
+  // The screen crossfades in already showing a full desktop (wallpaper +
+  // dock); the terminal window then pops open on top of it a beat later,
+  // rather than the terminal filling the whole screen from the very first
+  // frame of the crossfade. Triggered once the screen is actually in
+  // view, same pattern Terminal.tsx uses for its own typing start.
+  useEffect(() => {
+    const el = screenRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          const t = setTimeout(() => setWindowOpen(true), 650);
+          observer.disconnect();
+          return () => clearTimeout(t);
+        }
+      },
+      { threshold: 0.35 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     if (!sectionRef.current || !deckRef.current || !stickyRef.current || !frameRef.current) return;
@@ -109,8 +133,33 @@ const ScreenDive = () => {
         <div className="screen-dive-stage">
           <div className="screen-dive-frame" ref={frameRef}>
             <div className="screen-dive-webcam" />
-            <div className="screen-dive-screen">
-              <Terminal commands={COMMANDS} outputs={OUTPUTS} />
+            <div className="screen-dive-screen" ref={screenRef}>
+              <div className="screen-dive-desktop">
+                <div className="screen-dive-desktop-icons">
+                  <div className="screen-dive-icon">
+                    <span className="screen-dive-icon-glyph">📁</span>
+                    Projects
+                  </div>
+                  <div className="screen-dive-icon">
+                    <span className="screen-dive-icon-glyph">📄</span>
+                    Resume.pdf
+                  </div>
+                  <div className="screen-dive-icon">
+                    <span className="screen-dive-icon-glyph">🧠</span>
+                    Research
+                  </div>
+                </div>
+                <div className="screen-dive-dock">
+                  <span className="screen-dive-dock-item" />
+                  <span className="screen-dive-dock-item" />
+                  <span className="screen-dive-dock-item screen-dive-dock-item-active" />
+                  <span className="screen-dive-dock-item" />
+                  <span className="screen-dive-dock-item" />
+                </div>
+              </div>
+              <div className={`screen-dive-window ${windowOpen ? "screen-dive-window-open" : ""}`}>
+                <Terminal commands={COMMANDS} outputs={OUTPUTS} startDelay={950} />
+              </div>
             </div>
           </div>
           <div className="screen-dive-deck" ref={deckRef}>

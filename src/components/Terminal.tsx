@@ -81,6 +81,10 @@ export interface TerminalProps {
   className?: string;
   typingSpeed?: number;
   delayBetweenCommands?: number;
+  /** Pause after scrolling into view before the first keystroke - lets a
+   *  desktop/window-open reveal play first so the terminal doesn't start
+   *  typing before its own window has finished appearing. */
+  startDelay?: number;
 }
 
 const Terminal = ({
@@ -90,6 +94,7 @@ const Terminal = ({
   className,
   typingSpeed = 35,
   delayBetweenCommands = 500,
+  startDelay = 400,
 }: TerminalProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -111,9 +116,9 @@ const Terminal = ({
 
   useEffect(() => {
     if (!inView || phase !== "idle") return;
-    const t = setTimeout(() => setPhase("typing"), 400);
+    const t = setTimeout(() => setPhase("typing"), startDelay);
     return () => clearTimeout(t);
-  }, [inView, phase]);
+  }, [inView, phase, startDelay]);
 
   useEffect(() => {
     if (phase !== "typing") return;
