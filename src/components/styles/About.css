@@ -4,6 +4,17 @@
   justify-content: left;
   place-items: center;
   position: relative;
+  /* The pinned 3D character model (Landing.css .character-model) is an
+     absolutely-positioned, full-width hitbox that stays on screen while
+     this section scrolls into view. It's visually transparent outside
+     the character graphic itself, but without a higher z-index here its
+     (very large) bounding box can still intercept hover/click before it
+     reaches the About text sitting visually on top of it - this only
+     showed up once the About text gained interactive tooltip words, and
+     only at some viewport widths (where a highlighted phrase happens to
+     wrap to a line the character's hitbox still covers). */
+  z-index: 5;
+  isolation: isolate;
   opacity: 1;
   height: auto;
   width: var(--cWidth);

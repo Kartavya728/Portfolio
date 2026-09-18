@@ -41,7 +41,9 @@ const setAnimations = (gltf: GLTF) => {
     introAction.reset().play();
     setTimeout(() => {
       const blink = gltf.animations.find((clip) => clip.name === "Blink");
-      mixer.clipAction(blink!).play().fadeIn(0.5);
+      if (blink) {
+        mixer.clipAction(blink).play().fadeIn(0.5);
+      }
     }, 2500);
   }
   function hover(gltf: GLTF, hoverDiv: HTMLDivElement) {
