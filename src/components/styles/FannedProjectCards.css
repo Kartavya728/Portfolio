@@ -1,10 +1,10 @@
 .fanned-projects {
   position: relative;
   width: 100%;
-  margin: 60px 0 40px;
-  /* Room for the tallest fan offset (idle pattern goes up to -34px) plus
-     the card height itself, so nothing gets clipped by the row. */
-  padding-top: 40px;
+  margin: 16px 0 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .fan-track {
@@ -13,21 +13,24 @@
   gap: 34px;
   overflow-x: hidden;
   padding: 0 4px;
-  height: 340px;
+  /* Tall enough to hold the card at its full height plus the fan
+     pattern's y-offset/rotation swing on either side, so nothing is ever
+     actually clipped - no separate scroll/overflow area needed. */
+  height: 420px;
 }
 
 .fan-card {
   position: relative;
   flex: 0 0 auto;
-  width: 210px;
-  height: 280px;
+  width: 260px;
+  height: 300px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 10px;
+  gap: 6px;
   padding: 14px;
   border: 1px solid transparent;
-  border-radius: 16px;
+  border-radius: 18px;
   cursor: pointer;
   overflow: hidden;
   backdrop-filter: blur(8px);
@@ -50,17 +53,92 @@
 
 .fan-card-img {
   width: 100%;
-  height: 140px;
+  height: 90px;
+  flex-shrink: 0;
+  display: block;
   object-fit: cover;
   border-radius: 10px;
   pointer-events: none;
 }
 
+.fan-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+}
+
+.fan-card-index {
+  font-size: 18px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.35);
+  flex-shrink: 0;
+}
+
 .fan-card-title {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   line-height: 1.3;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.fan-card-category {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+  margin-top: 2px;
+}
+
+.fan-card-desc-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 2px;
+}
+
+.fan-card-description {
+  font-size: 12px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.8);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.fan-card-actions {
+  margin-top: auto;
+  padding-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.fan-card-view-more {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 6px 14px;
+  cursor: pointer;
+}
+
+.fan-card-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  flex-shrink: 0;
 }
 
 .fan-card-veil {
@@ -73,7 +151,7 @@
   opacity: 0;
   transition: opacity 0.25s ease;
   color: #fff;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -88,60 +166,39 @@
   opacity: 0;
 }
 
-/* FLIP-style clone that grows from the clicked card's rect up to a large
-   centred preview, then reverses the same path back on close. */
+/* Blank FLIP box that grows from the clicked card's rect up to roughly
+   where ProjectModal will render, then reverses the same path back on
+   close - deliberately carries no content of its own (see
+   FannedProjectCards.tsx). */
 .fan-card-overlay {
   position: fixed;
   top: 0;
   left: 0;
   z-index: 999;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 22px;
   border: 1px solid transparent;
   border-radius: 22px;
   backdrop-filter: blur(14px);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
-  color: #fff;
   overflow: hidden;
-}
-
-.fan-card-overlay .fan-card-img {
-  height: 46%;
-  flex-shrink: 0;
-}
-
-.fan-card-overlay .fan-card-title {
-  font-size: 26px;
-  flex-shrink: 0;
-}
-
-.fan-card-description {
-  flex: 1 1 auto;
-  min-height: 0;
-  font-size: 14px;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.85);
-  overflow-y: auto;
-  padding-right: 4px;
 }
 
 @media only screen and (max-width: 900px) {
   .fan-track {
-    height: 260px;
+    height: 340px;
     gap: 22px;
   }
   .fan-card {
-    width: 150px;
-    height: 210px;
+    width: 190px;
+    height: 240px;
     padding: 10px;
   }
   .fan-card-img {
-    height: 100px;
+    height: 70px;
   }
   .fan-card-title {
     font-size: 13px;
+  }
+  .fan-card-description {
+    font-size: 11px;
   }
 }

@@ -29,10 +29,13 @@ interface EncryptedTextProps {
   duration?: number;
 }
 
-const EncryptedText = ({ text, className, duration = 600 }: EncryptedTextProps) => {
+const SCRAMBLE_INTERVAL = 80; // ms between glyph re-rolls - slower flicker reads as calmer, less "busy"
+
+const EncryptedText = ({ text, className, duration = 420 }: EncryptedTextProps) => {
   const spanRef = useRef<HTMLSpanElement | null>(null);
   const startedRef = useRef(false);
   const rafRef = useRef<number | null>(null);
+  const lastScrambleRef = useRef(0);
   const [chars, setChars] = useState<{ char: string; color?: string }[]>(() =>
     text.split("").map((c) => ({ char: c }))
   );
@@ -65,18 +68,20 @@ const EncryptedText = ({ text, className, duration = 600 }: EncryptedTextProps) 
   const runScramble = () => {
     const length = text.length;
     const startTime = performance.now();
+    let current: { char: string; color?: string }[] = text.split("").map((c) => ({ char: c }));
 
     const tick = (now: number) => {
       const progress = Math.min(1, (now - startTime) / duration);
       const revealCount = Math.floor(progress * length);
+      const reroll = now - lastScrambleRef.current >= SCRAMBLE_INTERVAL;
+      if (reroll) lastScrambleRef.current = now;
 
-      const next = text.split("").map((char, i) => {
-        if (char === " " || i < revealCount) {
-          return { char };
-        }
-        return { char: randomChar(), color: randomScrambleColor() };
+      current = text.split("").map((char, i) => {
+        if (char === " " || i < revealCount) return { char };
+        if (reroll) return { char: randomChar(), color: randomScrambleColor() };
+        return current[i]?.color ? current[i] : { char: randomChar(), color: randomScrambleColor() };
       });
-      setChars(next);
+      setChars(current);
 
       if (progress < 1) {
         rafRef.current = requestAnimationFrame(tick);

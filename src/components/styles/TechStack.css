@@ -31,11 +31,6 @@
   pointer-events: auto;
   transition: transform 0.25s ease, border-color 0.25s ease,
     background 0.25s ease;
-  /* Set every frame from TechStack.tsx based on distance to the cursor
-     and current speed - purely additive, doesn't touch the ball's
-     physics/motion. */
-  box-shadow: 0 0 calc(var(--tech-glow, 0) * 32px) calc(var(--tech-glow, 0) * 6px)
-    rgba(194, 164, 255, var(--tech-glow, 0));
 }
 
 .tech-ball-inner:hover {
