@@ -1,267 +1,200 @@
+/* Height is set inline from the achievement count (N * 85vh) so the
+   sticky reveal has enough scroll distance for one entry each. */
 .achievements-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: auto;
-  padding: 120px 0px;
-}
-
-.achievements-section h2 {
-  font-size: 70px;
-  line-height: 70px;
-  font-weight: 400;
-  text-align: center;
-  margin-bottom: 70px;
-}
-
-.achievements-section h2 > span {
-  color: var(--accentColor);
-}
-
-/* ---------------- bento grid ---------------- */
-
-.bento-grid {
+  position: relative;
   width: 100%;
-  max-width: 1100px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-auto-rows: 20rem;
-  gap: 16px;
 }
 
-.bento-item {
+/* Pinned by ScrollTrigger (see Achievements.tsx), not `position: sticky` -
+   ScrollSmoother's transform-based scrolling breaks sticky. */
+.ach-sticky {
+  position: relative;
+  height: 100vh;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 16px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.02);
-  overflow: hidden;
-  transition: box-shadow 0.25s ease, border-color 0.25s ease,
-    transform 0.25s ease;
-}
-
-.bento-item:hover {
-  border-color: rgba(194, 164, 255, 0.5);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
-  transform: translateY(-3px);
-}
-
-.bento-span-1 {
-  grid-column: span 1;
-}
-.bento-span-2 {
-  grid-column: span 2;
-}
-
-.bento-content {
-  transition: transform 0.25s ease;
-}
-
-.bento-item:hover .bento-content {
-  transform: translateX(8px);
-}
-
-.bento-icon {
-  color: var(--accentColor);
-  font-size: 18px;
-  display: flex;
-}
-
-.bento-title {
-  margin: 8px 0;
-  font-weight: 600;
-  font-size: 15px;
-  color: #eae5ec;
-  line-height: 1.35;
-}
-
-.bento-description {
-  font-size: 12px;
-  font-weight: 300;
-  line-height: 1.6;
-  color: #adacac;
-}
-
-/* ---------------- animated headers ---------------- */
-
-.bento-skeleton {
-  display: flex;
-  flex: 1;
-  width: 100%;
-  min-height: 6rem;
-  flex-direction: column;
-  gap: 8px;
-  border-radius: 10px;
-}
-
-.bento-skeleton-row {
-  flex-direction: row;
-  gap: 8px;
-}
-
-.bento-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
-  padding: 8px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: #0b080c;
-}
-
-.bento-row-narrow {
-  width: 75%;
-  margin-left: auto;
-}
-
-.bento-dot {
-  height: 24px;
-  width: 24px;
-  border-radius: 50%;
-  background: linear-gradient(to right, #ec4899, #8b5cf6);
-  flex-shrink: 0;
-}
-
-.bento-bar {
-  width: 100%;
-  height: 16px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.bento-line {
-  height: 16px;
-  width: 100%;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.bento-gradient {
-  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-  background-size: 400% 400%;
-}
-
-.bento-mini-card {
-  height: 100%;
-  width: 33.333%;
-  border-radius: 14px;
-  background: #0b080c;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 12px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  gap: 8px;
 }
 
-.bento-mini-card-front {
-  position: relative;
-  z-index: 2;
+.ach-inner {
+  width: var(--cWidth);
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 460px;
+  gap: 70px;
+  align-items: center;
 }
 
-.bento-mini-card img {
-  height: 40px;
-  width: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.bento-mini-card p {
-  font-size: 11px;
+.ach-copy h2 {
+  font-size: 40px;
   font-weight: 600;
-  color: #adacac;
-  margin: 0;
+  margin: 0 0 32px;
+  line-height: 1.1;
 }
 
-.bento-pill {
-  border-radius: 999px;
-  padding: 2px 10px;
-  font-size: 10px;
-  border: 1px solid;
-}
-
-.bento-pill-green {
-  border-color: #22c55e;
-  background: rgba(34, 197, 94, 0.15);
-  color: #4ade80;
-}
-
-.bento-pill-purple {
-  border-color: var(--accentColor);
-  background: rgba(194, 164, 255, 0.15);
+.ach-copy h2 span {
   color: var(--accentColor);
 }
 
-.bento-pill-orange {
-  border-color: #f97316;
-  background: rgba(249, 115, 22, 0.15);
-  color: #fb923c;
+/* Entries are stacked in the same cell so the active one cross-fades in
+   place instead of the block jumping as text length changes. */
+.ach-list {
+  position: relative;
+  min-height: 300px;
 }
 
-.bento-chat {
+/* Opacity/transform are written every frame from scroll progress (see
+   Achievements.tsx) - no CSS transition here, since a transition would
+   play out on its own timer and could fall out of sync with fast or
+   reversed scrolling instead of tracking it exactly. */
+.ach-entry {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+.ach-meta {
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accentColor);
+  margin: 0 0 12px;
+}
+
+.ach-title {
+  font-size: 30px;
+  font-weight: 600;
+  margin: 0 0 16px;
+  line-height: 1.25;
+}
+
+.ach-description {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #b9b4c0;
+  max-width: 560px;
+  margin: 0 0 20px;
+}
+
+.ach-stats {
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 8px;
-  padding: 8px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: #0b080c;
-}
-
-.bento-chat img {
-  height: 40px;
-  width: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  flex-shrink: 0;
-}
-
-.bento-chat p {
-  font-size: 11px;
-  color: #adacac;
-  margin: 0;
-  line-height: 1.5;
-}
-
-.bento-chat-reply {
-  width: 75%;
-  margin-left: auto;
   align-items: center;
-  justify-content: flex-end;
-  border-radius: 999px;
+  gap: 28px;
 }
 
-@media only screen and (max-width: 1400px) {
-  .achievements-section h2 {
-    font-size: 50px;
-    line-height: 50px;
-  }
+.ach-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-@media only screen and (max-width: 900px) {
-  .achievements-section h2 {
-    font-size: 40px;
-    line-height: 40px;
+.ach-stat-label {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #8a8590;
+}
+
+.ach-stat-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #e8e4ee;
+}
+
+.ach-stat-link {
+  margin-left: auto;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accentColor);
+  border: 1px solid var(--accentColor);
+  border-radius: 20px;
+  padding: 7px 16px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.ach-stat-link:hover {
+  background: var(--accentColor);
+  color: #0b080c;
+}
+
+.ach-progress {
+  display: flex;
+  gap: 8px;
+  margin-top: 36px;
+}
+
+.ach-pip {
+  width: 34px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.16);
+  transition: background 0.35s ease;
+}
+
+.ach-pip-active {
+  background: var(--accentColor);
+}
+
+.ach-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(194, 164, 255, 0.2);
+  background: #100d15;
+  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.55);
+}
+
+/* Same deal as .ach-entry - opacity/scale are written every frame from
+   scroll progress, not toggled with a CSS transition. */
+.ach-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+@media only screen and (max-width: 1024px) {
+  .achievements-section {
+    height: auto !important;
+    padding: 80px 0;
   }
-  .bento-grid {
+  .ach-sticky {
+    position: relative;
+    height: auto;
+  }
+  .ach-inner {
     grid-template-columns: 1fr;
-    grid-auto-rows: auto;
+    gap: 34px;
+    width: calc(100% - 40px);
   }
-  .bento-span-1,
-  .bento-span-2 {
-    grid-column: span 1;
+  .ach-copy h2 {
+    font-size: 30px;
   }
-  .bento-skeleton {
-    min-height: 10rem;
+  /* Without the sticky stage there's nothing to cross-fade against, so
+     show every entry stacked normally on small screens. */
+  .ach-list {
+    position: static;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 34px;
+  }
+  .ach-entry {
+    position: static;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+  .ach-progress {
+    display: none;
+  }
+  .ach-media {
+    display: none;
   }
 }
