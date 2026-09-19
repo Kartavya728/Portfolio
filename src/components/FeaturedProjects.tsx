@@ -12,7 +12,9 @@ interface QuantResult {
 
 interface FeaturedProject {
   title: string;
-  des: string;
+  /* The write-up shown under "Project Description" - what it is and
+     how it works, in one concise paragraph. */
+  description: string;
   img: string;
   iconLists: string[];
   link: string;
@@ -20,8 +22,13 @@ interface FeaturedProject {
   linkedin?: string;
   deployed?: string;
   hackathon?: boolean;
+  /* Short category shown as a chip in the card's top-left corner. */
+  tag: string;
+  /* Per-project accent used for the card border, tag, section titles and
+     table values - gives each project its own visual identity instead
+     of every card looking identical. */
+  theme: string;
   problem: string;
-  solution: string;
   usp: string;
   results: QuantResult[];
 }
@@ -32,15 +39,16 @@ interface FeaturedProject {
 const featuredProjects: FeaturedProject[] = [
   {
     title: "Anatomy-Aware DoseFlow",
-    des: "A three-stage deep learning pipeline reconstructing CT images across arbitrary dose levels (5%-100%). A dose-conditioned flow trajectory model integrating MedSAM and ViT encoders reached 48.15 dB PSNR and 0.9991 SSIM, generalizing zero-shot across three unseen anatomical regions.",
+    description:
+      "A three-stage deep learning pipeline built around a dose-conditioned flow trajectory model (MedSAM + ViT encoders) that reconstructs clean CT scans at any dose from 5%-100%, trained once instead of separately per dose level.",
     img: "/dose.png",
     iconLists: ["PyTorch", "MedSAM", "ViT", "Mamba"],
     link: "Deep Learning Research — Feb 2026",
     github: "https://github.com/Kartavya728",
+    tag: "Deep Learning",
+    theme: "#5aa9ff",
     problem:
       "Low-dose CT scans are noisy and hard to diagnose from, but the 'right' dose is different for every patient - most denoising models only work at the one fixed dose level they were trained on.",
-    solution:
-      "A three-stage pipeline built around a dose-conditioned flow trajectory model (MedSAM + ViT encoders) that reconstructs a clean scan at any dose from 5%-100%, trained once instead of separately per dose level.",
     usp: "Generalizes zero-shot to three anatomical regions the model never saw in training - most dose-reduction models only work on the body part they were trained on.",
     results: [
       { metric: "PSNR", value: "48.15 dB" },
@@ -51,16 +59,17 @@ const featuredProjects: FeaturedProject[] = [
   },
   {
     title: "Smart-Scribes — Multimodal Lecture Intelligence",
-    des: "Learning platform with multimodal understanding across video, audio and slides. Lecture summarization, Q&A generation, slide management and professor/student dashboards, built on Next.js, Supabase and Python embedding pipelines. 1st overall among 1,600+ teams.",
+    description:
+      "A multimodal AI platform that ingests lecture video, audio and slides together, auto-generating summaries, Q&A and role-based dashboards for professors and students - built on Next.js, Supabase and a Python embedding pipeline.",
     img: "/ss.png",
     iconLists: ["Next.js", "TypeScript", "Whisper", "RAG"],
     link: "iHub Multimodal AI Hackathon — 2025",
     github: "https://github.com/Kartavya728/Smart-Scribes",
     hackathon: true,
+    tag: "Agentic AI",
+    theme: "#b388ff",
     problem:
       "Students juggle lecture videos, audio recordings and slide decks as three separate things, with no single place to search, summarize or ask questions across all of them at once.",
-    solution:
-      "A multimodal AI platform that ingests video, audio and slides together, auto-generates summaries and Q&A, and gives professors and students their own role-based dashboards - built on Next.js, Supabase and a Python embedding pipeline.",
     usp: "Cross-modal retrieval: ask a question and it points back to the exact slide AND the exact timestamp in the recording that answers it.",
     results: [
       { metric: "Rank", value: "1st / 1,600+ teams" },
@@ -70,16 +79,17 @@ const featuredProjects: FeaturedProject[] = [
   },
   {
     title: "Lunar DEM Generation using Photoclinometry",
-    des: "Generates high-resolution Digital Elevation Models of the lunar surface from photoclinometry, processing NASA lunar datasets with ML, computer vision and GIS tooling to build accurate 3D topographic maps for rover-terrain studies.",
+    description:
+      "A photoclinometry pipeline that reconstructs high-resolution lunar Digital Elevation Models straight from NASA's orbital photographs, combining shape-from-shading computer vision with GIS tooling to build 3D topographic maps for rover-terrain studies.",
     img: "/luna.png",
     iconLists: ["Python", "NumPy", "SciPy", "Open3D"],
     link: "ISRO Hackathon — Jul 2025",
     github: "https://github.com/Kartavya728/LunaDEM",
     hackathon: true,
+    tag: "Computer Vision",
+    theme: "#4fd1a5",
     problem:
       "Planning rover terrain needs accurate lunar elevation data, but there's no direct depth sensor for most of the surface - only 2D photographs taken from orbit.",
-    solution:
-      "A photoclinometry pipeline that reconstructs high-resolution Digital Elevation Models straight from NASA's lunar surface photographs, combining classical shape-from-shading computer vision with GIS tooling.",
     usp: "Produces rover-planning-grade 3D topography from ordinary 2D imagery alone - no LIDAR or stereo image pairs required.",
     results: [
       { metric: "Event", value: "ISRO Hackathon" },
@@ -89,14 +99,15 @@ const featuredProjects: FeaturedProject[] = [
   },
   {
     title: "Integrated Finance Management Portal — IIT Mandi",
-    des: "Digital finance workflow portal replacing paper-based PDA claims, reimbursements and bill approvals with role-based dashboards for faculty, staff, finance and audit officers. Auto-routing, QR-enabled asset tracking, live PDA balances and LDAP auth.",
+    description:
+      "A role-based digital workflow portal for faculty, staff, finance and audit officers, with auto-routing approvals, QR-enabled asset tracking, live PDA balances and LDAP auth.",
     img: "/flow.png",
     iconLists: ["Next.js", "TypeScript", "Supabase", "NextAuth.js"],
     link: "IIT Mandi — 2025",
+    tag: "System Design",
+    theme: "#f0b84c",
     problem:
       "IIT Mandi's PDA claims, reimbursements and bill approvals ran entirely on paper, with no visibility into where a claim was stuck or how much budget was left.",
-    solution:
-      "A role-based digital workflow portal for faculty, staff, finance and audit officers, with auto-routing approvals, QR-enabled asset tracking and live PDA balances, secured with LDAP auth.",
     usp: "Replaced a fully paper-based process end-to-end for an entire institute department, not just a prototype.",
     results: [
       { metric: "Roles", value: "4 (Faculty/Staff/Finance/Audit)" },
@@ -239,10 +250,12 @@ const FeaturedProjects = () => {
             <div
               key={project.title}
               className="fp-card"
+              style={{ "--fp-theme": project.theme } as React.CSSProperties}
               ref={(el) => {
                 cardRefs.current[i] = el;
               }}
             >
+              <span className="fp-tag">{project.tag}</span>
               <ImageFan src={project.img} alt={project.title} />
 
               <div className="fp-card-header">
@@ -258,24 +271,22 @@ const FeaturedProjects = () => {
                 {project.hackathon && <HackathonBadge />}
               </div>
 
-              <div className="fp-card-scroll">
-                <p className="fp-card-desc">{project.des}</p>
-
+              <div className="fp-card-body">
                 <div className="fp-section">
                   <h3 className="fp-section-title">Problem</h3>
                   <p className="fp-section-body">{project.problem}</p>
                 </div>
                 <div className="fp-section">
-                  <h3 className="fp-section-title">Solution I Made</h3>
-                  <p className="fp-section-body">{project.solution}</p>
-                </div>
-                <div className="fp-section">
-                  <h3 className="fp-section-title">Quantitative Results</h3>
-                  <ResultsTable results={project.results} />
+                  <h3 className="fp-section-title">Project Description</h3>
+                  <p className="fp-section-body">{project.description}</p>
                 </div>
                 <div className="fp-section">
                   <h3 className="fp-section-title">USP</h3>
                   <p className="fp-section-body">{project.usp}</p>
+                </div>
+                <div className="fp-section">
+                  <h3 className="fp-section-title">Quantitative Results</h3>
+                  <ResultsTable results={project.results} />
                 </div>
               </div>
 
