@@ -1,38 +1,29 @@
+/* Sits inside .about-section's own stacking context (About.css already
+   sets position:relative + isolation:isolate there) as an ordinary
+   absolutely-positioned layer - NOT fixed to the viewport, so it scrolls
+   away with the section instead of lingering on screen. */
 .flowing-text {
-  position: fixed;
-  top: 12%;
-  left: 0;
-  width: 100%;
-  overflow: hidden;
-  pointer-events: none;
+  position: absolute;
+  inset: 0;
   z-index: 0;
-  mix-blend-mode: screen;
+  pointer-events: none;
+  overflow: hidden;
 }
 
-.flowing-text-track {
-  display: flex;
-  width: max-content;
-  white-space: nowrap;
-  font-size: 9vw;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(194, 164, 255, 0.14);
-  animation: flowing-text-scroll 40s linear infinite;
+.flowing-text-svg {
+  width: 100%;
+  height: 100%;
 }
 
-@keyframes flowing-text-scroll {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
+.flowing-text-path {
+  font-size: 15px;
+  font-weight: 400;
+  fill: var(--accentColor);
+  opacity: 0.16;
 }
 
-@media screen and (max-width: 900px) {
-  .flowing-text-track {
-    font-size: 14vw;
+@media only screen and (max-width: 900px) {
+  .flowing-text-path {
+    font-size: 11px;
   }
 }

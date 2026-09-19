@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import "./styles/About.css";
+import FlowingText from "./FlowingText";
 import TooltipTerm from "./TooltipTerm";
 import TooltipManager from "./TooltipManager";
 import {
@@ -23,6 +24,7 @@ const About = () => {
 
   return (
     <div className="about-section" id="about">
+      <FlowingText />
       <div className="about-me" ref={containerRef}>
         <h3 className="title">About Me</h3>
         <p className="para">

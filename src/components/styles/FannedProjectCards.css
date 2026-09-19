@@ -1,37 +1,41 @@
 .fanned-projects {
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-  margin: 40px 0 20px;
+  position: relative;
+  width: 100%;
+  margin: 60px 0 40px;
+  /* Room for the tallest fan offset (idle pattern goes up to -34px) plus
+     the card height itself, so nothing gets clipped by the row. */
+  padding-top: 40px;
 }
 
-.fan-row {
-  position: relative;
+.fan-track {
+  display: flex;
+  align-items: center;
+  gap: 34px;
+  overflow-x: hidden;
+  padding: 0 4px;
   height: 340px;
-  width: 100%;
 }
 
 .fan-card {
-  position: absolute;
-  top: 50%;
-  left: 50%;
+  position: relative;
+  flex: 0 0 auto;
   width: 210px;
   height: 280px;
-  margin-left: -105px;
-  margin-top: -140px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
   padding: 14px;
-  border: none;
+  border: 1px solid transparent;
   border-radius: 16px;
   cursor: pointer;
   overflow: hidden;
+  backdrop-filter: blur(8px);
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
   font-family: inherit;
   color: #fff;
   text-align: left;
+  transition: transform 0.4s ease, opacity 0.4s ease;
 }
 
 .fan-card-tag {
@@ -59,15 +63,79 @@
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
+.fan-card-veil {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.fan-card:hover .fan-card-veil {
+  opacity: 1;
+}
+
+.fan-track-active .fan-card:hover .fan-card-veil {
+  opacity: 0;
+}
+
+/* FLIP-style clone that grows from the clicked card's rect up to a large
+   centred preview, then reverses the same path back on close. */
+.fan-card-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 22px;
+  border: 1px solid transparent;
+  border-radius: 22px;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  color: #fff;
+  overflow: hidden;
+}
+
+.fan-card-overlay .fan-card-img {
+  height: 46%;
+  flex-shrink: 0;
+}
+
+.fan-card-overlay .fan-card-title {
+  font-size: 26px;
+  flex-shrink: 0;
+}
+
+.fan-card-description {
+  flex: 1 1 auto;
+  min-height: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
 @media only screen and (max-width: 900px) {
-  .fan-row {
+  .fan-track {
     height: 260px;
+    gap: 22px;
   }
   .fan-card {
     width: 150px;
     height: 210px;
-    margin-left: -75px;
-    margin-top: -105px;
     padding: 10px;
   }
   .fan-card-img {

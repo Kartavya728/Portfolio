@@ -72,7 +72,11 @@ const AllProjects = () => {
           })}
         </div>
 
-        <FannedProjectCards items={visible} onViewMore={(index) => setActiveIndex(index)} />
+        <FannedProjectCards
+          items={visible}
+          modalOpen={activeIndex !== null}
+          onViewMore={(index) => setActiveIndex(index)}
+        />
       </div>
 
       <ProjectModal

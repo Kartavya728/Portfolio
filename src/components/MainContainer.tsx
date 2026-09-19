@@ -6,7 +6,6 @@ import Certificates from "./Certificates";
 import Contact from "./Contact";
 import Cursor from "./Cursor";
 import FeaturedProjects from "./FeaturedProjects";
-import FlowingText from "./FlowingText";
 import Landing from "./Landing";
 import Navbar from "./Navbar";
 import Research from "./Research";
@@ -38,7 +37,6 @@ const MainContainer = ({ children }: PropsWithChildren) => {
   return (
     <div className="container-main">
       <StarBackground />
-      <FlowingText />
       <Cursor />
       <Navbar />
       <SocialIcons />
