@@ -3,7 +3,7 @@ import { MdArrowBack } from "react-icons/md";
 import { projects } from "../data/projects";
 import { CATEGORIES, CATEGORY_KEYS, CategoryKey } from "../data/categories";
 import ProjectModal from "./ProjectModal";
-import { ProjectCard } from "./Work";
+import FannedProjectCards from "./FannedProjectCards";
 import "./styles/Work.css";
 import "./styles/AllProjects.css";
 
@@ -71,16 +71,7 @@ const AllProjects = () => {
           })}
         </div>
 
-        <div className="all-projects-grid">
-          {visible.map(({ project, index }) => (
-            <ProjectCard
-              key={project.name}
-              project={project}
-              index={index}
-              onViewMore={() => setActiveIndex(index)}
-            />
-          ))}
-        </div>
+        <FannedProjectCards items={visible} onViewMore={(index) => setActiveIndex(index)} />
       </div>
 
       <ProjectModal
