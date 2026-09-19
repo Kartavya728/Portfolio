@@ -1,12 +1,18 @@
 import "./styles/Career.css";
+import SectionInfoTooltip from "./SectionInfoTooltip";
+import { CareerTooltip } from "./SectionTooltipContent";
+import EncryptedText from "./EncryptedText";
 
 const Career = () => {
   return (
     <div className="career-section section-container" id="career">
       <div className="career-container">
         <h2>
-          My career <span>&</span>
-          <br /> experience
+          <EncryptedText text="My career" /> <span><EncryptedText text="&" /></span>
+          <br /> <EncryptedText text="experience" />
+          <SectionInfoTooltip>
+            <CareerTooltip />
+          </SectionInfoTooltip>
         </h2>
         <div className="career-info">
           <div className="career-timeline">

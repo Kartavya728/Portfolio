@@ -2,6 +2,9 @@ import { MdCopyright } from "react-icons/md";
 import { FaCode, FaBrain, FaUsers, FaGithub, FaLinkedin } from "react-icons/fa6";
 import { HiSparkles } from "react-icons/hi2";
 import "./styles/Contact.css";
+import SectionInfoTooltip from "./SectionInfoTooltip";
+import { ContactTooltip } from "./SectionTooltipContent";
+import EncryptedText from "./EncryptedText";
 
 const STATS = [
   { value: "8+", label: "Projects Built" },
@@ -15,7 +18,10 @@ const Contact = () => {
       <div className="contact-hero">
         <div className="contact-hero-left">
           <h2 className="contact-heading">
-            Let's <span>Connect</span>
+            <EncryptedText text="Let's" /> <span><EncryptedText text="Connect" /></span>
+            <SectionInfoTooltip>
+              <ContactTooltip />
+            </SectionInfoTooltip>
           </h2>
 
           <div className="contact-tags">

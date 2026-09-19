@@ -19,8 +19,8 @@
   z-index: 9;
 }
 .what-box h2 {
-  font-size: calc(4vw + 25px);
-  line-height: calc(4vw + 20px);
+  font-size: 70px;
+  line-height: 70px;
   font-weight: 600;
   margin-right: 10%;
   margin-bottom: 100px;
@@ -247,6 +247,8 @@
 @media only screen and (max-width: 1400px) {
   .what-box h2 {
     margin-right: 20%;
+    font-size: 50px;
+    line-height: 50px;
   }
   .what-box-in {
     height: 400px;
@@ -319,8 +321,8 @@
   }
   .what-box h2 {
     margin: 50px 0;
-    font-size: 55px;
-    line-height: 53px;
+    font-size: 40px;
+    line-height: 40px;
   }
   .what-box:first-child {
     justify-content: left;
@@ -383,11 +385,5 @@
   .what-box {
     max-width: calc(100% - 25px);
     margin: 0;
-  }
-}
-@media only screen and (min-width: 1950px) {
-  .what-box h2 {
-    font-size: 7rem;
-    line-height: 6.8rem;
   }
 }

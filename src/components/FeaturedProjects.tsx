@@ -2,6 +2,9 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "./styles/FeaturedProjects.css";
+import SectionInfoTooltip from "./SectionInfoTooltip";
+import { FeaturedProjectsTooltip } from "./SectionTooltipContent";
+import EncryptedText from "./EncryptedText";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -248,7 +251,10 @@ const FeaturedProjects = () => {
         <div className="fp-header">
           <p className="fp-eyebrow">Featured / Live Projects</p>
           <h1 className="fp-heading">
-            Check out my <span>Featured Projects</span>
+            <EncryptedText text="Check out my" /> <span><EncryptedText text="Featured Projects" /></span>
+            <SectionInfoTooltip>
+              <FeaturedProjectsTooltip />
+            </SectionInfoTooltip>
           </h1>
         </div>
 

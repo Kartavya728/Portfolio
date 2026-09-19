@@ -6,6 +6,7 @@ import ProjectModal from "./ProjectModal";
 import FannedProjectCards from "./FannedProjectCards";
 import "./styles/Work.css";
 import "./styles/AllProjects.css";
+import EncryptedText from "./EncryptedText";
 
 const AllProjects = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -32,7 +33,7 @@ const AllProjects = () => {
         </a>
 
         <h1>
-          All <span>Projects</span>
+          <EncryptedText text="All" /> <span><EncryptedText text="Projects" /></span>
         </h1>
         <p className="all-projects-sub">
           Every project in one place — filter by the area you care about.

@@ -1,6 +1,9 @@
 import { useEffect, useRef } from "react";
 import "./styles/WhatIDo.css";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import SectionInfoTooltip from "./SectionInfoTooltip";
+import { WhatIDoTooltip } from "./SectionTooltipContent";
+import EncryptedText from "./EncryptedText";
 
 const WhatIDo = () => {
   const containerRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -28,11 +31,20 @@ const WhatIDo = () => {
     <div className="whatIDO" id="whatido">
       <div className="what-box">
         <h2 className="title">
-          W<span className="hat-h2">HAT</span>
+          <EncryptedText text="W" />
+          <span className="hat-h2">
+            <EncryptedText text="HAT" />
+          </span>
           <div>
-            I<span className="do-h2"> DO</span>
+            <EncryptedText text="I" />
+            <span className="do-h2">
+              <EncryptedText text=" DO" />
+            </span>
           </div>
         </h2>
+        <SectionInfoTooltip>
+          <WhatIDoTooltip />
+        </SectionInfoTooltip>
       </div>
       <div className="what-box">
         <div className="what-box-in">

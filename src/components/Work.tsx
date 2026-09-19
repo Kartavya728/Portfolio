@@ -3,6 +3,9 @@ import { motion } from "motion/react";
 import { MdArrowOutward } from "react-icons/md";
 import "./styles/Work.css";
 import ProjectModal from "./ProjectModal";
+import SectionInfoTooltip from "./SectionInfoTooltip";
+import { WorkTooltip } from "./SectionTooltipContent";
+import EncryptedText from "./EncryptedText";
 import { projects, ProjectData } from "../data/projects";
 import { CATEGORIES, CATEGORY_KEYS, CategoryKey } from "../data/categories";
 
@@ -227,7 +230,10 @@ const Work = () => {
     <div className="work-section" id="work">
       <div className="work-container section-container">
         <h2>
-          Project <span>Gallery</span>
+          <EncryptedText text="Project" /> <span><EncryptedText text="Gallery" /></span>
+          <SectionInfoTooltip>
+            <WorkTooltip />
+          </SectionInfoTooltip>
         </h2>
 
         <div className="work-filters">

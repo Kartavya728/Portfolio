@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "./styles/Achievements.css";
+import SectionInfoTooltip from "./SectionInfoTooltip";
+import { AchievementsTooltip } from "./SectionTooltipContent";
+import EncryptedText from "./EncryptedText";
 
 const smoothstep = (t: number) => {
   const c = Math.max(0, Math.min(1, t));
@@ -168,7 +171,10 @@ const Achievements = () => {
         <div className="ach-inner">
           <div className="ach-copy">
             <h2>
-              My <span>Achievements</span>
+              <EncryptedText text="My" /> <span><EncryptedText text="Achievements" /></span>
+              <SectionInfoTooltip>
+                <AchievementsTooltip />
+              </SectionInfoTooltip>
             </h2>
             <div className="ach-list">
               {achievements.map((item, i) => (

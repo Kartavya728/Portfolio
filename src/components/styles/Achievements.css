@@ -26,10 +26,18 @@
 }
 
 .ach-copy h2 {
-  font-size: 40px;
+  font-size: 70px;
+  line-height: 70px;
   font-weight: 600;
-  margin: 0 0 32px;
-  line-height: 1.1;
+  margin: 0 0 56px;
+}
+
+@media only screen and (max-width: 1400px) {
+  .ach-copy h2 {
+    font-size: 50px;
+    line-height: 50px;
+    margin: 0 0 44px;
+  }
 }
 
 .ach-copy h2 span {
@@ -174,7 +182,9 @@
     width: calc(100% - 40px);
   }
   .ach-copy h2 {
-    font-size: 30px;
+    font-size: 40px;
+    line-height: 40px;
+    margin: 0 0 32px;
   }
   /* Without the sticky stage there's nothing to cross-fade against, so
      show every entry stacked normally on small screens. */

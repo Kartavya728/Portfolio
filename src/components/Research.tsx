@@ -1,10 +1,16 @@
 import "./styles/Research.css";
+import SectionInfoTooltip from "./SectionInfoTooltip";
+import { ResearchTooltip } from "./SectionTooltipContent";
+import EncryptedText from "./EncryptedText";
 
 const Research = () => {
   return (
     <div className="research-section section-container" id="research">
       <h2>
-        My <span>Research</span>
+        <EncryptedText text="My" /> <span><EncryptedText text="Research" /></span>
+        <SectionInfoTooltip>
+          <ResearchTooltip />
+        </SectionInfoTooltip>
       </h2>
       <p className="research-intro">
         Applied research at the intersection of deep learning and medical

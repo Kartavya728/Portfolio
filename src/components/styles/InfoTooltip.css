@@ -1,3 +1,13 @@
+/* Heading-level info badge (SectionInfoTooltip) - fixed size so it stays
+   small and consistent regardless of the heading's own font-size. */
+.section-info-badge {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  margin-left: 10px;
+  font-size: 15px;
+}
+
 .info-tooltip-trigger {
   color: var(--accentColor);
   font-weight: 700;

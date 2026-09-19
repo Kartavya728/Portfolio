@@ -2,6 +2,9 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import PdfViewer from "./PdfViewer";
 import "./styles/Certificates.css";
+import SectionInfoTooltip from "./SectionInfoTooltip";
+import { CertificatesTooltip } from "./SectionTooltipContent";
+import EncryptedText from "./EncryptedText";
 
 const CERTIFICATES = [
   {
@@ -70,7 +73,10 @@ const Certificates = () => {
   return (
     <div className="certificates-section section-container" id="certificates">
       <h2>
-        My <span>Certificates</span>
+        <EncryptedText text="My" /> <span><EncryptedText text="Certificates" /></span>
+        <SectionInfoTooltip>
+          <CertificatesTooltip />
+        </SectionInfoTooltip>
       </h2>
       <div className="certificates-grid">
         {CERTIFICATES.map((cert, index) => {

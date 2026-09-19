@@ -4,6 +4,7 @@ import HoverLinks from "./HoverLinks";
 import { gsap } from "gsap";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { MdKeyboardArrowDown } from "react-icons/md";
+import { setupSectionPause } from "./utils/sectionPause";
 import "./styles/Navbar.css";
 
 gsap.registerPlugin(ScrollSmoother, ScrollTrigger);
@@ -99,6 +100,9 @@ const Navbar = () => {
     window.addEventListener("resize", () => {
       ScrollSmoother.refresh(true);
     });
+
+    const teardownSectionPause = setupSectionPause();
+    return teardownSectionPause;
   }, []);
   return (
     <>

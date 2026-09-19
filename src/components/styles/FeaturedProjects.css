@@ -33,8 +33,11 @@
   text-align: center;
   /* Extra clearance below the title - cards behind the active one now
      peek out ABOVE it as later cards stack in front, so there needs to
-     be headroom for that peek to rise into without touching the title. */
-  margin-bottom: 70px;
+     be headroom for that peek to rise into without touching the title.
+     Scaled up from the original 70px to compensate for .fp-heading
+     growing from 34px to 70px (see below) - keeps the same visual
+     clearance the old measurements were tuned for. */
+  margin-bottom: 90px;
   flex-shrink: 0;
 }
 
@@ -47,9 +50,17 @@
 }
 
 .fp-heading {
-  font-size: 34px;
+  font-size: 70px;
+  line-height: 70px;
   font-weight: 600;
   margin: 0;
+}
+
+@media only screen and (max-width: 1400px) {
+  .fp-heading {
+    font-size: 50px;
+    line-height: 50px;
+  }
 }
 
 .fp-heading span {
@@ -69,7 +80,11 @@
      approach; only .fp-sticky's viewport-level overflow:hidden (below)
      bounds things now, which is far enough away not to crop the card
      itself. */
-  height: min(700px, calc(100vh - 235px));
+  /* 280px (was 235px) - the header above got taller (title 34px -> 70px,
+     margin-bottom 70px -> 90px), so this needs to reserve more space to
+     keep the same clearance between the header and the pinned viewport
+     edges. */
+  height: min(700px, calc(100vh - 280px));
   min-height: 420px;
   perspective: 1200px;
 }
@@ -383,7 +398,8 @@
     padding: 6px 22px 18px;
   }
   .fp-heading {
-    font-size: 26px;
+    font-size: 40px;
+    line-height: 40px;
   }
   .fp-fan-item {
     width: 64px;

@@ -20,9 +20,9 @@
 }
 
 .contact-heading {
-  font-size: 64px;
+  font-size: 70px;
+  line-height: 70px;
   font-weight: 600;
-  line-height: 1.1;
   margin: 0 0 24px;
 }
 
@@ -435,9 +435,6 @@ a.contact-card-value:hover {
 }
 
 @media only screen and (max-width: 1600px) {
-  .contact-heading {
-    font-size: 52px;
-  }
   .contact-hero-right {
     width: 360px;
   }
@@ -451,10 +448,14 @@ a.contact-card-value:hover {
   }
 }
 
-@media only screen and (max-width: 1300px) {
+@media only screen and (max-width: 1400px) {
   .contact-heading {
-    font-size: 42px;
+    font-size: 50px;
+    line-height: 50px;
   }
+}
+
+@media only screen and (max-width: 1300px) {
   .contact-tagline {
     font-size: 15px;
   }
@@ -496,7 +497,8 @@ a.contact-card-value:hover {
     width: 100%;
   }
   .contact-heading {
-    font-size: 36px;
+    font-size: 40px;
+    line-height: 40px;
   }
   .contact-stats {
     gap: 24px;

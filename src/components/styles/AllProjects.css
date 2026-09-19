@@ -34,7 +34,8 @@
 }
 
 .all-projects-page h1 {
-  font-size: 64px;
+  font-size: 70px;
+  line-height: 70px;
   font-weight: 500;
   margin: 0;
 }
@@ -64,9 +65,17 @@
   border-radius: 16px;
 }
 
+@media only screen and (max-width: 1400px) {
+  .all-projects-page h1 {
+    font-size: 50px;
+    line-height: 50px;
+  }
+}
+
 @media only screen and (max-width: 900px) {
   .all-projects-page h1 {
     font-size: 40px;
+    line-height: 40px;
   }
   .all-projects-grid {
     grid-template-columns: 1fr;

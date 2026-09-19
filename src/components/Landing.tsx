@@ -1,5 +1,7 @@
 import { PropsWithChildren } from "react";
 import "./styles/Landing.css";
+import SectionInfoTooltip from "./SectionInfoTooltip";
+import { LandingTooltip } from "./SectionTooltipContent";
 
 const Landing = ({ children }: PropsWithChildren) => {
   return (
@@ -15,7 +17,12 @@ const Landing = ({ children }: PropsWithChildren) => {
             </h1>
           </div>
           <div className="landing-info">
-            <h3>A Creative</h3>
+            <h3>
+              A Creative
+              <SectionInfoTooltip>
+                <LandingTooltip />
+              </SectionInfoTooltip>
+            </h3>
             <h2 className="landing-info-h2">
               <div className="landing-h2-1">Engineer</div>
               <div className="landing-h2-2">Researcher</div>

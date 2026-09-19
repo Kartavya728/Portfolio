@@ -1,0 +1,38 @@
+.flowing-text {
+  position: fixed;
+  top: 12%;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  mix-blend-mode: screen;
+}
+
+.flowing-text-track {
+  display: flex;
+  width: max-content;
+  white-space: nowrap;
+  font-size: 9vw;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(194, 164, 255, 0.14);
+  animation: flowing-text-scroll 40s linear infinite;
+}
+
+@keyframes flowing-text-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .flowing-text-track {
+    font-size: 14vw;
+  }
+}

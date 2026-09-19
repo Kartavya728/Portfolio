@@ -18,6 +18,9 @@ import {
   SiTensorflow,
 } from "react-icons/si";
 import "./styles/TechStack.css";
+import SectionInfoTooltip from "./SectionInfoTooltip";
+import { TechStackTooltip } from "./SectionTooltipContent";
+import EncryptedText from "./EncryptedText";
 
 const TECHS = [
   { name: "React", Icon: SiReact, color: "#61DAFB", r: 66 },
@@ -136,6 +139,28 @@ const TechStack = () => {
       });
     }
 
+    // Purely visual glow strength, written as a CSS var each frame - based
+    // on proximity to the cursor and current speed, without touching any of
+    // the position/velocity physics above.
+    function writeGlow() {
+      const list = balls.current;
+      for (let i = 0; i < list.length; i++) {
+        const b = list[i];
+        const inner = ballRefs.current[i]?.firstElementChild as HTMLElement | undefined;
+        if (!inner) continue;
+        let glow = 0;
+        if (pointer.current.active) {
+          const dx = b.x - pointer.current.x;
+          const dy = b.y - pointer.current.y;
+          const dist = Math.hypot(dx, dy);
+          glow = Math.max(glow, Math.max(0, 1 - dist / POINTER_RADIUS));
+        }
+        const speed = Math.hypot(b.vx, b.vy);
+        glow = Math.max(glow, Math.min(1, speed / 260));
+        inner.style.setProperty("--tech-glow", glow.toFixed(3));
+      }
+    }
+
     placeBalls();
 
     const resizeObserver = new ResizeObserver(() => {
@@ -245,6 +270,7 @@ const TechStack = () => {
         }
 
         writeTransforms();
+        writeGlow();
       }
 
       rafId = requestAnimationFrame(tick);
@@ -261,7 +287,12 @@ const TechStack = () => {
 
   return (
     <div className="techstack" id="techstack">
-      <h2>My Techstack</h2>
+      <h2>
+        <EncryptedText text="My Techstack" />
+        <SectionInfoTooltip>
+          <TechStackTooltip />
+        </SectionInfoTooltip>
+      </h2>
       <div className="tech-canvas-2d" ref={containerRef}>
         {TECHS.map((tech, i) => (
           <div
