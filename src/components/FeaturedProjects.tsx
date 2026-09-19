@@ -218,12 +218,17 @@ const FeaturedProjects = () => {
           // on top of them, not up - each new card should read as
           // settling a little below the one before it, peeking out from
           // beneath, rather than the earlier cards climbing away
-          // upward. SETTLE_SPACING is the gap between consecutive
-          // cards in the stack.
-          const SETTLE_SPACING = 7;
-          card.style.transform = `translate3d(0, ${enter * 105 + settle * SETTLE_SPACING}%, 0) scale(${
-            1 - settle * 0.045
-          })`;
+          // upward. A slight horizontal drift and tilt per layer (on top
+          // of the existing shrink/dim) is what actually sells "a stack
+          // of cards seen from above" instead of just a flat vertical
+          // list - a pure vertical offset alone still reads as separate
+          // panels rather than a deck.
+          const SETTLE_SPACING = 9;
+          const SETTLE_SHIFT = 1.6;
+          const SETTLE_ROTATE = 1.8;
+          card.style.transform = `translate3d(${settle * SETTLE_SHIFT}%, ${
+            enter * 105 + settle * SETTLE_SPACING
+          }%, 0) rotate(${settle * SETTLE_ROTATE}deg) scale(${1 - settle * 0.045})`;
           card.style.opacity = String(own === 0 ? 0 : 1);
           card.style.zIndex = String(10 + i);
           card.style.filter = settle > 0 ? `brightness(${1 - settle * 0.18})` : "none";

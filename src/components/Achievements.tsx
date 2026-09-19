@@ -19,6 +19,9 @@ const achievements = [
     description:
       "Won among 100+ teams with Astrogenesis, a RAG-powered bioscience research engine built end to end during the challenge weekend.",
     image: "/achievements_data/nasa-1.png",
+    teams: "100+",
+    position: "1st Place",
+    github: "https://github.com/Kartavya728",
   },
   {
     title: "iHub Multimodal AI Hackathon — 1st Overall",
@@ -26,6 +29,9 @@ const achievements = [
     description:
       "Led a 5-member team to first place among 1,600+ teams with Smart-Scribes, a multimodal AI lecture assistant covering video, audio and slides.",
     image: "/achievements_data/ihub.png",
+    teams: "1,600+",
+    position: "1st Overall",
+    github: "https://github.com/Kartavya728/Smart-Scribes",
   },
   {
     title: "Hack 60 — HCLTech × IIT Mandi",
@@ -33,6 +39,9 @@ const achievements = [
     description:
       "Won the Deep Learning track with a dual-system framework pairing neural voice cloning against a real-time deepfake and audio anti-spoofing detector.",
     image: "/achievements_data/achive-1.png",
+    teams: "—",
+    position: "Track Winner",
+    github: "https://github.com/Kartavya728",
   },
   {
     title: "InxiteOut Hackathon — 1st Runner-Up",
@@ -40,6 +49,9 @@ const achievements = [
     description:
       "Runner-up at IIT Mandi's flagship tech fest, competing against the strongest teams on campus.",
     image: "/achievements_data/achive-2.png",
+    teams: "—",
+    position: "1st Runner-Up",
+    github: "https://github.com/Kartavya728",
   },
   {
     title: "Agentic AI Track — Podium Finish",
@@ -47,6 +59,9 @@ const achievements = [
     description:
       "Podium run building autonomous multi-step agent workflows with tool use, retries and human-in-the-loop checkpoints.",
     image: "/achievements_data/achive-3.png",
+    teams: "—",
+    position: "Podium Finish",
+    github: "https://github.com/Kartavya728",
   },
 ];
 
@@ -167,6 +182,25 @@ const Achievements = () => {
                   <p className="ach-meta">{item.meta}</p>
                   <h3 className="ach-title">{item.title}</h3>
                   <p className="ach-description">{item.description}</p>
+                  <div className="ach-stats">
+                    <div className="ach-stat">
+                      <span className="ach-stat-label">Teams</span>
+                      <span className="ach-stat-value">{item.teams}</span>
+                    </div>
+                    <div className="ach-stat">
+                      <span className="ach-stat-label">Position</span>
+                      <span className="ach-stat-value">{item.position}</span>
+                    </div>
+                    <a
+                      href={item.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="ach-stat-link"
+                      data-cursor="disable"
+                    >
+                      GitHub ↗
+                    </a>
+                  </div>
                 </div>
               ))}
             </div>

@@ -40,7 +40,7 @@
    place instead of the block jumping as text length changes. */
 .ach-list {
   position: relative;
-  min-height: 250px;
+  min-height: 300px;
 }
 
 /* Opacity/transform are written every frame from scroll progress (see
@@ -74,7 +74,48 @@
   line-height: 1.7;
   color: #b9b4c0;
   max-width: 560px;
-  margin: 0;
+  margin: 0 0 20px;
+}
+
+.ach-stats {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.ach-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ach-stat-label {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #8a8590;
+}
+
+.ach-stat-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #e8e4ee;
+}
+
+.ach-stat-link {
+  margin-left: auto;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accentColor);
+  border: 1px solid var(--accentColor);
+  border-radius: 20px;
+  padding: 7px 16px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.ach-stat-link:hover {
+  background: var(--accentColor);
+  color: #0b080c;
 }
 
 .ach-progress {
