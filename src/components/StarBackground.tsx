@@ -43,7 +43,19 @@ const StarBackground = () => {
     );
     camera.position.z = 1;
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    // WebGL context creation can fail for reasons outside this component's
+    // control (hardware acceleration disabled, too many contexts already
+    // open elsewhere on the page, a flaky GPU driver) - since this is a
+    // purely decorative background layer, that failure should just mean
+    // "no star field" rather than an unhandled exception that takes down
+    // the whole app.
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    } catch (err) {
+      console.warn("StarBackground: WebGL unavailable, skipping star field.", err);
+      return;
+    }
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
