@@ -17,14 +17,21 @@ export function initialFX() {
   // symptom is a pinned section's reveal already partway (or fully)
   // played out the instant you scroll into it, instead of starting from
   // its beginning. Refreshing once real scrolling is actually enabled
-  // re-measures everything against the final, fully laid-out page. One
-  // immediate refresh isn't always enough on its own - some of these
-  // same sections' images can still be mid-decode a moment later - so a
-  // second, slightly delayed refresh catches whatever settles just after
-  // the first one already ran.
+  // re-measures everything against the final, fully laid-out page.
+  //
+  // Only ONE refresh, fired on the very next frame: tl1/tl2 (the hero
+  // and about-section camera timelines) also have invalidateOnRefresh
+  // set, and any refresh - not just an early one - can momentarily
+  // render a pinned scrub timeline at an arbitrary progress value while
+  // GSAP re-measures pin distances internally; invalidateOnRefresh then
+  // re-captures that displaced value as the tween's new starting point,
+  // permanently skewing the hero framing. A later refresh (a delayed
+  // setTimeout, or window's `load` event) is more likely to land while
+  // the user has already started scrolling and those timelines are
+  // mid-flight, which is exactly what caused that - firing on the very
+  // next frame, before any scrolling can have happened, is what keeps
+  // this safe.
   requestAnimationFrame(() => ScrollTrigger.refresh());
-  setTimeout(() => ScrollTrigger.refresh(), 800);
-  window.addEventListener("load", () => ScrollTrigger.refresh(), { once: true });
   gsap.to("body", {
     backgroundColor: "#0b080c",
     duration: 0.5,
