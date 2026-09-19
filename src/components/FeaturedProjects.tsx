@@ -65,22 +65,25 @@ const FeaturedProjects = () => {
 
   useEffect(() => {
     if (!sectionRef.current || !stickyRef.current) return;
+    // Below 1024px the section isn't pinned - cards lay out and stay
+    // visible statically (see the CSS media query's `!important` reset).
+    // The scroll-driven stack below has nothing to drive at that point,
+    // so skip it rather than have it write inline styles every frame for
+    // a layout that's ignoring them anyway.
+    if (window.innerWidth <= 1024) return;
     const count = featuredProjects.length;
 
     // Pinned via ScrollTrigger rather than `position: sticky` - this site
     // scrolls through GSAP ScrollSmoother, which transforms the content
     // instead of scrolling it, so sticky never engages.
-    const pin =
-      window.innerWidth > 1024
-        ? ScrollTrigger.create({
-            trigger: sectionRef.current,
-            start: "top top",
-            end: "bottom bottom",
-            pin: stickyRef.current,
-            pinSpacing: false,
-            invalidateOnRefresh: true,
-          })
-        : null;
+    const pin = ScrollTrigger.create({
+      trigger: sectionRef.current,
+      start: "top top",
+      end: "bottom bottom",
+      pin: stickyRef.current,
+      pinSpacing: false,
+      invalidateOnRefresh: true,
+    });
 
     const trigger = ScrollTrigger.create({
       trigger: sectionRef.current,
@@ -111,7 +114,7 @@ const FeaturedProjects = () => {
     });
 
     return () => {
-      pin?.kill();
+      pin.kill();
       trigger.kill();
     };
   }, []);

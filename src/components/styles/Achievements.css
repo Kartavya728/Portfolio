@@ -43,19 +43,15 @@
   min-height: 250px;
 }
 
+/* Opacity/transform are written every frame from scroll progress (see
+   Achievements.tsx) - no CSS transition here, since a transition would
+   play out on its own timer and could fall out of sync with fast or
+   reversed scrolling instead of tracking it exactly. */
 .ach-entry {
   position: absolute;
   inset: 0;
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.45s ease, transform 0.45s ease;
-  pointer-events: none;
-}
-
-.ach-entry-active {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
+  will-change: opacity, transform;
 }
 
 .ach-meta {
@@ -110,6 +106,8 @@
   box-shadow: 0 40px 90px rgba(0, 0, 0, 0.55);
 }
 
+/* Same deal as .ach-entry - opacity/scale are written every frame from
+   scroll progress, not toggled with a CSS transition. */
 .ach-image {
   position: absolute;
   inset: 0;
@@ -117,13 +115,7 @@
   height: 100%;
   object-fit: cover;
   opacity: 0;
-  transform: scale(1.06);
-  transition: opacity 0.5s ease, transform 0.6s ease;
-}
-
-.ach-image-active {
-  opacity: 1;
-  transform: scale(1);
+  will-change: opacity, transform;
 }
 
 @media only screen and (max-width: 1024px) {

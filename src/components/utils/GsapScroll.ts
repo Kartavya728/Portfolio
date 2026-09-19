@@ -109,24 +109,15 @@ export function setCharTimeline(
           0.3
         );
 
-      // No character-model hide/slide here any more: ScreenDive picks up
-      // straight from wherever tl2 leaves the camera and turns from
-      // there, so the character has to stay visible and untransformed
-      // the whole way through - a slide-out-then-slide-back-in (the
-      // previous behaviour) read as the character leaving and a
-      // different one re-entering. What DOES need to happen here is the
-      // WhatIDo cards fading out of the way as their section ends, since
-      // they'd otherwise abruptly cut off mid-scroll instead of clearing
-      // the stage for the dive.
       tl3
-        .fromTo(".whatIDO", { y: 0 }, { y: "15%", duration: 2 }, 0)
-        .to(character.rotation, { x: -0.04, duration: 2, delay: 1 }, 0)
         .fromTo(
-          ".what-box-in",
-          { opacity: 1 },
-          { opacity: 0, duration: 1.2, ease: "none", immediateRender: false },
-          2.4
-        );
+          ".character-model",
+          { y: "0%" },
+          { y: "-100%", duration: 4, ease: "none", delay: 1 },
+          0
+        )
+        .fromTo(".whatIDO", { y: 0 }, { y: "15%", duration: 2 }, 0)
+        .to(character.rotation, { x: -0.04, duration: 2, delay: 1 }, 0);
 
       // Hard hide/show, independent of the scrub tween above. The scrub
       // tween only *visually* slides the character out via `y: -100%`,
