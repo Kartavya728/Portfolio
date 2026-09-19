@@ -5,6 +5,11 @@ import "./styles/FeaturedProjects.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
+interface QuantResult {
+  metric: string;
+  value: string;
+}
+
 interface FeaturedProject {
   title: string;
   des: string;
@@ -12,11 +17,18 @@ interface FeaturedProject {
   iconLists: string[];
   link: string;
   github?: string;
-  website?: string;
+  linkedin?: string;
+  deployed?: string;
+  hackathon?: boolean;
+  problem: string;
+  solution: string;
+  usp: string;
+  results: QuantResult[];
 }
 
-/* The four featured projects from the resume. Images only - the earlier
-   version played .mp4 clips here; these are stills instead. */
+/* The four featured projects from the resume. `img` is repeated across
+   the 5-slot fan below until per-project galleries are ready - swap it
+   for distinct images later, the fan doesn't care how many are unique. */
 const featuredProjects: FeaturedProject[] = [
   {
     title: "Anatomy-Aware DoseFlow",
@@ -25,6 +37,17 @@ const featuredProjects: FeaturedProject[] = [
     iconLists: ["PyTorch", "MedSAM", "ViT", "Mamba"],
     link: "Deep Learning Research — Feb 2026",
     github: "https://github.com/Kartavya728",
+    problem:
+      "Low-dose CT scans are noisy and hard to diagnose from, but the 'right' dose is different for every patient - most denoising models only work at the one fixed dose level they were trained on.",
+    solution:
+      "A three-stage pipeline built around a dose-conditioned flow trajectory model (MedSAM + ViT encoders) that reconstructs a clean scan at any dose from 5%-100%, trained once instead of separately per dose level.",
+    usp: "Generalizes zero-shot to three anatomical regions the model never saw in training - most dose-reduction models only work on the body part they were trained on.",
+    results: [
+      { metric: "PSNR", value: "48.15 dB" },
+      { metric: "SSIM", value: "0.9991" },
+      { metric: "Dose range", value: "5%–100%" },
+      { metric: "Unseen regions", value: "3 / 3 generalized" },
+    ],
   },
   {
     title: "Smart-Scribes — Multimodal Lecture Intelligence",
@@ -33,6 +56,17 @@ const featuredProjects: FeaturedProject[] = [
     iconLists: ["Next.js", "TypeScript", "Whisper", "RAG"],
     link: "iHub Multimodal AI Hackathon — 2025",
     github: "https://github.com/Kartavya728/Smart-Scribes",
+    hackathon: true,
+    problem:
+      "Students juggle lecture videos, audio recordings and slide decks as three separate things, with no single place to search, summarize or ask questions across all of them at once.",
+    solution:
+      "A multimodal AI platform that ingests video, audio and slides together, auto-generates summaries and Q&A, and gives professors and students their own role-based dashboards - built on Next.js, Supabase and a Python embedding pipeline.",
+    usp: "Cross-modal retrieval: ask a question and it points back to the exact slide AND the exact timestamp in the recording that answers it.",
+    results: [
+      { metric: "Rank", value: "1st / 1,600+ teams" },
+      { metric: "Team size", value: "5" },
+      { metric: "Modalities", value: "Video + Audio + Slides" },
+    ],
   },
   {
     title: "Lunar DEM Generation using Photoclinometry",
@@ -41,6 +75,17 @@ const featuredProjects: FeaturedProject[] = [
     iconLists: ["Python", "NumPy", "SciPy", "Open3D"],
     link: "ISRO Hackathon — Jul 2025",
     github: "https://github.com/Kartavya728/LunaDEM",
+    hackathon: true,
+    problem:
+      "Planning rover terrain needs accurate lunar elevation data, but there's no direct depth sensor for most of the surface - only 2D photographs taken from orbit.",
+    solution:
+      "A photoclinometry pipeline that reconstructs high-resolution Digital Elevation Models straight from NASA's lunar surface photographs, combining classical shape-from-shading computer vision with GIS tooling.",
+    usp: "Produces rover-planning-grade 3D topography from ordinary 2D imagery alone - no LIDAR or stereo image pairs required.",
+    results: [
+      { metric: "Event", value: "ISRO Hackathon" },
+      { metric: "Input", value: "NASA lunar imagery" },
+      { metric: "Output", value: "High-res DEM" },
+    ],
   },
   {
     title: "Integrated Finance Management Portal — IIT Mandi",
@@ -48,8 +93,63 @@ const featuredProjects: FeaturedProject[] = [
     img: "/flow.png",
     iconLists: ["Next.js", "TypeScript", "Supabase", "NextAuth.js"],
     link: "IIT Mandi — 2025",
+    problem:
+      "IIT Mandi's PDA claims, reimbursements and bill approvals ran entirely on paper, with no visibility into where a claim was stuck or how much budget was left.",
+    solution:
+      "A role-based digital workflow portal for faculty, staff, finance and audit officers, with auto-routing approvals, QR-enabled asset tracking and live PDA balances, secured with LDAP auth.",
+    usp: "Replaced a fully paper-based process end-to-end for an entire institute department, not just a prototype.",
+    results: [
+      { metric: "Roles", value: "4 (Faculty/Staff/Finance/Audit)" },
+      { metric: "Auth", value: "LDAP SSO" },
+      { metric: "Tracking", value: "QR-enabled assets" },
+    ],
   },
 ];
+
+/* 5-slot fan of images, fanned out like a spread hand of cards with the
+   centre one larger - adapted from aceternity's animated-modal image
+   grid (plain CSS transforms here instead of Framer Motion, since this
+   project doesn't otherwise depend on it). Rotation angles are fixed
+   per slot rather than randomised on every render, so the fan doesn't
+   reshuffle itself each time the section re-renders. */
+const FAN_ROTATIONS = [-14, -7, 0, 7, 14];
+
+const ImageFan = ({ src, alt }: { src: string; alt: string }) => (
+  <div className="fp-fan">
+    {FAN_ROTATIONS.map((deg, i) => (
+      <div
+        key={i}
+        className={`fp-fan-item ${i === 2 ? "fp-fan-item-center" : ""}`}
+        style={{ "--fp-rot": `${deg}deg` } as React.CSSProperties}
+      >
+        <img src={src} alt={`${alt} preview ${i + 1}`} />
+      </div>
+    ))}
+  </div>
+);
+
+/* Animated "hackathon winner" badge for the two projects that actually
+   won one - a sweeping gradient-text shimmer rather than a static label,
+   so it reads as a highlight rather than another line of metadata. */
+const HackathonBadge = () => (
+  <div className="fp-hackathon-badge">
+    <span className="fp-hackathon-badge-icon">🏆</span>
+    <span className="fp-hackathon-badge-text">Hackathon Winning Project</span>
+  </div>
+);
+
+const ResultsTable = ({ results }: { results: QuantResult[] }) => (
+  <table className="fp-results-table">
+    <tbody>
+      {results.map((row) => (
+        <tr key={row.metric}>
+          <td className="fp-results-metric">{row.metric}</td>
+          <td className="fp-results-value">{row.value}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+);
 
 /**
  * Scroll-stacked project cards: instead of clicking through tabs
@@ -143,13 +243,11 @@ const FeaturedProjects = () => {
                 cardRefs.current[i] = el;
               }}
             >
-              <div className="fp-card-media">
-                <img src={project.img} alt={project.title} />
-              </div>
-              <div className="fp-card-body">
+              <ImageFan src={project.img} alt={project.title} />
+
+              <div className="fp-card-header">
                 <p className="fp-card-link">{project.link}</p>
                 <h2 className="fp-card-title">{project.title}</h2>
-                <p className="fp-card-desc">{project.des}</p>
                 <div className="fp-icons">
                   {project.iconLists.map((icon) => (
                     <span key={icon} className="fp-icon">
@@ -157,30 +255,66 @@ const FeaturedProjects = () => {
                     </span>
                   ))}
                 </div>
-                <div className="fp-buttons">
-                  {project.github && (
-                    <a
-                      href={project.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="fp-btn fp-btn-github"
-                      data-cursor="disable"
-                    >
-                      GitHub
-                    </a>
-                  )}
-                  {project.website && (
-                    <a
-                      href={project.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="fp-btn fp-btn-live"
-                      data-cursor="disable"
-                    >
-                      Deployed
-                    </a>
-                  )}
+                {project.hackathon && <HackathonBadge />}
+              </div>
+
+              <div className="fp-card-scroll">
+                <p className="fp-card-desc">{project.des}</p>
+
+                <div className="fp-section">
+                  <h3 className="fp-section-title">Problem</h3>
+                  <p className="fp-section-body">{project.problem}</p>
                 </div>
+                <div className="fp-section">
+                  <h3 className="fp-section-title">Solution I Made</h3>
+                  <p className="fp-section-body">{project.solution}</p>
+                </div>
+                <div className="fp-section">
+                  <h3 className="fp-section-title">Quantitative Results</h3>
+                  <ResultsTable results={project.results} />
+                </div>
+                <div className="fp-section">
+                  <h3 className="fp-section-title">USP</h3>
+                  <p className="fp-section-body">{project.usp}</p>
+                </div>
+              </div>
+
+              <div className="fp-buttons">
+                {project.github ? (
+                  <a
+                    href={project.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="fp-btn fp-btn-github"
+                    data-cursor="disable"
+                  >
+                    GitHub
+                  </a>
+                ) : (
+                  <span className="fp-btn fp-btn-disabled" aria-disabled="true">
+                    GitHub
+                  </span>
+                )}
+                {project.linkedin ? (
+                  <a
+                    href={project.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="fp-btn fp-btn-linkedin"
+                    data-cursor="disable"
+                  >
+                    LinkedIn Post
+                  </a>
+                ) : (
+                  <span className="fp-btn fp-btn-disabled" aria-disabled="true">
+                    LinkedIn Post
+                  </span>
+                )}
+                {/* Deployed links are intentionally disabled for now,
+                    regardless of whether a URL is set. */}
+                <span className="fp-btn fp-btn-disabled" aria-disabled="true">
+                  Deployed
+                </span>
               </div>
             </div>
           ))}
