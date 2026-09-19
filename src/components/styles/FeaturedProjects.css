@@ -240,8 +240,26 @@
   min-height: 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  align-content: start;
   gap: 4px 28px;
   padding: 8px 32px 20px;
+  /* Scrolls internally if a project's write-up doesn't fit in the space
+     left after the fan/header/footer - the card's own height is fixed
+     (it has to be, for the stacking animation), so rather than letting
+     content spill out and get clipped by the card's rounded corners,
+     only the text area itself scrolls. */
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(194, 164, 255, 0.35) transparent;
+}
+
+.fp-card-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.fp-card-body::-webkit-scrollbar-thumb {
+  background: rgba(194, 164, 255, 0.35);
+  border-radius: 3px;
 }
 
 .fp-section {

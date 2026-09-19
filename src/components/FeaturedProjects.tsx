@@ -214,7 +214,14 @@ const FeaturedProjects = () => {
           const enter = 1 - own; // 1 = fully below, 0 = seated
           const settle = Math.min(depth, 3);
 
-          card.style.transform = `translate3d(0, ${enter * 105 - settle * 3.2}%, 0) scale(${
+          // Older cards drift DOWN (positive offset) as later ones stack
+          // on top of them, not up - each new card should read as
+          // settling a little below the one before it, peeking out from
+          // beneath, rather than the earlier cards climbing away
+          // upward. SETTLE_SPACING is the gap between consecutive
+          // cards in the stack.
+          const SETTLE_SPACING = 7;
+          card.style.transform = `translate3d(0, ${enter * 105 + settle * SETTLE_SPACING}%, 0) scale(${
             1 - settle * 0.045
           })`;
           card.style.opacity = String(own === 0 ? 0 : 1);
