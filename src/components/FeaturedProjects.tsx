@@ -212,23 +212,18 @@ const FeaturedProjects = () => {
           const own = Math.max(0, Math.min(1, spread - i));
           const depth = Math.max(0, spread - i - 1);
           const enter = 1 - own; // 1 = fully below, 0 = seated
-          const settle = Math.min(depth, 3);
+          const settle = Math.min(depth, 2);
 
-          // Older cards drift DOWN (positive offset) as later ones stack
-          // on top of them, not up - each new card should read as
-          // settling a little below the one before it, peeking out from
-          // beneath, rather than the earlier cards climbing away
-          // upward. A slight horizontal drift and tilt per layer (on top
-          // of the existing shrink/dim) is what actually sells "a stack
-          // of cards seen from above" instead of just a flat vertical
-          // list - a pure vertical offset alone still reads as separate
-          // panels rather than a deck.
-          const SETTLE_SPACING = 9;
-          const SETTLE_SHIFT = 1.6;
-          const SETTLE_ROTATE = 1.8;
-          card.style.transform = `translate3d(${settle * SETTLE_SHIFT}%, ${
-            enter * 105 + settle * SETTLE_SPACING
-          }%, 0) rotate(${settle * SETTLE_ROTATE}deg) scale(${1 - settle * 0.045})`;
+          // Older cards recede UP and shrink slightly as later ones
+          // stack in front, peeking out above the active card's top
+          // edge like a fanned stack of tabs - not drifting down below
+          // it. Straight vertical offset only (no horizontal drift or
+          // rotation) to match a clean tab-stack look, where each layer
+          // behind is just a little higher and a little smaller/dimmer.
+          const SETTLE_SPACING = 6;
+          card.style.transform = `translate3d(0, ${
+            enter * 105 - settle * SETTLE_SPACING
+          }%, 0) scale(${1 - settle * 0.045})`;
           card.style.opacity = String(own === 0 ? 0 : 1);
           card.style.zIndex = String(10 + i);
           card.style.filter = settle > 0 ? `brightness(${1 - settle * 0.18})` : "none";
