@@ -1,242 +1,394 @@
-/* Exact port of the old-ui FeaturedProjects + StickyScroll layout.
-   Tailwind utility values translated 1:1 (rem values at 16px base). */
-
+/* Height is set inline from the project count so each card gets its own
+   slice of scroll to rise through and stack. */
 .featured-projects-section {
   position: relative;
-  z-index: 20;
-  margin: 0 auto;
-  max-width: 80rem; /* max-w-7xl */
-  padding: 2.5rem 0; /* py-10 */
+  width: 100%;
+  /* Transparent so the star background canvas (which sits behind the
+     scrollable content) stays visible through this section, same as
+     every other section on the page. */
+  background: transparent;
+}
+
+/* Pinned by ScrollTrigger (see FeaturedProjects.tsx), not
+   `position: sticky` - ScrollSmoother's transform-based scrolling
+   breaks sticky. */
+.fp-sticky {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* flex-start with a fixed top padding, rather than centering the
+     header+stack as a block - centering let the stack's height push the
+     header up and off the top of the viewport whenever the two didn't
+     quite add up to 100vh, which read as the card overlapping the
+     title. This way the header always has a guaranteed, fixed spot. */
+  justify-content: flex-start;
+  overflow: hidden;
+  padding: 40px 0 16px;
+  box-sizing: border-box;
 }
 
 .fp-header {
   text-align: center;
-  margin-bottom: 1rem; /* mb-4 */
-  padding: 2.5rem 2rem; /* py-10 px-8 */
+  margin-bottom: 14px;
+  flex-shrink: 0;
 }
 
 .fp-eyebrow {
-  font-size: 0.875rem; /* text-sm */
-  line-height: 1.25rem;
-  color: #ffffff;
-  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 3px;
   text-transform: uppercase;
-  letter-spacing: 0.025em;
-  margin: 0;
+  color: var(--accentColor);
+  margin: 0 0 10px;
 }
 
 .fp-heading {
-  margin: 0.5rem 0 0; /* mt-2 */
-  font-size: 40px;
-  font-weight: 700;
-  line-height: 1.2;
-  color: var(--accentColor);
-}
-
-.fp-heading > span {
-  color: #ffffff;
-}
-
-/* border-t/b/l-[20px] + rounded-[10px]. The reference's
-   border-r-[4000px] is a full-bleed hack for its own page width; kept as
-   a right border sized to the frame instead so it reads the same here
-   without blowing out the layout. */
-.fp-frame {
-  border-top: 20px solid #ffffff;
-  border-bottom: 20px solid #ffffff;
-  border-left: 20px solid #ffffff;
-  border-right: 20px solid #ffffff;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-/* h-screen w-full justify-center space-x-10 overflow-y-auto p-10 */
-.fp-sticky-scroll {
-  position: relative;
-  display: flex;
-  height: 100vh;
-  width: 100%;
-  justify-content: center;
-  gap: 2.5rem; /* space-x-10 */
-  overflow-y: auto;
-  padding: 2.5rem; /* p-10 */
-  box-sizing: border-box;
-}
-
-.fp-sticky-scroll::-webkit-scrollbar {
-  width: 8px;
-}
-
-.fp-sticky-scroll::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-}
-
-/* relative flex items-start px-4 */
-.fp-left {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  padding: 0 1rem; /* px-4 */
-}
-
-.fp-left-inner {
-  max-width: 42rem; /* max-w-2xl */
-}
-
-.fp-item {
-  margin: 5rem 0; /* my-20 */
-}
-
-.fp-item-title {
-  font-size: 1.5rem; /* text-2xl */
-  line-height: 2rem;
-  font-weight: 700;
-  color: #e2e8f0;
+  font-size: 34px;
+  font-weight: 600;
   margin: 0;
 }
 
-.fp-item-desc {
-  margin-top: 2.5rem; /* mt-10 */
-  max-width: 24rem; /* max-w-sm */
-  color: #cbd5e1;
-  font-size: 1rem;
-  line-height: 1.6;
+.fp-heading span {
+  color: var(--accentColor);
+}
+
+.fp-stack {
+  position: relative;
+  width: min(940px, 94vw);
+  /* Capped against the viewport, not a flat constant - guarantees the
+     stack never grows taller than what's actually left under the header
+     (whatever that header's real rendered height turns out to be),
+     which is what was letting cards ride up over the title before.
+     Deliberately NOT clipped with overflow:hidden here - each incoming
+     card starts translated to 105% below its resting spot and rises
+     into view, and clipping the stack's own box hid that whole
+     approach; only .fp-sticky's viewport-level overflow:hidden (below)
+     bounds things now, which is far enough away not to crop the card
+     itself. */
+  height: min(760px, calc(100vh - 175px));
+  min-height: 420px;
+  perspective: 1200px;
+}
+
+.fp-card {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  overflow: hidden;
+  /* ~70% opaque so the star field shows through the card itself, not
+     just around it - blurred behind it so the (also semi-transparent)
+     text stays legible over a busy background. */
+  background: rgba(15, 12, 18, 0.7);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid color-mix(in srgb, var(--fp-theme, #c2a4ff) 45%, transparent);
+  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.55);
+  transform-origin: top center;
+  will-change: transform, opacity;
+  /* Seeded so the stack looks right before the first scroll update. */
+  transform: translate3d(0, 105%, 0);
+  opacity: 0;
+}
+
+/* Category chip, top-left corner of the card. */
+.fp-tag {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 4;
+  padding: 5px 14px;
+  border-radius: 16px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--fp-theme, #c2a4ff);
+  border: 1px solid color-mix(in srgb, var(--fp-theme, #c2a4ff) 55%, transparent);
+  background: color-mix(in srgb, var(--fp-theme, #c2a4ff) 14%, #0f0c12);
+}
+
+/* ---- image fan (aceternity animated-modal style, 5 slots, centre
+   enlarged) ------------------------------------------------------- */
+.fp-fan {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 20px 10px 10px;
+  background: radial-gradient(circle at 50% 0%, rgba(194, 164, 255, 0.1), transparent 65%);
+  flex-shrink: 0;
+}
+
+.fp-fan-item {
+  width: 118px;
+  height: 118px;
+  margin: 0 -16px;
+  border-radius: 16px;
+  padding: 6px;
+  background: #17131c;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
+  transform: rotate(var(--fp-rot));
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.fp-fan-item-center {
+  width: 158px;
+  height: 158px;
+  z-index: 2;
+}
+
+.fp-fan-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 9px;
+  display: block;
+}
+
+.fp-fan-item:hover {
+  transform: rotate(0deg) scale(1.08) translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.55);
+  z-index: 3;
+}
+
+/* ---- header: link/title/tags/badge, stays put above the scroll area */
+.fp-card-header {
+  padding: 4px 30px 0;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.fp-card-link {
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--fp-theme, var(--accentColor));
+  margin: 0 0 8px;
+}
+
+.fp-card-title {
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0 0 12px;
 }
 
 .fp-icons {
   display: flex;
-  align-items: center;
-  gap: 0.75rem; /* gap-3 */
-  margin-top: 2rem; /* mt-8 */
   flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
 .fp-icon {
-  border: 1px solid #ffffff;
-  border-radius: 9999px;
-  min-width: 2.5rem; /* w-10 */
-  height: 2.5rem; /* h-10 */
-  padding: 0 0.75rem;
-  display: flex;
-  justify-content: center;
+  padding: 5px 13px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  font-size: 11px;
+  color: #cfcbd4;
+}
+
+/* Animated shimmer badge for hackathon-winning projects - a gradient
+   text sweep rather than a static label. */
+.fp-hackathon-badge {
+  display: inline-flex;
   align-items: center;
-  background-color: #000000;
-  color: #e2e8f0;
-  font-size: 0.75rem;
-  transition: border-color 0.2s ease;
+  gap: 8px;
+  margin: 0 0 14px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 200, 120, 0.35);
+  background: rgba(255, 200, 120, 0.08);
 }
 
-.fp-icon:hover {
-  border-color: #a855f7; /* hover:border-purple-500 */
+.fp-hackathon-badge-icon {
+  font-size: 14px;
 }
 
+.fp-hackathon-badge-text {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  background: linear-gradient(90deg, #ffd27a, #ffe9c2, #ffb347, #ffd27a);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: fp-shimmer 3.2s linear infinite;
+}
+
+@keyframes fp-shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 250% 50%;
+  }
+}
+
+/* ---- content: problem / description / usp / results, laid out as a
+   2x2 grid rather than a stacked, scrolling column - the extra card
+   width goes toward keeping every section on screen at once instead of
+   hiding half of them behind a scrollbar. */
+.fp-card-body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-content: start;
+  gap: 4px 28px;
+  padding: 8px 32px 20px;
+  /* Scrolls internally if a project's write-up doesn't fit in the space
+     left after the fan/header/footer - the card's own height is fixed
+     (it has to be, for the stacking animation), so rather than letting
+     content spill out and get clipped by the card's rounded corners,
+     only the text area itself scrolls. */
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(194, 164, 255, 0.35) transparent;
+}
+
+.fp-card-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.fp-card-body::-webkit-scrollbar-thumb {
+  background: rgba(194, 164, 255, 0.35);
+  border-radius: 3px;
+}
+
+.fp-section {
+  min-width: 0;
+}
+
+.fp-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--fp-theme, var(--accentColor));
+  margin: 0 0 6px;
+}
+
+.fp-section-body {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: #cfcbd4;
+  margin: 0;
+}
+
+.fp-results-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.fp-results-table tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.fp-results-table tr:last-child {
+  border-bottom: none;
+}
+
+.fp-results-metric {
+  padding: 6px 10px 6px 0;
+  color: #9a94a3;
+}
+
+.fp-results-value {
+  padding: 6px 0;
+  text-align: right;
+  font-weight: 600;
+  color: var(--fp-theme, #e8e4ee);
+}
+
+/* ---- footer buttons, pinned to the corner outside the scroll area */
 .fp-buttons {
   display: flex;
-  gap: 1rem; /* gap-4 */
-  margin-top: 1.5rem; /* mt-6 */
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 24px;
+  flex-shrink: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: #0f0c12;
 }
 
 .fp-btn {
-  padding: 0.5rem 1rem; /* px-4 py-2 */
-  border-radius: 0.5rem; /* rounded-lg */
-  font-size: 0.875rem; /* text-sm */
-  font-weight: 600;
-  border: 1px solid;
-  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 18px;
+  border-radius: 24px;
+  font-size: 12px;
+  border: 1px solid var(--accentColor);
+  color: var(--accentColor);
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
-.fp-btn-github {
-  background: rgba(147, 51, 234, 0.2); /* bg-purple-600/20 */
-  color: #d8b4fe; /* text-purple-300 */
-  border-color: rgba(168, 85, 247, 0.3); /* border-purple-500/30 */
+.fp-btn:hover {
+  background: var(--accentColor);
+  color: #0b080c;
 }
 
-.fp-btn-github:hover {
-  background: rgba(147, 51, 234, 0.4);
-  color: #e9d5ff;
-  border-color: rgba(168, 85, 247, 0.6);
+.fp-btn-disabled {
+  border-color: rgba(255, 255, 255, 0.16);
+  color: #666069;
+  cursor: not-allowed;
 }
 
-.fp-btn-live {
-  background: rgba(37, 99, 235, 0.2);
-  color: #93c5fd;
-  border-color: rgba(59, 130, 246, 0.3);
-}
-
-.fp-btn-live:hover {
-  background: rgba(37, 99, 235, 0.4);
-  color: #bfdbfe;
-  border-color: rgba(59, 130, 246, 0.6);
-}
-
-.fp-spacer {
-  height: 10rem; /* h-40 */
-}
-
-/* sticky top-1/2 -translate-y-1/2 -translate-x-24 h-[400px] w-[610px]
-   overflow-hidden rounded-md bg-white z-50 */
-.fp-media {
-  position: sticky;
-  top: 50%;
-  transform: translateY(-50%) translateX(-6rem);
-  height: 400px;
-  width: 610px;
-  flex-shrink: 0;
-  overflow: hidden;
-  border-radius: 0.375rem; /* rounded-md */
-  background: #ffffff;
-  z-index: 50;
-  align-self: flex-start;
-}
-
-.fp-media-inner {
-  height: 100%;
-  width: 100%;
-  position: relative;
-  overflow: hidden;
-  border-radius: 0.5rem;
-}
-
-.fp-media-bg {
-  position: absolute;
-  inset: 0;
-  background-color: #13162d;
-}
-
-.fp-media-img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 10;
-}
-
-.fp-video-layer {
-  position: absolute;
-  inset: 0;
-  z-index: 10;
-  border-radius: 0.5rem;
-  overflow: hidden;
-}
-
-.fp-video-layer video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.fp-btn-disabled:hover {
+  background: none;
+  color: #666069;
 }
 
 @media only screen and (max-width: 1024px) {
-  .fp-media {
-    display: none;
+  /* No stacking on small screens - cards just flow normally. */
+  .featured-projects-section {
+    height: auto !important;
+    padding: 70px 0;
   }
-  .fp-sticky-scroll {
+  .fp-sticky {
+    position: relative;
     height: auto;
-    max-height: 100vh;
-    padding: 1.5rem;
+    overflow: visible;
+  }
+  .fp-stack {
+    height: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    perspective: none;
+  }
+  .fp-card {
+    position: relative;
+    inset: auto;
+    transform: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+  }
+  .fp-card-header {
+    padding: 4px 22px 0;
+  }
+  .fp-card-body {
+    grid-template-columns: 1fr;
+    padding: 6px 22px 18px;
   }
   .fp-heading {
-    font-size: 28px;
+    font-size: 26px;
+  }
+  .fp-fan-item {
+    width: 64px;
+    height: 64px;
+    margin: 0 -8px;
+  }
+  .fp-fan-item-center {
+    width: 90px;
+    height: 90px;
   }
 }
