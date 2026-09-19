@@ -75,15 +75,7 @@ export function setCharTimeline(
       tl2
         .to(
           camera.position,
-          // Pulls back sooner and faster than before (was delay:2,
-          // duration:6) - with the old timing the camera stayed close
-          // (character still large) for a good stretch of the scroll
-          // while the About text below was already fading out
-          // underneath it (see the opacity tween further down, which
-          // starts at delay:3 regardless), leaving a visible window
-          // where the oversized character overlapped the still-legible
-          // text instead of having already shrunk away from it.
-          { z: 75, y: 8.4, duration: 4, delay: 0, ease: "power3.inOut" },
+          { z: 75, y: 8.4, duration: 6, delay: 2, ease: "power3.inOut" },
           0
         )
         .to(".about-section", { y: "30%", duration: 6 }, 0)
@@ -153,12 +145,12 @@ export function setCharTimeline(
       });
       // A freshly (re)created trigger only fires the callbacks above on
       // future enter/leave *crossings* - if this runs while already
-      // scrolled past the section (e.g. a resize-triggered timeline
-      // rebuild), nothing would cross and the container could stay
+      // scrolled past ".whatIDO" (e.g. a resize-triggered timeline
+      // rebuild), nothing would crossed and the container could stay
       // stuck visible. Set the correct state immediately too.
-      const whatIDoEl = document.querySelector(".whatIDO");
-      if (whatIDoEl) {
-        setCharacterHidden(whatIDoEl.getBoundingClientRect().bottom < 0);
+      const whatIdoEl = document.querySelector(".whatIDO");
+      if (whatIdoEl) {
+        setCharacterHidden(whatIdoEl.getBoundingClientRect().bottom < 0);
       }
     }
   } else {

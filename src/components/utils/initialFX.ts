@@ -1,37 +1,11 @@
 import { SplitText } from "gsap/SplitText";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { smoother } from "../Navbar";
 
 export function initialFX() {
   document.body.style.overflowY = "auto";
   smoother.paused(false);
   document.getElementsByTagName("main")[0].classList.add("main-active");
-  // Every pinned/scrubbed section (Achievements, FeaturedProjects, the
-  // character timelines, ...) sets up its ScrollTrigger in a useEffect on
-  // mount - which runs while the loading screen is still up and `body`
-  // is still overflow-hidden. ScrollTrigger measures pin start/end
-  // positions against whatever the document's layout looks like at that
-  // moment, so those measurements can be taken against a collapsed/
-  // not-yet-final page height and never get corrected - the visible
-  // symptom is a pinned section's reveal already partway (or fully)
-  // played out the instant you scroll into it, instead of starting from
-  // its beginning. Refreshing once real scrolling is actually enabled
-  // re-measures everything against the final, fully laid-out page.
-  //
-  // Only ONE refresh, fired on the very next frame: tl1/tl2 (the hero
-  // and about-section camera timelines) also have invalidateOnRefresh
-  // set, and any refresh - not just an early one - can momentarily
-  // render a pinned scrub timeline at an arbitrary progress value while
-  // GSAP re-measures pin distances internally; invalidateOnRefresh then
-  // re-captures that displaced value as the tween's new starting point,
-  // permanently skewing the hero framing. A later refresh (a delayed
-  // setTimeout, or window's `load` event) is more likely to land while
-  // the user has already started scrolling and those timelines are
-  // mid-flight, which is exactly what caused that - firing on the very
-  // next frame, before any scrolling can have happened, is what keeps
-  // this safe.
-  requestAnimationFrame(() => ScrollTrigger.refresh());
   gsap.to("body", {
     backgroundColor: "#0b080c",
     duration: 0.5,

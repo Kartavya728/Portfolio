@@ -1,349 +1,255 @@
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import React, { useEffect, useRef, useState } from "react";
+import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import "./styles/FeaturedProjects.css";
 
-gsap.registerPlugin(ScrollTrigger);
-
-interface QuantResult {
-  metric: string;
-  value: string;
-}
+// A faithful port of the old-ui `StickyScroll` (sticky-scroll-reveal) +
+// `FeaturedProjects` pair: same internal scroll container driving the
+// active card, same sticky media panel dimensions (400x610), same
+// gradients/opacities. Tailwind classes are translated 1:1 into
+// FeaturedProjects.css since this project doesn't use Tailwind.
 
 interface FeaturedProject {
   title: string;
-  /* The write-up shown under "Project Description" - what it is and
-     how it works, in one concise paragraph. */
-  description: string;
+  des: string;
   img: string;
+  video?: string;
   iconLists: string[];
   link: string;
   github?: string;
-  linkedin?: string;
-  deployed?: string;
-  hackathon?: boolean;
-  /* Short category shown as a chip in the card's top-left corner. */
-  tag: string;
-  /* Per-project accent used for the card border, tag, section titles and
-     table values - gives each project its own visual identity instead
-     of every card looking identical. */
-  theme: string;
-  problem: string;
-  usp: string;
-  results: QuantResult[];
+  website?: string;
 }
 
-/* The four featured projects from the resume. `img` is repeated across
-   the 5-slot fan below until per-project galleries are ready - swap it
-   for distinct images later, the fan doesn't care how many are unique. */
 const featuredProjects: FeaturedProject[] = [
   {
     title: "Anatomy-Aware DoseFlow",
-    description:
-      "A three-stage deep learning pipeline built around a dose-conditioned flow trajectory model (MedSAM + ViT encoders) that reconstructs clean CT scans at any dose from 5%-100%, trained once instead of separately per dose level.",
+    des: "A three-stage deep learning pipeline for reconstructing CT images from arbitrary dose levels (5%-100%). A dose-conditioned flow trajectory model integrating MedSAM, ViT encoders and four loss functions achieved 48.15 dB PSNR and 0.9991 SSIM with zero-shot generalization across three unseen anatomical regions.",
     img: "/dose.png",
     iconLists: ["PyTorch", "MedSAM", "ViT", "Mamba"],
-    link: "Deep Learning Research — Feb 2026",
+    link: "Deep Learning Research - Feb 2026",
     github: "https://github.com/Kartavya728",
-    tag: "Deep Learning",
-    theme: "#5aa9ff",
-    problem:
-      "Low-dose CT scans are noisy and hard to diagnose from, but the 'right' dose is different for every patient - most denoising models only work at the one fixed dose level they were trained on.",
-    usp: "Generalizes zero-shot to three anatomical regions the model never saw in training - most dose-reduction models only work on the body part they were trained on.",
-    results: [
-      { metric: "PSNR", value: "48.15 dB" },
-      { metric: "SSIM", value: "0.9991" },
-      { metric: "Dose range", value: "5%–100%" },
-      { metric: "Unseen regions", value: "3 / 3 generalized" },
-    ],
   },
   {
-    title: "Smart-Scribes — Multimodal Lecture Intelligence",
-    description:
-      "A multimodal AI platform that ingests lecture video, audio and slides together, auto-generating summaries, Q&A and role-based dashboards for professors and students - built on Next.js, Supabase and a Python embedding pipeline.",
+    title: "Multimodal Lecture Understanding System (Smart Scribe)",
+    des: "Advanced learning platform with multimodal understanding (video, audio, PDFs). Features lecture summarization, Q&A generation, slides management, student & professor dashboards, and structured planning mode. Built with Next.js, Supabase, and Python pipelines for embedding extraction.",
     img: "/ss.png",
+    video: "/featured/smart-scribes.mp4",
     iconLists: ["Next.js", "TypeScript", "Whisper", "RAG"],
-    link: "iHub Multimodal AI Hackathon — 2025",
+    link: "Educational AI Platform - 2025",
     github: "https://github.com/Kartavya728/Smart-Scribes",
-    hackathon: true,
-    tag: "Agentic AI",
-    theme: "#b388ff",
-    problem:
-      "Students juggle lecture videos, audio recordings and slide decks as three separate things, with no single place to search, summarize or ask questions across all of them at once.",
-    usp: "Cross-modal retrieval: ask a question and it points back to the exact slide AND the exact timestamp in the recording that answers it.",
-    results: [
-      { metric: "Rank", value: "1st / 1,600+ teams" },
-      { metric: "Team size", value: "5" },
-      { metric: "Modalities", value: "Video + Audio + Slides" },
-    ],
   },
   {
     title: "Lunar DEM Generation using Photoclinometry",
-    description:
-      "A photoclinometry pipeline that reconstructs high-resolution lunar Digital Elevation Models straight from NASA's orbital photographs, combining shape-from-shading computer vision with GIS tooling to build 3D topographic maps for rover-terrain studies.",
+    des: "Developed a system to generate high-resolution Digital Elevation Models (DEM) of the lunar surface using photoclinometry. Processed NASA lunar datasets with ML, computer vision, and GIS tools to create accurate 3D topographic maps.",
     img: "/luna.png",
+    video: "/featured/lunadem.mp4",
     iconLists: ["Python", "NumPy", "SciPy", "Open3D"],
-    link: "ISRO Hackathon — Jul 2025",
+    link: "ISRO Hackathon - Jul 2025",
     github: "https://github.com/Kartavya728/LunaDEM",
-    hackathon: true,
-    tag: "Computer Vision",
-    theme: "#4fd1a5",
-    problem:
-      "Planning rover terrain needs accurate lunar elevation data, but there's no direct depth sensor for most of the surface - only 2D photographs taken from orbit.",
-    usp: "Produces rover-planning-grade 3D topography from ordinary 2D imagery alone - no LIDAR or stereo image pairs required.",
-    results: [
-      { metric: "Event", value: "ISRO Hackathon" },
-      { metric: "Input", value: "NASA lunar imagery" },
-      { metric: "Output", value: "High-res DEM" },
-    ],
   },
   {
-    title: "Integrated Finance Management Portal — IIT Mandi",
-    description:
-      "A role-based digital workflow portal for faculty, staff, finance and audit officers, with auto-routing approvals, QR-enabled asset tracking, live PDA balances and LDAP auth.",
+    title: "Integrated Finance Management Portal - IIT Mandi",
+    des: "Digital finance workflow portal that replaces paper-based PDA claims, reimbursements, and bill approvals with role-based dashboards for faculty, staff, finance, and audit officers. Features auto-routing, QR-enabled asset tracking, real-time PDA balance visibility, and LDAP authentication.",
     img: "/flow.png",
+    video: "/featured/finance-portal.mp4",
     iconLists: ["Next.js", "TypeScript", "Supabase", "NextAuth.js"],
-    link: "IIT Mandi — 2025",
-    tag: "System Design",
-    theme: "#f0b84c",
-    problem:
-      "IIT Mandi's PDA claims, reimbursements and bill approvals ran entirely on paper, with no visibility into where a claim was stuck or how much budget was left.",
-    usp: "Replaced a fully paper-based process end-to-end for an entire institute department, not just a prototype.",
-    results: [
-      { metric: "Roles", value: "4 (Faculty/Staff/Finance/Audit)" },
-      { metric: "Auth", value: "LDAP SSO" },
-      { metric: "Tracking", value: "QR-enabled assets" },
-    ],
+    link: "IIT Mandi - 2025",
   },
 ];
 
-/* 5-slot fan of images, fanned out like a spread hand of cards with the
-   centre one larger - adapted from aceternity's animated-modal image
-   grid (plain CSS transforms here instead of Framer Motion, since this
-   project doesn't otherwise depend on it). Rotation angles are fixed
-   per slot rather than randomised on every render, so the fan doesn't
-   reshuffle itself each time the section re-renders. */
-const FAN_ROTATIONS = [-14, -7, 0, 7, 14];
-
-const ImageFan = ({ src, alt }: { src: string; alt: string }) => (
-  <div className="fp-fan">
-    {FAN_ROTATIONS.map((deg, i) => (
-      <div
-        key={i}
-        className={`fp-fan-item ${i === 2 ? "fp-fan-item-center" : ""}`}
-        style={{ "--fp-rot": `${deg}deg` } as React.CSSProperties}
-      >
-        <img src={src} alt={`${alt} preview ${i + 1}`} />
-      </div>
-    ))}
-  </div>
-);
-
-/* Animated "hackathon winner" badge for the two projects that actually
-   won one - a sweeping gradient-text shimmer rather than a static label,
-   so it reads as a highlight rather than another line of metadata. */
-const HackathonBadge = () => (
-  <div className="fp-hackathon-badge">
-    <span className="fp-hackathon-badge-icon">🏆</span>
-    <span className="fp-hackathon-badge-text">Hackathon Winning Project</span>
-  </div>
-);
-
-const ResultsTable = ({ results }: { results: QuantResult[] }) => (
-  <table className="fp-results-table">
-    <tbody>
-      {results.map((row) => (
-        <tr key={row.metric}>
-          <td className="fp-results-metric">{row.metric}</td>
-          <td className="fp-results-value">{row.value}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-);
-
-/**
- * Scroll-stacked project cards: instead of clicking through tabs
- * (aceternity's Tabs pattern), each project rises from below on scroll
- * and stacks onto the pile, with the ones already shown receding behind
- * it. GSAP ScrollTrigger rather than Framer's scroll hooks, since the
- * page scrolls through GSAP ScrollSmoother.
- */
-const FeaturedProjects = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const stickyRef = useRef<HTMLDivElement>(null);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+const VideoPlayer = ({ src }: { src: string }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (!sectionRef.current || !stickyRef.current) return;
-    // Below 1024px the section isn't pinned - cards lay out and stay
-    // visible statically (see the CSS media query's `!important` reset).
-    // The scroll-driven stack below has nothing to drive at that point,
-    // so skip it rather than have it write inline styles every frame for
-    // a layout that's ignoring them anyway.
-    if (window.innerWidth <= 1024) return;
-    const count = featuredProjects.length;
-
-    // Pinned via ScrollTrigger rather than `position: sticky` - this site
-    // scrolls through GSAP ScrollSmoother, which transforms the content
-    // instead of scrolling it, so sticky never engages.
-    const pin = ScrollTrigger.create({
-      trigger: sectionRef.current,
-      start: "top top",
-      end: "bottom bottom",
-      pin: stickyRef.current,
-      pinSpacing: false,
-      invalidateOnRefresh: true,
-    });
-
-    const trigger = ScrollTrigger.create({
-      trigger: sectionRef.current,
-      start: "top top",
-      end: "bottom bottom",
-      scrub: true,
-      invalidateOnRefresh: true,
-      onUpdate: (self) => {
-        // Spread the section's progress across the cards so each one gets
-        // its own slice to rise through, then sits in the stack while the
-        // later ones come up over it.
-        const spread = self.progress * count;
-        cardRefs.current.forEach((card, i) => {
-          if (!card) return;
-          const own = Math.max(0, Math.min(1, spread - i));
-          const depth = Math.max(0, spread - i - 1);
-          const enter = 1 - own; // 1 = fully below, 0 = seated
-          const settle = Math.min(depth, 3);
-
-          // Older cards drift DOWN (positive offset) as later ones stack
-          // on top of them, not up - each new card should read as
-          // settling a little below the one before it, peeking out from
-          // beneath, rather than the earlier cards climbing away
-          // upward. A slight horizontal drift and tilt per layer (on top
-          // of the existing shrink/dim) is what actually sells "a stack
-          // of cards seen from above" instead of just a flat vertical
-          // list - a pure vertical offset alone still reads as separate
-          // panels rather than a deck.
-          const SETTLE_SPACING = 9;
-          const SETTLE_SHIFT = 1.6;
-          const SETTLE_ROTATE = 1.8;
-          card.style.transform = `translate3d(${settle * SETTLE_SHIFT}%, ${
-            enter * 105 + settle * SETTLE_SPACING
-          }%, 0) rotate(${settle * SETTLE_ROTATE}deg) scale(${1 - settle * 0.045})`;
-          card.style.opacity = String(own === 0 ? 0 : 1);
-          card.style.zIndex = String(10 + i);
-          card.style.filter = settle > 0 ? `brightness(${1 - settle * 0.18})` : "none";
-        });
-      },
-    });
-
-    return () => {
-      pin.kill();
-      trigger.kill();
-    };
-  }, []);
+    const video = videoRef.current;
+    if (video) {
+      video.load();
+      video.play().catch(() => {
+        /* autoplay may be blocked until interaction */
+      });
+    }
+  }, [src]);
 
   return (
-    <div
-      id="featured"
-      className="featured-projects-section"
-      ref={sectionRef}
-      style={{ height: `${(featuredProjects.length + 1) * 100}vh` }}
+    <div className="fp-video-layer">
+      <video ref={videoRef} key={src} autoPlay loop muted playsInline preload="auto">
+        <source src={src} type="video/mp4" />
+      </video>
+    </div>
+  );
+};
+
+const StickyScroll = ({
+  content,
+}: {
+  content: {
+    title: string;
+    description: string;
+    content?: React.ReactNode;
+    iconLists?: string[];
+    github?: string;
+    live?: string;
+  }[];
+}) => {
+  const [activeCard, setActiveCard] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    container: ref,
+    offset: ["start start", "end start"],
+  });
+  const cardLength = content.length;
+
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    const cardsBreakpoints = content.map((_, index) => index / cardLength);
+    const closestBreakpointIndex = cardsBreakpoints.reduce(
+      (acc, breakpoint, index) => {
+        const distance = Math.abs(latest - breakpoint);
+        if (distance < Math.abs(latest - cardsBreakpoints[acc])) {
+          return index;
+        }
+        return acc;
+      },
+      0
+    );
+    setActiveCard(closestBreakpointIndex);
+  });
+
+  const backgroundColors = ["#0f172a", "#000000", "#171717"];
+  const linearGradients = [
+    "linear-gradient(to bottom right, #06b6d4, #10b981)",
+    "linear-gradient(to bottom right, #ec4899, #6366f1)",
+    "linear-gradient(to bottom right, #f97316, #eab308)",
+  ];
+
+  const [backgroundGradient, setBackgroundGradient] = useState(
+    linearGradients[0]
+  );
+
+  useEffect(() => {
+    setBackgroundGradient(linearGradients[activeCard % linearGradients.length]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeCard]);
+
+  return (
+    <motion.div
+      animate={{
+        backgroundColor: backgroundColors[activeCard % backgroundColors.length],
+      }}
+      className="fp-sticky-scroll"
+      ref={ref}
     >
-      <div className="fp-sticky" ref={stickyRef}>
-        <div className="fp-header">
-          <p className="fp-eyebrow">Featured / Live Projects</p>
-          <h1 className="fp-heading">
-            Check out my <span>Featured Projects</span>
-          </h1>
-        </div>
+      <div className="fp-left">
+        <div className="fp-left-inner">
+          {content.map((item, index) => (
+            <div key={item.title + index} className="fp-item">
+              <motion.h2
+                initial={{ opacity: 0 }}
+                animate={{ opacity: activeCard === index ? 1 : 0.3 }}
+                className="fp-item-title"
+              >
+                {item.title}
+              </motion.h2>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: activeCard === index ? 1 : 0.3 }}
+                className="fp-item-desc"
+              >
+                {item.description}
+              </motion.p>
 
-        <div className="fp-stack">
-          {featuredProjects.map((project, i) => (
-            <div
-              key={project.title}
-              className="fp-card"
-              style={{ "--fp-theme": project.theme } as React.CSSProperties}
-              ref={(el) => {
-                cardRefs.current[i] = el;
-              }}
-            >
-              <span className="fp-tag">{project.tag}</span>
-              <ImageFan src={project.img} alt={project.title} />
-
-              <div className="fp-card-header">
-                <p className="fp-card-link">{project.link}</p>
-                <h2 className="fp-card-title">{project.title}</h2>
-                <div className="fp-icons">
-                  {project.iconLists.map((icon) => (
-                    <span key={icon} className="fp-icon">
+              {item.iconLists && item.iconLists.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: activeCard === index ? 1 : 0.3 }}
+                  className="fp-icons"
+                >
+                  {item.iconLists.map((icon, idx) => (
+                    <div key={idx} className="fp-icon">
                       {icon}
-                    </span>
+                    </div>
                   ))}
-                </div>
-                {project.hackathon && <HackathonBadge />}
-              </div>
+                </motion.div>
+              )}
 
-              <div className="fp-card-body">
-                <div className="fp-section">
-                  <h3 className="fp-section-title">Problem</h3>
-                  <p className="fp-section-body">{project.problem}</p>
-                </div>
-                <div className="fp-section">
-                  <h3 className="fp-section-title">Project Description</h3>
-                  <p className="fp-section-body">{project.description}</p>
-                </div>
-                <div className="fp-section">
-                  <h3 className="fp-section-title">USP</h3>
-                  <p className="fp-section-body">{project.usp}</p>
-                </div>
-                <div className="fp-section">
-                  <h3 className="fp-section-title">Quantitative Results</h3>
-                  <ResultsTable results={project.results} />
-                </div>
-              </div>
-
-              <div className="fp-buttons">
-                {project.github ? (
-                  <a
-                    href={project.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="fp-btn fp-btn-github"
-                    data-cursor="disable"
-                  >
-                    GitHub
-                  </a>
-                ) : (
-                  <span className="fp-btn fp-btn-disabled" aria-disabled="true">
-                    GitHub
-                  </span>
-                )}
-                {project.linkedin ? (
-                  <a
-                    href={project.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="fp-btn fp-btn-linkedin"
-                    data-cursor="disable"
-                  >
-                    LinkedIn Post
-                  </a>
-                ) : (
-                  <span className="fp-btn fp-btn-disabled" aria-disabled="true">
-                    LinkedIn Post
-                  </span>
-                )}
-                {/* Deployed links are intentionally disabled for now,
-                    regardless of whether a URL is set. */}
-                <span className="fp-btn fp-btn-disabled" aria-disabled="true">
-                  Deployed
-                </span>
-              </div>
+              {(item.github || item.live) && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: activeCard === index ? 1 : 0.3 }}
+                  className="fp-buttons"
+                >
+                  {item.github && (
+                    <a
+                      href={item.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="fp-btn fp-btn-github"
+                      data-cursor="disable"
+                    >
+                      GitHub
+                    </a>
+                  )}
+                  {item.live && (
+                    <a
+                      href={item.live}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="fp-btn fp-btn-live"
+                      data-cursor="disable"
+                    >
+                      Deployed
+                    </a>
+                  )}
+                </motion.div>
+              )}
             </div>
           ))}
+          <div className="fp-spacer" />
         </div>
       </div>
-    </div>
+      <div style={{ background: backgroundGradient }} className="fp-media">
+        {content[activeCard].content ?? null}
+      </div>
+    </motion.div>
+  );
+};
+
+const FeaturedProjects = () => {
+  const content = featuredProjects.map((project) => ({
+    title: project.title,
+    description: project.des,
+    iconLists: project.iconLists,
+    github: project.github,
+    live: project.website,
+    content: (
+      <div className="fp-media-inner">
+        <div className="fp-media-bg" />
+        {project.video ? (
+          <VideoPlayer src={project.video} />
+        ) : (
+          <img src={project.img} alt={project.title} className="fp-media-img" />
+        )}
+      </div>
+    ),
+  }));
+
+  return (
+    <motion.div
+      id="featured"
+      className="featured-projects-section"
+      initial={{ opacity: 0, x: 100 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: false, amount: 0.2 }}
+      transition={{ duration: 0.8, ease: [0.25, 0.4, 0.25, 1] }}
+    >
+      <div className="fp-header">
+        <p className="fp-eyebrow">Featured / Live Projects</p>
+        <h1 className="fp-heading">
+          Check out my <span>Featured Projects</span>
+        </h1>
+      </div>
+      <div className="fp-frame">
+        <StickyScroll content={content} />
+      </div>
+    </motion.div>
   );
 };
 

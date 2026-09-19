@@ -1,233 +1,220 @@
-import { useEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motion } from "motion/react";
+import {
+  MdOutlineContentCopy,
+  MdOutlineBrokenImage,
+  MdOutlineDraw,
+  MdOutlineTableChart,
+  MdOutlineViewSidebar,
+} from "react-icons/md";
 import "./styles/Achievements.css";
 
-const smoothstep = (t: number) => {
-  const c = Math.max(0, Math.min(1, t));
-  return c * c * (3 - 2 * c);
+/* Images live in /public/achievements_data — swap the files there (keeping
+   the names) to change what each card shows. */
+const IMAGES = {
+  nasa: "/achievements_data/nasa-1.png",
+  ihub: "/achievements_data/ihub.png",
+  hack60: "/achievements_data/achive-1.png",
+  frost: "/achievements_data/achive-2.png",
+  inxite: "/achievements_data/achive-3.png",
+  spare: "/achievements_data/achive-4.png",
 };
 
-gsap.registerPlugin(ScrollTrigger);
+/* ---------------- animated headers (bento "skeletons") ---------------- */
 
-/* Images live in /public/achievements_data - swap the files there
-   (keeping the names) to change what each entry shows. */
-const achievements = [
+const SkeletonOne = () => {
+  const variants = {
+    initial: { x: 0 },
+    animate: { x: 10, rotate: 5, transition: { duration: 0.2 } },
+  };
+  const variantsSecond = {
+    initial: { x: 0 },
+    animate: { x: -10, rotate: -5, transition: { duration: 0.2 } },
+  };
+
+  return (
+    <motion.div initial="initial" whileHover="animate" className="bento-skeleton">
+      <motion.div variants={variants} className="bento-row">
+        <div className="bento-dot" />
+        <div className="bento-bar" />
+      </motion.div>
+      <motion.div variants={variantsSecond} className="bento-row bento-row-narrow">
+        <div className="bento-bar" />
+        <div className="bento-dot" />
+      </motion.div>
+      <motion.div variants={variants} className="bento-row">
+        <div className="bento-dot" />
+        <div className="bento-bar" />
+      </motion.div>
+    </motion.div>
+  );
+};
+
+const SkeletonTwo = () => {
+  const variants = {
+    initial: { width: 0 },
+    animate: { width: "100%", transition: { duration: 0.2 } },
+    hover: { width: ["0%", "100%"], transition: { duration: 2 } },
+  };
+  const arr = new Array(6).fill(0);
+  return (
+    <motion.div
+      initial="initial"
+      animate="animate"
+      whileHover="hover"
+      className="bento-skeleton"
+    >
+      {arr.map((_, i) => (
+        <motion.div
+          key={`bento-two-${i}`}
+          variants={variants}
+          style={{ maxWidth: `${Math.random() * (100 - 40) + 40}%` }}
+          className="bento-line"
+        />
+      ))}
+    </motion.div>
+  );
+};
+
+const SkeletonThree = () => {
+  const variants = {
+    initial: { backgroundPosition: "0 50%" },
+    animate: { backgroundPosition: ["0, 50%", "100% 50%", "0 50%"] },
+  };
+  return (
+    <motion.div
+      initial="initial"
+      animate="animate"
+      variants={variants}
+      transition={{ duration: 5, repeat: Infinity, repeatType: "reverse" }}
+      className="bento-skeleton bento-gradient"
+    />
+  );
+};
+
+const SkeletonFour = () => {
+  const first = {
+    initial: { x: 20, rotate: -5 },
+    hover: { x: 0, rotate: 0 },
+  };
+  const second = {
+    initial: { x: -20, rotate: 5 },
+    hover: { x: 0, rotate: 0 },
+  };
+  return (
+    <motion.div
+      initial="initial"
+      animate="animate"
+      whileHover="hover"
+      className="bento-skeleton bento-skeleton-row"
+    >
+      <motion.div variants={first} className="bento-mini-card">
+        <img src={IMAGES.hack60} alt="Hack 60" />
+        <p>Deep Learning track win</p>
+        <span className="bento-pill bento-pill-green">1st Place</span>
+      </motion.div>
+      <motion.div className="bento-mini-card bento-mini-card-front">
+        <img src={IMAGES.ihub} alt="iHub" />
+        <p>1,600+ teams beaten</p>
+        <span className="bento-pill bento-pill-purple">Overall Win</span>
+      </motion.div>
+      <motion.div variants={second} className="bento-mini-card">
+        <img src={IMAGES.frost} alt="FrostHack" />
+        <p>Agentic AI track</p>
+        <span className="bento-pill bento-pill-orange">Runner-Up</span>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+const SkeletonFive = () => {
+  const variants = {
+    initial: { x: 0 },
+    animate: { x: 10, rotate: 5, transition: { duration: 0.2 } },
+  };
+  const variantsSecond = {
+    initial: { x: 0 },
+    animate: { x: -10, rotate: -5, transition: { duration: 0.2 } },
+  };
+
+  return (
+    <motion.div initial="initial" whileHover="animate" className="bento-skeleton">
+      <motion.div variants={variants} className="bento-chat">
+        <img src={IMAGES.inxite} alt="InxiteOut" />
+        <p>
+          Runner-up at IIT Mandi&apos;s flagship tech fest XPECTO &apos;26, against
+          the best teams on campus…
+        </p>
+      </motion.div>
+      <motion.div variants={variantsSecond} className="bento-chat bento-chat-reply">
+        <p>1st Runner-Up</p>
+        <div className="bento-dot" />
+      </motion.div>
+    </motion.div>
+  );
+};
+
+/* ---------------- grid ---------------- */
+
+const items = [
   {
     title: "NASA Space Apps Challenge — 1st Place",
-    meta: "Chandigarh · 2025",
     description:
-      "Won among 100+ teams with Astrogenesis, a RAG-powered bioscience research engine built end to end during the challenge weekend.",
-    image: "/achievements_data/nasa-1.png",
-    teams: "100+",
-    position: "1st Place",
-    github: "https://github.com/Kartavya728",
+      "Won among 100+ teams with Astrogenesis, a RAG-powered bioscience research engine. Chandigarh, 2025.",
+    header: <SkeletonOne />,
+    className: "bento-span-1",
+    icon: <MdOutlineContentCopy />,
   },
   {
     title: "iHub Multimodal AI Hackathon — 1st Overall",
-    meta: "IIT Mandi iHub · 2025",
     description:
-      "Led a 5-member team to first place among 1,600+ teams with Smart-Scribes, a multimodal AI lecture assistant covering video, audio and slides.",
-    image: "/achievements_data/ihub.png",
-    teams: "1,600+",
-    position: "1st Overall",
-    github: "https://github.com/Kartavya728/Smart-Scribes",
+      "Led a 5-member team to win among 1,600+ teams with Smart-Scribes, an AI lecture assistant. 2025.",
+    header: <SkeletonTwo />,
+    className: "bento-span-1",
+    icon: <MdOutlineBrokenImage />,
   },
   {
     title: "Hack 60 — HCLTech × IIT Mandi",
-    meta: "Deep Learning Track Winner · 2026",
     description:
-      "Won the Deep Learning track with a dual-system framework pairing neural voice cloning against a real-time deepfake and audio anti-spoofing detector.",
-    image: "/achievements_data/achive-1.png",
-    teams: "—",
-    position: "Track Winner",
-    github: "https://github.com/Kartavya728",
+      "Won the Deep Learning track with a real-time deepfake & audio anti-spoofing system. 2026.",
+    header: <SkeletonThree />,
+    className: "bento-span-1",
+    icon: <MdOutlineDraw />,
+  },
+  {
+    title: "Hackathon Wins at a Glance",
+    description:
+      "First-place finishes across national AI hackathons, plus podium runs in agentic AI and campus flagship events.",
+    header: <SkeletonFour />,
+    className: "bento-span-2",
+    icon: <MdOutlineTableChart />,
   },
   {
     title: "InxiteOut Hackathon — 1st Runner-Up",
-    meta: "XPECTO '26 · IIT Mandi",
     description:
-      "Runner-up at IIT Mandi's flagship tech fest, competing against the strongest teams on campus.",
-    image: "/achievements_data/achive-2.png",
-    teams: "—",
-    position: "1st Runner-Up",
-    github: "https://github.com/Kartavya728",
-  },
-  {
-    title: "Agentic AI Track — Podium Finish",
-    meta: "National Hackathon Circuit",
-    description:
-      "Podium run building autonomous multi-step agent workflows with tool use, retries and human-in-the-loop checkpoints.",
-    image: "/achievements_data/achive-3.png",
-    teams: "—",
-    position: "Podium Finish",
-    github: "https://github.com/Kartavya728",
+      "Secured the runner-up position at IIT Mandi's flagship tech fest XPECTO '26.",
+    header: <SkeletonFive />,
+    className: "bento-span-1",
+    icon: <MdOutlineViewSidebar />,
   },
 ];
 
-/**
- * Sticky scroll reveal (aceternity's pattern) rebuilt on the page's own
- * scroll rather than a nested overflow container - the source demo uses
- * `container: ref` + `overflow-y-auto`, which would put a second
- * scrollbar inside the page. Driven by GSAP ScrollTrigger rather than
- * Framer's useScroll because this site scrolls through GSAP
- * ScrollSmoother, which Framer's scroll hooks don't track.
- *
- * Each entry's opacity/position is written directly from scroll progress
- * every frame (the same technique FeaturedProjects uses), rather than
- * picking a discrete "active" index and letting a fixed-duration CSS
- * transition animate the cross-fade. The CSS-transition version played
- * out on its own clock once triggered, so a fast scroll (or scrolling
- * back up) could outrun it - the transition was still mid-flight while
- * the scroll position said something else, producing a visible overlap
- * between entries. Deriving the look from progress directly means
- * scrolling up is just progress decreasing - there's no separate
- * "reverse" case to get wrong, and it can never fall behind the scroll
- * position in either direction.
- */
 const Achievements = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const stickyRef = useRef<HTMLDivElement>(null);
-  const entryRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const imageRefs = useRef<(HTMLImageElement | null)[]>([]);
-  const [active, setActive] = useState(0);
-
-  useEffect(() => {
-    if (!sectionRef.current || !stickyRef.current) return;
-    // Below 1024px the section isn't pinned at all - every entry is laid
-    // out statically and shown at once (see the CSS media query), so the
-    // scroll-driven reveal below has nothing to drive and would only
-    // fight that layout: it writes opacity/transform as inline styles,
-    // which beat the mobile CSS reset since inline always outranks a
-    // stylesheet rule regardless of specificity.
-    if (window.innerWidth <= 1024) return;
-    const count = achievements.length;
-    // Pinned via ScrollTrigger rather than `position: sticky` - this site
-    // scrolls through GSAP ScrollSmoother, which transforms the content
-    // instead of scrolling it, so sticky never engages.
-    const pin = ScrollTrigger.create({
-      trigger: sectionRef.current,
-      start: "top top",
-      end: "bottom bottom",
-      pin: stickyRef.current,
-      pinSpacing: false,
-      invalidateOnRefresh: true,
-    });
-
-    const trigger = ScrollTrigger.create({
-      trigger: sectionRef.current,
-      start: "top top",
-      end: "bottom bottom",
-      scrub: true,
-      invalidateOnRefresh: true,
-      onUpdate: (self) => {
-        // Spread the section's progress across the entries so each one
-        // gets its own slice - the same technique FeaturedProjects uses
-        // for its stack.
-        const spread = self.progress * count;
-        entryRefs.current.forEach((entry, i) => {
-          if (!entry) return;
-          const local = spread - i;
-          // Overlapping fade windows (in by [-0.3, 0], out by [0.7, 1])
-          // so one entry's fade-out and the next one's fade-in share the
-          // same span of scroll - a real cross-dissolve rather than both
-          // entries passing through zero opacity one after the other.
-          const fadeIn = smoothstep((local + 0.3) / 0.3);
-          const fadeOut = 1 - smoothstep((local - 0.7) / 0.3);
-          const opacity = fadeIn * fadeOut;
-          const y = (1 - fadeIn) * 24 - (1 - fadeOut) * 10;
-          entry.style.opacity = String(opacity);
-          entry.style.transform = `translateY(${y}px)`;
-          entry.style.pointerEvents = opacity > 0.5 ? "auto" : "none";
-
-          const image = imageRefs.current[i];
-          if (image) {
-            image.style.opacity = String(opacity);
-            image.style.transform = `scale(${1 + (1 - opacity) * 0.06})`;
-          }
-        });
-
-        const index = Math.min(count - 1, Math.floor(spread));
-        setActive((prev) => (prev === index ? prev : index));
-      },
-    });
-    return () => {
-      pin.kill();
-      trigger.kill();
-    };
-  }, []);
-
   return (
-    <div
-      className="achievements-section"
-      id="achievements"
-      ref={sectionRef}
-      style={{ height: `${achievements.length * 85}vh` }}
-    >
-      <div className="ach-sticky" ref={stickyRef}>
-        <div className="ach-inner">
-          <div className="ach-copy">
-            <h2>
-              My <span>Achievements</span>
-            </h2>
-            <div className="ach-list">
-              {achievements.map((item, i) => (
-                <div
-                  key={item.title}
-                  className="ach-entry"
-                  ref={(el) => {
-                    entryRefs.current[i] = el;
-                  }}
-                >
-                  <p className="ach-meta">{item.meta}</p>
-                  <h3 className="ach-title">{item.title}</h3>
-                  <p className="ach-description">{item.description}</p>
-                  <div className="ach-stats">
-                    <div className="ach-stat">
-                      <span className="ach-stat-label">Teams</span>
-                      <span className="ach-stat-value">{item.teams}</span>
-                    </div>
-                    <div className="ach-stat">
-                      <span className="ach-stat-label">Position</span>
-                      <span className="ach-stat-value">{item.position}</span>
-                    </div>
-                    <a
-                      href={item.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="ach-stat-link"
-                      data-cursor="disable"
-                    >
-                      GitHub ↗
-                    </a>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="ach-progress">
-              {achievements.map((item, i) => (
-                <span
-                  key={item.title}
-                  className={`ach-pip ${i === active ? "ach-pip-active" : ""}`}
-                />
-              ))}
+    <div className="achievements-section section-container" id="achievements">
+      <h2>
+        My <span>Achievements</span>
+      </h2>
+      <div className="bento-grid">
+        {items.map((item, i) => (
+          <div key={i} className={`bento-item ${item.className}`}>
+            {item.header}
+            <div className="bento-content">
+              <div className="bento-icon">{item.icon}</div>
+              <div className="bento-title">{item.title}</div>
+              <div className="bento-description">{item.description}</div>
             </div>
           </div>
-
-          <div className="ach-media">
-            {achievements.map((item, i) => (
-              <img
-                key={item.image}
-                src={item.image}
-                alt={item.title}
-                className="ach-image"
-                ref={(el) => {
-                  imageRefs.current[i] = el;
-                }}
-              />
-            ))}
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );
