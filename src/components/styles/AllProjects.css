@@ -13,8 +13,7 @@
 }
 
 .all-projects-inner {
-  width: 1300px;
-  max-width: calc(100% - 80px);
+  width: min(1500px, calc(100% - 64px));
   margin: 0 auto;
 }
 
@@ -50,19 +49,47 @@
   margin: 12px 0 0;
 }
 
-.all-projects-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
-  gap: 24px;
-  margin-top: 40px;
+.all-projects-scatter {
+  position: relative;
+  width: 100%;
+  height: clamp(760px, calc(var(--project-count) * 74px + 260px), 2350px);
+  margin-top: 34px;
+  overflow: visible;
 }
 
-.all-projects-grid .work-box {
-  width: 100%;
-  margin-right: 0;
-  border-right: none;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+.all-projects-card {
+  position: absolute;
+  top: var(--scatter-y);
+  left: var(--scatter-x);
+  width: var(--scatter-width);
+  height: var(--scatter-height);
+  border-radius: var(--scatter-radius);
+  transform: translate(-50%, -50%) rotate(var(--scatter-rotate));
+  transition:
+    transform 0.32s ease,
+    border-radius 0.32s ease,
+    opacity 0.32s ease,
+    box-shadow 0.32s ease;
+}
+
+.all-projects-card:hover,
+.all-projects-card:focus-within {
+  z-index: 20;
+  border-radius: 18px;
+  transform: translate(-50%, -50%) rotate(0deg) scale(1.04);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.62);
+}
+
+.all-projects-card .fan-card-img {
+  height: 76px;
+}
+
+.all-projects-card .fan-card-title {
+  font-size: 14px;
+}
+
+.all-projects-card .fan-card-description {
+  -webkit-line-clamp: 3;
 }
 
 @media only screen and (max-width: 1400px) {
@@ -73,11 +100,22 @@
 }
 
 @media only screen and (max-width: 900px) {
+  .all-projects-inner {
+    width: min(100% - 28px, 620px);
+  }
   .all-projects-page h1 {
     font-size: 40px;
     line-height: 40px;
   }
-  .all-projects-grid {
-    grid-template-columns: 1fr;
+  .all-projects-scatter {
+    height: calc(var(--project-count) * 168px + 120px);
+  }
+  .all-projects-card {
+    width: min(250px, 74vw);
+    height: 224px;
+    left: var(--scatter-x);
+  }
+  .all-projects-card .fan-card-img {
+    height: 62px;
   }
 }
