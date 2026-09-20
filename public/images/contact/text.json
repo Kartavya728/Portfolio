@@ -1,0 +1,21 @@
+{
+  "stats": [
+    {
+      "value": "8+",
+      "label": "Projects Built"
+    },
+    {
+      "value": "5",
+      "label": "Hackathons Won"
+    },
+    {
+      "value": "8+",
+      "label": "Certifications"
+    }
+  ],
+  "tagline": "I'm a Data Science undergrad at IIT Mandi building production-grade full-stack and ML systems. Open to full-time SDE/ML roles and interesting collaborations - reach out and let's talk.",
+  "name": "Kartavya Suryawanshi",
+  "email": "kartavya.suryawanshi7@gmail.com",
+  "phone": "+91 86689 44955",
+  "avatar": "/images/contact/contact-avatar.png"
+}

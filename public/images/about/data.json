@@ -1,0 +1,77 @@
+{
+  "heading": "About Me",
+  "bodyParts": [
+    "I'm a Data Science undergrad at ",
+    ", building at the intersection of full-stack engineering and applied AI. I've shipped production systems ranging from event-driven fraud detection pipelines to ",
+    " models for medical imaging, and led teams to first-place finishes at national hackathons like ",
+    " and ",
+    " by ",
+    "."
+  ],
+  "terms": {
+    "iitMandi": "IIT Mandi",
+    "deepLearning": "deep learning",
+    "nasaSpaceApps": "NASA Space Apps",
+    "hack60": "Hack 60",
+    "hcltech": "HCLTech"
+  },
+  "tooltips": {
+    "iit-mandi": {
+      "title": "IIT Mandi",
+      "subtitle": "Indian Institute of Technology, Mandi",
+      "image": "/images/about/tooltips/tool-tip-iit-mandi.jpg",
+      "imageAlt": "IIT Mandi campus",
+      "description": "A federally-run technical institute in the Kamand Valley, Himachal Pradesh, known for its research in AI, data science and human-centric computing.",
+      "facts": [
+        {
+          "label": "Founded",
+          "value": "2009"
+        },
+        {
+          "label": "NIRF Engineering Rank",
+          "value": "#31 (2024)"
+        },
+        {
+          "label": "Campus",
+          "value": "538 acres"
+        }
+      ]
+    },
+    "deep-learning": {
+      "title": "Deep Learning",
+      "subtitle": "Subfield of Machine Learning",
+      "description": "Uses multi-layered neural networks to learn representations directly from raw data, powering modern computer vision, NLP and generative AI systems."
+    },
+    "nasa-space-apps": {
+      "title": "NASA Space Apps Challenge",
+      "subtitle": "Global Hackathon, since 2012",
+      "image": "/images/about/tooltips/tool-tip-nasa-space-apps.png",
+      "imageAlt": "NASA Space Apps Challenge logo",
+      "imageContain": true,
+      "description": "The world's largest annual space hackathon, where teams use NASA's open data to build solutions for challenges on Earth and in space.",
+      "facts": [
+        {
+          "label": "Countries",
+          "value": "185+"
+        },
+        {
+          "label": "Registrants",
+          "value": "370,000+"
+        }
+      ]
+    },
+    "hack-60": {
+      "title": "Hack 60",
+      "subtitle": "HCLTech x IIT Mandi",
+      "description": "A 60-hour hackathon jointly hosted by HCLTech and IIT Mandi, challenging teams to design and ship real-world AI systems against the clock."
+    },
+    "hcltech": {
+      "title": "HCLTech",
+      "subtitle": "IT Services & Consulting, since 1991",
+      "image": "/images/about/tooltips/tool-tip-hcltech.svg",
+      "imageAlt": "HCLTech logo",
+      "logoChip": true,
+      "description": "An Indian multinational IT services and consulting company, headquartered in Noida, with 220,000+ employees worldwide."
+    }
+  }
+}

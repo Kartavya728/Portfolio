@@ -4,6 +4,7 @@ import { TbNotes } from "react-icons/tb";
 import { useEffect, useState } from "react";
 import HoverLinks from "./HoverLinks";
 import PdfViewer from "./PdfViewer";
+import socialLinks from "../../public/images/social/links.json";
 
 const SocialIcons = () => {
   const [isResumeOpen, setIsResumeOpen] = useState(false);
@@ -57,12 +58,12 @@ const SocialIcons = () => {
     <div className="icons-section">
       <div className="social-icons" data-cursor="icons" id="social">
         <span>
-          <a href="https://github.com/Kartavya728" target="_blank">
+          <a href={socialLinks.github} target="_blank">
             <FaGithub />
           </a>
         </span>
         <span>
-          <a href="https://linkedin.com" target="_blank">
+          <a href={socialLinks.linkedin} target="_blank">
             <FaLinkedinIn />
           </a>
         </span>
@@ -79,9 +80,9 @@ const SocialIcons = () => {
       </button>
       {isResumeOpen && (
         <PdfViewer
-          src="/Kartavya_Suryawanshi_Resume.pdf"
+          src={socialLinks.resume}
           title="Resume — Kartavya Suryawanshi"
-          contactEmail="b24199@students.iitmandi.ac.in"
+          contactEmail={socialLinks.contactEmail}
           onClose={() => setIsResumeOpen(false)}
         />
       )}

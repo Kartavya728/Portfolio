@@ -1,0 +1,29 @@
+{
+  "projects": {
+    "anatomy-aware-doseflow": {
+      "github": "https://github.com/Kartavya728",
+      "linkedin": "",
+      "deployed": ""
+    },
+    "flow-fraud-and-loan-optimization-workbench": {
+      "github": "https://github.com/Kartavya728/FLOW-InterIIT14-TechMeet",
+      "linkedin": "",
+      "deployed": ""
+    },
+    "lunar-dem-generation-using-photoclinometry": {
+      "github": "https://github.com/Kartavya728/LunaDEM",
+      "linkedin": "",
+      "deployed": ""
+    },
+    "lokmitra-ai": {
+      "github": "https://github.com/Kartavya728/LokMitra-AI",
+      "linkedin": "",
+      "deployed": ""
+    },
+    "smart-scribes-multimodal-lecture-intelligence": {
+      "github": "https://github.com/Kartavya728/Smart-Scribes",
+      "linkedin": "",
+      "deployed": ""
+    }
+  }
+}

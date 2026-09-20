@@ -5,12 +5,10 @@ import "./styles/Contact.css";
 import SectionInfoTooltip from "./SectionInfoTooltip";
 import { ContactTooltip } from "./SectionTooltipContent";
 import EncryptedText from "./EncryptedText";
+import contactText from "../../public/images/contact/text.json";
+import contactLinks from "../../public/images/contact/links.json";
 
-const STATS = [
-  { value: "8+", label: "Projects Built" },
-  { value: "5", label: "Hackathons Won" },
-  { value: "8+", label: "Certifications" },
-];
+const STATS = contactText.stats;
 
 const Contact = () => {
   return (
@@ -38,18 +36,14 @@ const Contact = () => {
             </span>
           </div>
 
-          <p className="contact-tagline">
-            I'm a Data Science undergrad at IIT Mandi building production-grade
-            full-stack and ML systems. Open to full-time SDE/ML roles and
-            interesting collaborations — reach out and let's talk.
-          </p>
+          <p className="contact-tagline">{contactText.tagline}</p>
 
           <div className="contact-hero-actions">
-            <a href="#work" className="contact-btn-primary" data-cursor="disable">
+            <a href={contactLinks.work} className="contact-btn-primary" data-cursor="disable">
               View My Work
             </a>
             <a
-              href="mailto:kartavya.suryawanshi7@gmail.com"
+              href={contactLinks.email}
               className="contact-btn-secondary"
               data-cursor="disable"
             >
@@ -68,7 +62,7 @@ const Contact = () => {
 
           <div className="contact-social-actions">
             <a
-              href="https://github.com/Kartavya728"
+              href={contactLinks.github}
               target="_blank"
               rel="noreferrer"
               className="contact-btn-secondary"
@@ -77,7 +71,7 @@ const Contact = () => {
               <FaGithub /> View GitHub
             </a>
             <a
-              href="https://linkedin.com"
+              href={contactLinks.linkedin}
               target="_blank"
               rel="noreferrer"
               className="contact-btn-secondary"
@@ -120,8 +114,8 @@ const Contact = () => {
               </div>
             </div>
             <img
-              src="/git-prf.png"
-              alt="Kartavya Suryawanshi"
+              src={contactText.avatar}
+              alt={contactText.name}
               className="contact-photo"
             />
           </div>
@@ -134,32 +128,28 @@ const Contact = () => {
 
             <div className="contact-card-row">
               <span className="contact-card-label">Name</span>
-              <span className="contact-card-value">Kartavya Suryawanshi</span>
+              <span className="contact-card-value">{contactText.name}</span>
             </div>
             <div className="contact-card-row">
               <span className="contact-card-label">Email</span>
               <a
-                href="mailto:kartavya.suryawanshi7@gmail.com"
+                href={contactLinks.email}
                 className="contact-card-value"
                 data-cursor="disable"
-              >
-                kartavya.suryawanshi7@gmail.com
-              </a>
+              >{contactText.email}</a>
             </div>
             <div className="contact-card-row">
               <span className="contact-card-label">Phone</span>
               <a
-                href="tel:+918668944955"
+                href={contactLinks.phone}
                 className="contact-card-value"
                 data-cursor="disable"
-              >
-                +91 86689 44955
-              </a>
+              >{contactText.phone}</a>
             </div>
 
             <div className="contact-card-socials">
               <a
-                href="https://github.com/Kartavya728"
+                href={contactLinks.github}
                 target="_blank"
                 rel="noreferrer"
                 data-cursor="disable"
@@ -168,7 +158,7 @@ const Contact = () => {
                 <FaGithub />
               </a>
               <a
-                href="https://linkedin.com"
+                href={contactLinks.linkedin}
                 target="_blank"
                 rel="noreferrer"
                 data-cursor="disable"
@@ -179,7 +169,7 @@ const Contact = () => {
             </div>
 
             <a
-              href="mailto:kartavya.suryawanshi7@gmail.com"
+              href={contactLinks.email}
               className="contact-card-btn"
               data-cursor="disable"
             >

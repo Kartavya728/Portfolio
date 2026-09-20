@@ -1,0 +1,165 @@
+{
+  "projects": [
+    {
+      "id": "anatomy-aware-doseflow",
+      "title": "Anatomy-Aware DoseFlow",
+      "description": "A three-stage deep learning pipeline built around a dose-conditioned flow trajectory model (MedSAM + ViT encoders) that reconstructs clean CT scans at any dose from 5%-100%, trained once instead of separately per dose level.",
+      "img": "/images/featured-projects/anatomy-aware-doseflow/featured-anatomy-aware-doseflow.png",
+      "iconLists": [
+        "PyTorch",
+        "MedSAM",
+        "ViT",
+        "Mamba"
+      ],
+      "link": "Deep Learning Research — Feb 2026",
+      "tag": "Deep Learning",
+      "theme": "#5aa9ff",
+      "problem": "Low-dose CT scans are noisy and hard to diagnose from, but the 'right' dose is different for every patient - most denoising models only work at the one fixed dose level they were trained on.",
+      "usp": "Generalizes zero-shot to three anatomical regions the model never saw in training - most dose-reduction models only work on the body part they were trained on.",
+      "results": [
+        {
+          "metric": "PSNR",
+          "value": "48.15 dB"
+        },
+        {
+          "metric": "SSIM",
+          "value": "0.9991"
+        },
+        {
+          "metric": "Dose range",
+          "value": "5%–100%"
+        },
+        {
+          "metric": "Unseen regions",
+          "value": "3 / 3 generalized"
+        }
+      ]
+    },
+    {
+      "id": "flow-fraud-and-loan-optimization-workbench",
+      "title": "FLOW — Fraud & Loan Optimization Workbench",
+      "description": "A production-grade streaming platform for real-time fraud detection and loan targeting, built on an event-driven architecture with online-learning models scoring live transactions.",
+      "img": "/images/featured-projects/flow-fraud-and-loan-optimization-workbench/featured-flow-fraud-and-loan-optimization-workbench.png",
+      "iconLists": [
+        "Pathway",
+        "NATS JetStream",
+        "Redis",
+        "FastAPI"
+      ],
+      "link": "Inter IIT Tech Meet 14.0 — 2025",
+      "tag": "System Design",
+      "theme": "#ffa657",
+      "problem": "Banking fraud detection and loan targeting both need model decisions on live transaction streams, but most pipelines are batch-oriented and too slow to act before a transaction settles.",
+      "usp": "Online learning models (Hoeffding Trees, Online GMM) update continuously from live feedback instead of periodic retraining, so the system adapts to new fraud patterns as they emerge.",
+      "results": [
+        {
+          "metric": "Scoring latency",
+          "value": "< 5ms"
+        },
+        {
+          "metric": "F1-score",
+          "value": "88%"
+        },
+        {
+          "metric": "Observability",
+          "value": "Prometheus + Grafana"
+        }
+      ]
+    },
+    {
+      "id": "lunar-dem-generation-using-photoclinometry",
+      "title": "Lunar DEM Generation using Photoclinometry",
+      "description": "A photoclinometry pipeline that reconstructs high-resolution lunar Digital Elevation Models straight from NASA's orbital photographs, combining shape-from-shading computer vision with GIS tooling to build 3D topographic maps for rover-terrain studies.",
+      "img": "/images/featured-projects/lunar-dem-generation-using-photoclinometry/featured-lunar-dem-generation-using-photoclinometry.png",
+      "iconLists": [
+        "Python",
+        "NumPy",
+        "SciPy",
+        "Open3D"
+      ],
+      "link": "ISRO Hackathon — Jul 2025",
+      "hackathon": true,
+      "tag": "Computer Vision",
+      "theme": "#4fd1a5",
+      "problem": "Planning rover terrain needs accurate lunar elevation data, but there's no direct depth sensor for most of the surface - only 2D photographs taken from orbit.",
+      "usp": "Produces rover-planning-grade 3D topography from ordinary 2D imagery alone - no LIDAR or stereo image pairs required.",
+      "results": [
+        {
+          "metric": "Event",
+          "value": "ISRO Hackathon"
+        },
+        {
+          "metric": "Input",
+          "value": "NASA lunar imagery"
+        },
+        {
+          "metric": "Output",
+          "value": "High-res DEM"
+        }
+      ]
+    },
+    {
+      "id": "lokmitra-ai",
+      "title": "LokMitra AI",
+      "description": "A voice-first AI assistant for vernacular users, pairing Gemini-powered RAG with a Django/Next.js stack so the entire interaction loop stays spoken, not typed.",
+      "img": "/images/featured-projects/lokmitra-ai/featured-lokmitra-ai.png",
+      "iconLists": [
+        "Django",
+        "Next.js",
+        "Gemini API",
+        "RAG"
+      ],
+      "link": "Personal Project — 2025",
+      "tag": "Gen AI",
+      "theme": "#c2a4ff",
+      "problem": "Most AI assistants assume text input and English fluency, locking out vernacular-speaking users who'd rather just ask a question out loud in their own language.",
+      "usp": "The entire interaction loop stays voice-to-voice in the user's own language, removing the literacy and language barriers text-first assistants impose.",
+      "results": [
+        {
+          "metric": "Interaction",
+          "value": "Voice-to-voice, vernacular"
+        },
+        {
+          "metric": "Pipeline",
+          "value": "Speech → RAG → spoken answer"
+        },
+        {
+          "metric": "Grounding",
+          "value": "Gemini-powered RAG"
+        }
+      ]
+    },
+    {
+      "id": "smart-scribes-multimodal-lecture-intelligence",
+      "title": "Smart-Scribes — Multimodal Lecture Intelligence",
+      "description": "A multimodal AI platform that ingests lecture video, audio and slides together, auto-generating summaries, Q&A and role-based dashboards for professors and students - built on Next.js, Supabase and a Python embedding pipeline.",
+      "img": "/images/featured-projects/smart-scribes-multimodal-lecture-intelligence/featured-smart-scribes-multimodal-lecture-intelligence.png",
+      "iconLists": [
+        "Next.js",
+        "TypeScript",
+        "Whisper",
+        "RAG"
+      ],
+      "link": "iHub Multimodal AI Hackathon — 2025",
+      "hackathon": true,
+      "tag": "Agentic AI",
+      "theme": "#b388ff",
+      "problem": "Students juggle lecture videos, audio recordings and slide decks as three separate things, with no single place to search, summarize or ask questions across all of them at once.",
+      "usp": "Cross-modal retrieval: ask a question and it points back to the exact slide AND the exact timestamp in the recording that answers it.",
+      "results": [
+        {
+          "metric": "Rank",
+          "value": "1st / 1,600+ teams"
+        },
+        {
+          "metric": "Team size",
+          "value": "5"
+        },
+        {
+          "metric": "Modalities",
+          "value": "Video + Audio + Slides"
+        }
+      ]
+    }
+  ]
+}

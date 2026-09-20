@@ -4,6 +4,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SectionInfoTooltip from "./SectionInfoTooltip";
 import { WhatIDoTooltip } from "./SectionTooltipContent";
 import EncryptedText from "./EncryptedText";
+import whatIDoData from "../../public/images/what-i-do/text.json";
 
 const WhatIDo = () => {
   const containerRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -31,14 +32,14 @@ const WhatIDo = () => {
     <div className="whatIDO" id="whatido">
       <div className="what-box">
         <h2 className="title">
-          <EncryptedText text="W" />
+          <EncryptedText text={whatIDoData.title[0]} />
           <span className="hat-h2">
-            <EncryptedText text="HAT" />
+            <EncryptedText text={whatIDoData.title[1]} />
           </span>
           <div>
-            <EncryptedText text="I" />
+            <EncryptedText text={whatIDoData.title[2]} />
             <span className="do-h2">
-              <EncryptedText text=" DO" />
+              <EncryptedText text={whatIDoData.title[3]} />
             </span>
           </div>
         </h2>
@@ -70,100 +71,51 @@ const WhatIDo = () => {
               />
             </svg>
           </div>
-          <div
-            className="what-content what-noTouch"
-            ref={(el) => setRef(el, 0)}
-          >
-            <div className="what-border1">
-              <svg height="100%">
-                <line
-                  x1="0"
-                  y1="0"
-                  x2="100%"
-                  y2="0"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeDasharray="6,6"
-                />
-                <line
-                  x1="0"
-                  y1="100%"
-                  x2="100%"
-                  y2="100%"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeDasharray="6,6"
-                />
-              </svg>
-            </div>
-            <div className="what-corner"></div>
-
-            <div className="what-content-in">
-              <h3>DEVELOP</h3>
-              <h4>Full-Stack & Systems Engineering</h4>
-              <p>
-                Building production web platforms and distributed systems,
-                from role-based finance dashboards to real-time,
-                event-driven ML pipelines.
-              </p>
-              <h5>Skillset & tools</h5>
-              <div className="what-content-flex">
-                <div className="what-tags">C/C++</div>
-                <div className="what-tags">Python</div>
-                <div className="what-tags">TypeScript</div>
-                <div className="what-tags">React</div>
-                <div className="what-tags">Next.js</div>
-                <div className="what-tags">FastAPI</div>
-                <div className="what-tags">Django</div>
-                <div className="what-tags">Docker</div>
-                <div className="what-tags">Kubernetes</div>
-                <div className="what-tags">AWS</div>
-                <div className="what-tags">PostgreSQL</div>
-                <div className="what-tags">Redis</div>
+          {whatIDoData.cards.map((card, index) => (
+            <div
+              key={card.heading}
+              className="what-content what-noTouch"
+              ref={(el) => setRef(el, index)}
+            >
+              <div className="what-border1">
+                <svg height="100%">
+                  {index === 0 && (
+                    <line
+                      x1="0"
+                      y1="0"
+                      x2="100%"
+                      y2="0"
+                      stroke="white"
+                      strokeWidth="2"
+                      strokeDasharray="6,6"
+                    />
+                  )}
+                  <line
+                    x1="0"
+                    y1="100%"
+                    x2="100%"
+                    y2="100%"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeDasharray="6,6"
+                  />
+                </svg>
               </div>
-              <div className="what-arrow"></div>
-            </div>
-          </div>
-          <div
-            className="what-content what-noTouch"
-            ref={(el) => setRef(el, 1)}
-          >
-            <div className="what-border1">
-              <svg height="100%">
-                <line
-                  x1="0"
-                  y1="100%"
-                  x2="100%"
-                  y2="100%"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeDasharray="6,6"
-                />
-              </svg>
-            </div>
-            <div className="what-corner"></div>
-            <div className="what-content-in">
-              <h3>RESEARCH</h3>
-              <h4>Machine Learning & Applied AI</h4>
-              <p>
-                Designing deep learning pipelines and agentic AI systems,
-                from medical image reconstruction to multilingual voice AI
-                and RAG-based reasoning.
-              </p>
-              <h5>Skillset & tools</h5>
-              <div className="what-content-flex">
-                <div className="what-tags">PyTorch</div>
-                <div className="what-tags">TensorFlow</div>
-                <div className="what-tags">RAG</div>
-                <div className="what-tags">Prompt Engineering</div>
-                <div className="what-tags">System Design</div>
-                <div className="what-tags">Distributed Systems</div>
-                <div className="what-tags">DSA</div>
-                <div className="what-tags">Git & CI/CD</div>
+              <div className="what-corner"></div>
+              <div className="what-content-in">
+                <h3>{card.heading}</h3>
+                <h4>{card.subheading}</h4>
+                <p>{card.body}</p>
+                <h5>{card.label}</h5>
+                <div className="what-content-flex">
+                  {card.tags.map((tag) => (
+                    <div className="what-tags" key={tag}>{tag}</div>
+                  ))}
+                </div>
+                <div className="what-arrow"></div>
               </div>
-              <div className="what-arrow"></div>
             </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>

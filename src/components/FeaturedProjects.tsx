@@ -5,6 +5,8 @@ import "./styles/FeaturedProjects.css";
 import SectionInfoTooltip from "./SectionInfoTooltip";
 import { FeaturedProjectsTooltip } from "./SectionTooltipContent";
 import EncryptedText from "./EncryptedText";
+import featuredData from "../../public/images/featured-projects/data.json";
+import featuredLinks from "../../public/images/featured-projects/links.json";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,6 +16,7 @@ interface QuantResult {
 }
 
 interface FeaturedProject {
+  id: string;
   title: string;
   /* The write-up shown under "Project Description" - what it is and
      how it works, in one concise paragraph. */
@@ -36,89 +39,20 @@ interface FeaturedProject {
   results: QuantResult[];
 }
 
-/* The four featured projects from the resume. `img` is repeated across
-   the 5-slot fan below until per-project galleries are ready - swap it
-   for distinct images later, the fan doesn't care how many are unique. */
-const featuredProjects: FeaturedProject[] = [
-  {
-    title: "Anatomy-Aware DoseFlow",
-    description:
-      "A three-stage deep learning pipeline built around a dose-conditioned flow trajectory model (MedSAM + ViT encoders) that reconstructs clean CT scans at any dose from 5%-100%, trained once instead of separately per dose level.",
-    img: "/dose.png",
-    iconLists: ["PyTorch", "MedSAM", "ViT", "Mamba"],
-    link: "Deep Learning Research — Feb 2026",
-    github: "https://github.com/Kartavya728",
-    tag: "Deep Learning",
-    theme: "#5aa9ff",
-    problem:
-      "Low-dose CT scans are noisy and hard to diagnose from, but the 'right' dose is different for every patient - most denoising models only work at the one fixed dose level they were trained on.",
-    usp: "Generalizes zero-shot to three anatomical regions the model never saw in training - most dose-reduction models only work on the body part they were trained on.",
-    results: [
-      { metric: "PSNR", value: "48.15 dB" },
-      { metric: "SSIM", value: "0.9991" },
-      { metric: "Dose range", value: "5%–100%" },
-      { metric: "Unseen regions", value: "3 / 3 generalized" },
-    ],
-  },
-  {
-    title: "Smart-Scribes — Multimodal Lecture Intelligence",
-    description:
-      "A multimodal AI platform that ingests lecture video, audio and slides together, auto-generating summaries, Q&A and role-based dashboards for professors and students - built on Next.js, Supabase and a Python embedding pipeline.",
-    img: "/ss.png",
-    iconLists: ["Next.js", "TypeScript", "Whisper", "RAG"],
-    link: "iHub Multimodal AI Hackathon — 2025",
-    github: "https://github.com/Kartavya728/Smart-Scribes",
-    hackathon: true,
-    tag: "Agentic AI",
-    theme: "#b388ff",
-    problem:
-      "Students juggle lecture videos, audio recordings and slide decks as three separate things, with no single place to search, summarize or ask questions across all of them at once.",
-    usp: "Cross-modal retrieval: ask a question and it points back to the exact slide AND the exact timestamp in the recording that answers it.",
-    results: [
-      { metric: "Rank", value: "1st / 1,600+ teams" },
-      { metric: "Team size", value: "5" },
-      { metric: "Modalities", value: "Video + Audio + Slides" },
-    ],
-  },
-  {
-    title: "Lunar DEM Generation using Photoclinometry",
-    description:
-      "A photoclinometry pipeline that reconstructs high-resolution lunar Digital Elevation Models straight from NASA's orbital photographs, combining shape-from-shading computer vision with GIS tooling to build 3D topographic maps for rover-terrain studies.",
-    img: "/luna.png",
-    iconLists: ["Python", "NumPy", "SciPy", "Open3D"],
-    link: "ISRO Hackathon — Jul 2025",
-    github: "https://github.com/Kartavya728/LunaDEM",
-    hackathon: true,
-    tag: "Computer Vision",
-    theme: "#4fd1a5",
-    problem:
-      "Planning rover terrain needs accurate lunar elevation data, but there's no direct depth sensor for most of the surface - only 2D photographs taken from orbit.",
-    usp: "Produces rover-planning-grade 3D topography from ordinary 2D imagery alone - no LIDAR or stereo image pairs required.",
-    results: [
-      { metric: "Event", value: "ISRO Hackathon" },
-      { metric: "Input", value: "NASA lunar imagery" },
-      { metric: "Output", value: "High-res DEM" },
-    ],
-  },
-  {
-    title: "Integrated Finance Management Portal — IIT Mandi",
-    description:
-      "A role-based digital workflow portal for faculty, staff, finance and audit officers, with auto-routing approvals, QR-enabled asset tracking, live PDA balances and LDAP auth.",
-    img: "/flow.png",
-    iconLists: ["Next.js", "TypeScript", "Supabase", "NextAuth.js"],
-    link: "IIT Mandi — 2025",
-    tag: "System Design",
-    theme: "#f0b84c",
-    problem:
-      "IIT Mandi's PDA claims, reimbursements and bill approvals ran entirely on paper, with no visibility into where a claim was stuck or how much budget was left.",
-    usp: "Replaced a fully paper-based process end-to-end for an entire institute department, not just a prototype.",
-    results: [
-      { metric: "Roles", value: "4 (Faculty/Staff/Finance/Audit)" },
-      { metric: "Auth", value: "LDAP SSO" },
-      { metric: "Tracking", value: "QR-enabled assets" },
-    ],
-  },
-];
+const featuredLinksById = featuredLinks.projects as Record<
+  string,
+  { github?: string; linkedin?: string; deployed?: string }
+>;
+
+const featuredProjects: FeaturedProject[] = featuredData.projects.map((project) => {
+  const links = featuredLinksById[project.id] || {};
+  return {
+    ...project,
+    github: links.github || undefined,
+    linkedin: links.linkedin || undefined,
+    deployed: links.deployed || undefined,
+  };
+});
 
 /* 5-slot fan of images, fanned out like a spread hand of cards with the
    centre one larger - adapted from aceternity's animated-modal image

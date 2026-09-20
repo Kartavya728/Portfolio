@@ -1,0 +1,176 @@
+{
+  "defaults": {
+    "projectVideo": "https://youtu.be/Vj7MniIUqZA",
+    "linkedInPost": "https://www.linkedin.com/in/kartavya28/"
+  },
+  "projects": {
+    "anatomy-aware-doseflow": {
+      "github": "https://github.com/Kartavya728",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "flow-fraud-and-loan-optimization-workbench": {
+      "github": "https://github.com/Kartavya728/FLOW-InterIIT14-TechMeet",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "lunadem": {
+      "github": "https://github.com/Kartavya728/LunaDEM",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "lokmitra-ai": {
+      "github": "https://github.com/Kartavya728/LokMitra-AI",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "smart-scribes": {
+      "github": "https://github.com/Kartavya728/Smart-Scribes",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "autoreach-ai": {
+      "github": "https://github.com/Kartavya728/AutoReach-AI",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "dual-system-voice-cloning-and-anti-spoofing": {
+      "github": "https://github.com/Kartavya728/Dual-System-Framework-for-Neural-Voice-Cloning-and-Anti-Spoofing-Detection",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "vision-drive": {
+      "github": "https://github.com/Kartavya728/Vision-Drive",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "stac-iit-mandi": {
+      "github": "https://github.com/Kartavya728/STAC-IIT-Mandi",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "iit-mandi-finance-management-portal": {
+      "github": "https://github.com/Kartavya728/integrated-finance-management-portal-for-iit-mandi",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "striver-a2z-dsa-sheet-solutions": {
+      "github": "https://github.com/Kartavya728/Data-Structure-and-Algorithms-Sheet",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "travel-info-card": {
+      "github": "https://github.com/Kartavya728/Travel-Info-Card",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "astrogenesis": {
+      "github": "https://github.com/Kartavya728/Space-Biology-Knowledge-Engine",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": "https://space-apps-frontend-black.vercel.app/"
+    },
+    "traffic-dl-model-web": {
+      "github": "https://github.com/Kartavya728/Traffic-dl-model-web",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "tumor-detection-website": {
+      "github": "https://github.com/Kartavya728/Tumor-Detection-Website",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "legal-document-analyzer": {
+      "github": "https://github.com/Kartavya728/legal-doc-analyzer",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "dynamic-qr-redirect": {
+      "github": "https://github.com/Kartavya728/Dynamic-QR-Redirect",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "stac-capture-the-flag-platform": {
+      "github": "https://github.com/Kartavya728/Capture-the-Flag",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "plant-health-optimiser": {
+      "github": "https://github.com/Kartavya728/Plant-Health-Optimiser",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "club-and-society-platform": {
+      "github": "https://github.com/Kartavya728/Website-for-clubs-and-Society-of-colleges",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "food-order-and-delivery-app": {
+      "github": "https://github.com/Kartavya728/Food-Order-Delivery-Website--MERN-Stack",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "anusandhan-iit-mandi": {
+      "github": "https://github.com/Kartavya728/Anusandhan-IIT-Mandi",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "portfolio-backend": {
+      "github": "https://github.com/Kartavya728/portfolio_backend",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "academic-scheduler-and-attendance-tracker-asat": {
+      "github": "https://github.com/Kartavya728/academic-scheduler-attendance-tracker-asat",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "sih-180": {
+      "github": "https://github.com/Kartavya728/SIH-180",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "deepfake-proof-ekyc": {
+      "github": "https://github.com/Kartavya728/ekyc-verfication-system-by-transformers",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "sih165-chat-interface-website": {
+      "github": "https://github.com/Kartavya728/SIH165",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    },
+    "robocar-control-website": {
+      "github": "https://github.com/Kartavya728/RoboCar-Control-Website",
+      "youtube": "",
+      "linkedInPost": "",
+      "deployed": ""
+    }
+  }
+}

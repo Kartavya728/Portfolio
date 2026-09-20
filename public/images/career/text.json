@@ -1,0 +1,39 @@
+{
+  "heading": [
+    "My career",
+    "&",
+    "experience"
+  ],
+  "entries": [
+    {
+      "role": "B.Tech in Data Science",
+      "org": "Indian Institute of Technology, Mandi",
+      "year": "2024",
+      "body": "Began a B.Tech in Data Science, with coursework spanning Design of Algorithms, Machine Learning, Deep Learning, Computer Organization and Matrix Computation for DS."
+    },
+    {
+      "role": "Full-Stack Developer",
+      "org": "IIT Mandi Finance Department",
+      "year": "2025",
+      "body": "Owned the SDLC for a secure, role-based finance platform built with Next.js, TypeScript, Supabase and NextAuth.js with RBAC. Shipped reliable approval workflows for billing, auditing and procurement, serving 50+ staff and Rs.10+ lakh in transactions."
+    },
+    {
+      "role": "Data Analytics Intern",
+      "org": "Nomura Real Estate Holdings, Inc. - Tokyo, Japan",
+      "year": "2026",
+      "body": "Engineered scalable analytics dashboards over 10,000+ Microsoft Viva Insights and GitHub Copilot logs for AI adoption. Conducted statistical analysis and hypothesis testing on work patterns, delivering 3 company-wide AI adoption strategies."
+    },
+    {
+      "role": "Exchange Student",
+      "org": "Technical University of Munich (TUM), Germany",
+      "year": "2026",
+      "body": "Upcoming exchange semester (Oct 2026 - Mar 2027) at TUM's School of Computation, Information and Technology (CIT - Informatics)."
+    },
+    {
+      "role": "Software Engineering Intern",
+      "org": "Microsoft",
+      "year": "2027",
+      "body": "Upcoming internship at Microsoft."
+    }
+  ]
+}

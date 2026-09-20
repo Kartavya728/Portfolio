@@ -4,6 +4,7 @@ import { useLoading } from "../context/LoadingProvider";
 
 import Marquee from "react-fast-marquee";
 import LoadingGallery from "./LoadingGallery";
+import loadingText from "../../public/images/loading/text.json";
 
 const Loading = ({ percent }: { percent: number }) => {
   const { setIsLoading } = useLoading();
@@ -48,11 +49,11 @@ const Loading = ({ percent }: { percent: number }) => {
       <div className="loading-header">
         <a href="/#" className="loader-title" data-cursor="disable">
           <img
-            src="/git-profile.jpeg"
-            alt="Kartavya Suryawanshi"
+            src={loadingText.avatar}
+            alt={loadingText.avatarAlt}
             className="loader-avatar"
           />
-          <span>KARTAVYA28</span>
+          <span>{loadingText.title}</span>
         </a>
         <div className={`loaderGame ${clicked && "loader-out"}`}>
           <div className="loaderGame-container">
@@ -69,8 +70,9 @@ const Loading = ({ percent }: { percent: number }) => {
         <LoadingGallery />
         <div className="loading-marquee">
           <Marquee>
-            <span> A Creative Developer</span> <span>A Creative Designer</span>
-            <span> A Creative Developer</span> <span>A Creative Designer</span>
+            {loadingText.marquee.map((item, index) => (
+              <span key={`${item}-${index}`}> {item}</span>
+            ))}
           </Marquee>
         </div>
         <div
@@ -124,6 +126,10 @@ export const setProgress = (setLoading: (value: number) => void) => {
     setLoading(100);
   }
 
+  function cancel() {
+    clearInterval(interval);
+  }
+
   function loaded() {
     return new Promise<number>((resolve) => {
       clearInterval(interval);
@@ -138,5 +144,5 @@ export const setProgress = (setLoading: (value: number) => void) => {
       }, 2);
     });
   }
-  return { loaded, percent, clear };
+  return { loaded, percent, clear, cancel };
 };

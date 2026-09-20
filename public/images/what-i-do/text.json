@@ -1,0 +1,46 @@
+{
+  "title": [
+    "W",
+    "HAT",
+    "I",
+    " DO"
+  ],
+  "cards": [
+    {
+      "heading": "DEVELOP",
+      "subheading": "Full-Stack & Systems Engineering",
+      "body": "Building production web platforms and distributed systems, from role-based finance dashboards to real-time, event-driven ML pipelines.",
+      "label": "Skillset & tools",
+      "tags": [
+        "C/C++",
+        "Python",
+        "TypeScript",
+        "React",
+        "Next.js",
+        "FastAPI",
+        "Django",
+        "Docker",
+        "Kubernetes",
+        "AWS",
+        "PostgreSQL",
+        "Redis"
+      ]
+    },
+    {
+      "heading": "RESEARCH",
+      "subheading": "Machine Learning & Applied AI",
+      "body": "Designing deep learning pipelines and agentic AI systems, from medical image reconstruction to multilingual voice AI and RAG-based reasoning.",
+      "label": "Skillset & tools",
+      "tags": [
+        "PyTorch",
+        "TensorFlow",
+        "RAG",
+        "Prompt Engineering",
+        "System Design",
+        "Distributed Systems",
+        "DSA",
+        "Git & CI/CD"
+      ]
+    }
+  ]
+}

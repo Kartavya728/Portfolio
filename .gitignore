@@ -7,6 +7,13 @@
 .pnp.js
 .yarn/install-state.gz
 
+# Next.js
+.next/
+.next_*/
+out/
+
+# Build/cache
+.cache/
 # local backup of the previous Next.js site
 /old-ui/
 

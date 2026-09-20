@@ -7,16 +7,39 @@
   gap: 20px;
 }
 
+.fanned-projects-full-bleed {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
+
 .fan-track {
   display: flex;
   align-items: center;
   gap: 34px;
-  overflow-x: hidden;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(194, 164, 255, 0.45) rgba(255, 255, 255, 0.08);
   padding: 0 4px;
   /* Tall enough to hold the card at its full height plus the fan
      pattern's y-offset/rotation swing on either side, so nothing is ever
      actually clipped - no separate scroll/overflow area needed. */
   height: 420px;
+}
+
+.fan-track::-webkit-scrollbar {
+  height: 6px;
+}
+
+.fan-track::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+}
+
+.fan-track::-webkit-scrollbar-thumb {
+  background: rgba(194, 164, 255, 0.45);
+  border-radius: 999px;
 }
 
 .fan-card {
@@ -164,22 +187,6 @@
 
 .fan-track-active .fan-card:hover .fan-card-veil {
   opacity: 0;
-}
-
-/* Blank FLIP box that grows from the clicked card's rect up to roughly
-   where ProjectModal will render, then reverses the same path back on
-   close - deliberately carries no content of its own (see
-   FannedProjectCards.tsx). */
-.fan-card-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 999;
-  border: 1px solid transparent;
-  border-radius: 22px;
-  backdrop-filter: blur(14px);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
-  overflow: hidden;
 }
 
 @media only screen and (max-width: 900px) {

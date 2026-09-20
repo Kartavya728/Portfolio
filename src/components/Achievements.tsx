@@ -5,6 +5,8 @@ import "./styles/Achievements.css";
 import SectionInfoTooltip from "./SectionInfoTooltip";
 import { AchievementsTooltip } from "./SectionTooltipContent";
 import EncryptedText from "./EncryptedText";
+import achievementsData from "../../public/images/achievements/data.json";
+import achievementLinks from "../../public/images/achievements/links.json";
 
 const smoothstep = (t: number) => {
   const c = Math.max(0, Math.min(1, t));
@@ -15,58 +17,13 @@ gsap.registerPlugin(ScrollTrigger);
 
 /* Images live in /public/achievements_data - swap the files there
    (keeping the names) to change what each entry shows. */
-const achievements = [
-  {
-    title: "NASA Space Apps Challenge — 1st Place",
-    meta: "Chandigarh · 2025",
-    description:
-      "Won among 100+ teams with Astrogenesis, a RAG-powered bioscience research engine built end to end during the challenge weekend.",
-    image: "/achievements_data/nasa-1.png",
-    teams: "100+",
-    position: "1st Place",
-    github: "https://github.com/Kartavya728",
-  },
-  {
-    title: "iHub Multimodal AI Hackathon — 1st Overall",
-    meta: "IIT Mandi iHub · 2025",
-    description:
-      "Led a 5-member team to first place among 1,600+ teams with Smart-Scribes, a multimodal AI lecture assistant covering video, audio and slides.",
-    image: "/achievements_data/ihub.png",
-    teams: "1,600+",
-    position: "1st Overall",
-    github: "https://github.com/Kartavya728/Smart-Scribes",
-  },
-  {
-    title: "Hack 60 — HCLTech × IIT Mandi",
-    meta: "Deep Learning Track Winner · 2026",
-    description:
-      "Won the Deep Learning track with a dual-system framework pairing neural voice cloning against a real-time deepfake and audio anti-spoofing detector.",
-    image: "/achievements_data/achive-1.png",
-    teams: "—",
-    position: "Track Winner",
-    github: "https://github.com/Kartavya728",
-  },
-  {
-    title: "InxiteOut Hackathon — 1st Runner-Up",
-    meta: "XPECTO '26 · IIT Mandi",
-    description:
-      "Runner-up at IIT Mandi's flagship tech fest, competing against the strongest teams on campus.",
-    image: "/achievements_data/achive-2.png",
-    teams: "—",
-    position: "1st Runner-Up",
-    github: "https://github.com/Kartavya728",
-  },
-  {
-    title: "Agentic AI Track — Podium Finish",
-    meta: "National Hackathon Circuit",
-    description:
-      "Podium run building autonomous multi-step agent workflows with tool use, retries and human-in-the-loop checkpoints.",
-    image: "/achievements_data/achive-3.png",
-    teams: "—",
-    position: "Podium Finish",
-    github: "https://github.com/Kartavya728",
-  },
-];
+const achievementLinksById = achievementLinks.achievements as Record<string, { github?: string }>;
+
+const achievements = achievementsData.achievements.map((item) => ({
+  ...item,
+  github: achievementLinksById[item.id]?.github || "",
+}));
+
 
 /**
  * Sticky scroll reveal (aceternity's pattern) rebuilt on the page's own

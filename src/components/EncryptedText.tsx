@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import "./styles/EncryptedText.css";
 
 /* Text-scramble / "encrypted text" reveal: while the real text is still
@@ -41,6 +41,44 @@ const EncryptedText = ({ text, className, duration = 420 }: EncryptedTextProps) 
   );
   const [settled, setSettled] = useState(false);
 
+  const runScramble = useCallback(() => {
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+
+    const length = text.length;
+    const startTime = performance.now();
+    lastScrambleRef.current = 0;
+    setSettled(false);
+
+    let current: { char: string; color?: string }[] = text.split("").map((c) => ({ char: c }));
+
+    const tick = (now: number) => {
+      const progress = Math.min(1, (now - startTime) / duration);
+      const revealCount = Math.floor(progress * length);
+      const reroll = now - lastScrambleRef.current >= SCRAMBLE_INTERVAL;
+      if (reroll) lastScrambleRef.current = now;
+
+      current = text.split("").map((char, i) => {
+        if (char === " " || i < revealCount) return { char };
+        if (reroll) return { char: randomChar(), color: randomScrambleColor() };
+        return current[i]?.color ? current[i] : { char: randomChar(), color: randomScrambleColor() };
+      });
+      setChars(current);
+
+      if (progress < 1) {
+        rafRef.current = requestAnimationFrame(tick);
+      } else {
+        rafRef.current = null;
+        setChars(text.split("").map((char) => ({ char })));
+        setSettled(true);
+      }
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+  }, [duration, text]);
+
   useEffect(() => {
     const el = spanRef.current;
     if (!el) return;
@@ -62,40 +100,15 @@ const EncryptedText = ({ text, className, duration = 420 }: EncryptedTextProps) 
       observer.disconnect();
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [text]);
-
-  const runScramble = () => {
-    const length = text.length;
-    const startTime = performance.now();
-    let current: { char: string; color?: string }[] = text.split("").map((c) => ({ char: c }));
-
-    const tick = (now: number) => {
-      const progress = Math.min(1, (now - startTime) / duration);
-      const revealCount = Math.floor(progress * length);
-      const reroll = now - lastScrambleRef.current >= SCRAMBLE_INTERVAL;
-      if (reroll) lastScrambleRef.current = now;
-
-      current = text.split("").map((char, i) => {
-        if (char === " " || i < revealCount) return { char };
-        if (reroll) return { char: randomChar(), color: randomScrambleColor() };
-        return current[i]?.color ? current[i] : { char: randomChar(), color: randomScrambleColor() };
-      });
-      setChars(current);
-
-      if (progress < 1) {
-        rafRef.current = requestAnimationFrame(tick);
-      } else {
-        setChars(text.split("").map((char) => ({ char })));
-        setSettled(true);
-      }
-    };
-
-    rafRef.current = requestAnimationFrame(tick);
-  };
+  }, [runScramble]);
 
   return (
-    <span ref={spanRef} className={className ? `encrypted-text ${className}` : "encrypted-text"}>
+    <span
+      ref={spanRef}
+      className={className ? `encrypted-text ${className}` : "encrypted-text"}
+      onMouseEnter={runScramble}
+      onFocus={runScramble}
+    >
       {settled
         ? text
         : chars.map((c, i) => (

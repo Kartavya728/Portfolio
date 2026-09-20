@@ -6,19 +6,12 @@ import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { setupSectionPause } from "./utils/sectionPause";
 import "./styles/Navbar.css";
+import navbarLinks from "../../public/images/navbar/links.json";
 
 gsap.registerPlugin(ScrollSmoother, ScrollTrigger);
 export let smoother: ScrollSmoother;
 
-const MORE_LINKS = [
-  { href: "#whatido", text: "SKILLS" },
-  { href: "#career", text: "EXPERIENCE" },
-  { href: "#research", text: "RESEARCH" },
-  { href: "#achievements", text: "ACHIEVEMENTS" },
-  { href: "#certificates", text: "CERTIFICATES" },
-  { href: "#techstack", text: "TECH STACK" },
-  { href: "#featured", text: "FEATURED PROJECTS" },
-];
+const MORE_LINKS = navbarLinks.more;
 
 interface Highlight {
   left: number;
@@ -107,15 +100,15 @@ const Navbar = () => {
   return (
     <>
       <div className="header">
-        <a href="/#" className="navbar-title" data-cursor="disable">
+        <a href={navbarLinks.brandHref} className="navbar-title" data-cursor="disable">
           KS
         </a>
         <a
-          href="mailto:kartavya.suryawanshi7@gmail.com"
+          href={navbarLinks.emailHref}
           className="navbar-connect"
           data-cursor="disable"
         >
-          kartavya.suryawanshi7@gmail.com
+          {navbarLinks.email}
         </a>
         <div className="nav-list-wrap" onMouseLeave={handleNavListLeave}>
           <span
@@ -128,21 +121,13 @@ const Navbar = () => {
             }}
           />
           <ul>
-            <li onMouseEnter={handleNavItemHover}>
-              <a data-href="#about" href="#about">
-                <HoverLinks text="ABOUT" />
-              </a>
-            </li>
-            <li onMouseEnter={handleNavItemHover}>
-              <a data-href="#career" href="#career">
-                <HoverLinks text="WORK" />
-              </a>
-            </li>
-            <li onMouseEnter={handleNavItemHover}>
-              <a data-href="#contact" href="#contact">
-                <HoverLinks text="CONTACT" />
-              </a>
-            </li>
+            {navbarLinks.primary.map((link) => (
+              <li onMouseEnter={handleNavItemHover} key={link.href}>
+                <a data-href={link.href} href={link.href}>
+                  <HoverLinks text={link.text} />
+                </a>
+              </li>
+            ))}
             <li className="nav-more" ref={moreRef} onMouseEnter={handleNavItemHover}>
               <button
                 type="button"

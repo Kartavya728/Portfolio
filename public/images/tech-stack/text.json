@@ -1,0 +1,21 @@
+{
+  "heading": "My Techstack",
+  "technologies": [
+    { "name": "React", "icon": "react", "color": "#61DAFB", "radius": 66 },
+    { "name": "Next.js", "icon": "nextjs", "color": "#FFFFFF", "radius": 58 },
+    { "name": "Node.js", "icon": "nodejs", "color": "#8CC84B", "radius": 62 },
+    { "name": "Express", "icon": "express", "color": "#FFFFFF", "radius": 54 },
+    { "name": "MongoDB", "icon": "mongodb", "color": "#47A248", "radius": 60 },
+    { "name": "MySQL", "icon": "mysql", "color": "#4479A1", "radius": 56 },
+    { "name": "TypeScript", "icon": "typescript", "color": "#3178C6", "radius": 64 },
+    { "name": "JavaScript", "icon": "javascript", "color": "#F7DF1E", "radius": 58 },
+    { "name": "Python", "icon": "python", "color": "#3776AB", "radius": 64 },
+    { "name": "PostgreSQL", "icon": "postgresql", "color": "#4169E1", "radius": 58 },
+    { "name": "Redis", "icon": "redis", "color": "#DC382D", "radius": 54 },
+    { "name": "Docker", "icon": "docker", "color": "#2496ED", "radius": 60 },
+    { "name": "AWS", "icon": "aws", "color": "#FF9900", "radius": 56 },
+    { "name": "Git", "icon": "git", "color": "#F05032", "radius": 54 },
+    { "name": "PyTorch", "icon": "pytorch", "color": "#EE4C2C", "radius": 60 },
+    { "name": "TensorFlow", "icon": "tensorflow", "color": "#FF6F00", "radius": 58 }
+  ]
+}

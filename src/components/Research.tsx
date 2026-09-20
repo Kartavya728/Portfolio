@@ -2,6 +2,7 @@ import "./styles/Research.css";
 import SectionInfoTooltip from "./SectionInfoTooltip";
 import { ResearchTooltip } from "./SectionTooltipContent";
 import EncryptedText from "./EncryptedText";
+import researchData from "../../public/images/research/data.json";
 
 const Research = () => {
   return (
@@ -12,38 +13,23 @@ const Research = () => {
           <ResearchTooltip />
         </SectionInfoTooltip>
       </h2>
-      <p className="research-intro">
-        Applied research at the intersection of deep learning and medical
-        imaging, with a broader interest in generative models and diffusion
-        / flow-based methods for scientific data.
-      </p>
+      <p className="research-intro">{researchData.intro}</p>
       <div className="research-card">
         <div className="research-image">
-          <img src="/dose.png" alt="Anatomy-Aware DoseFlow" />
+          <img src={researchData.project.image} alt={researchData.project.imageAlt} />
         </div>
         <div className="research-content">
-          <span className="research-tag">Feb 2026</span>
-          <h3>Anatomy-Aware DoseFlow</h3>
-          <p className="research-subtitle">
-            Dose-Conditioned Flow Matching for Low-Dose CT Reconstruction
-          </p>
-          <p>
-            A three-stage deep learning pipeline that reconstructs CT images
-            from arbitrary dose levels (5%–100%), built around a
-            dose-conditioned flow-trajectory model integrating MedSAM and
-            ViT encoders with Mamba blocks, trained with four complementary
-            loss terms.
-          </p>
+          <span className="research-tag">{researchData.project.tag}</span>
+          <h3>{researchData.project.title}</h3>
+          <p className="research-subtitle">{researchData.project.subtitle}</p>
+          <p>{researchData.project.description}</p>
           <ul className="research-results">
-            <li>
-              <strong>48.15 dB</strong> PSNR &middot; <strong>0.9991</strong>{" "}
-              SSIM on held-out CT slices
-            </li>
-            <li>Zero-shot generalization across three unseen anatomical regions</li>
-            <li>Evaluated on 10,000+ CT slices</li>
+            {researchData.project.results.map((result) => (
+              <li key={result}>{result}</li>
+            ))}
           </ul>
           <div className="research-stack">
-            {["PyTorch", "MedSAM", "ViT", "Mamba"].map((t) => (
+            {researchData.project.stack.map((t) => (
               <span key={t} className="research-chip">
                 {t}
               </span>

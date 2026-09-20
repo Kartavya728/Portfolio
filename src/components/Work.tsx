@@ -8,28 +8,40 @@ import FannedProjectCards from "./FannedProjectCards";
 import { projects } from "../data/projects";
 import { CATEGORIES, CATEGORY_KEYS, CategoryKey } from "../data/categories";
 
+const hiddenContributionNames = new Set([
+  "SIH-180",
+  "SIH165 — Chat Interface Website",
+  "RoboCar Control Website",
+]);
+
 const Work = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [filter, setFilter] = useState<CategoryKey | "all">("all");
 
-  const usedCategories = useMemo(
-    () => CATEGORY_KEYS.filter((key) => projects.some((p) => p.categoryKey === key)),
+  const contributionItems = useMemo(
+    () =>
+      projects
+        .map((project, index) => ({ project, index }))
+        .filter(({ project }) => !hiddenContributionNames.has(project.name)),
     []
+  );
+
+  const usedCategories = useMemo(
+    () => CATEGORY_KEYS.filter((key) => contributionItems.some(({ project }) => project.categoryKey === key)),
+    [contributionItems]
   );
 
   const visible = useMemo(
     () =>
-      projects
-        .map((project, index) => ({ project, index }))
-        .filter(({ project }) => filter === "all" || project.categoryKey === filter),
-    [filter]
+      contributionItems.filter(({ project }) => filter === "all" || project.categoryKey === filter),
+    [contributionItems, filter]
   );
 
   return (
     <div className="work-section" id="work">
       <div className="work-container section-container">
         <h2>
-          <EncryptedText text="Project" /> <span><EncryptedText text="Gallery" /></span>
+          <EncryptedText text="My" /> <span><EncryptedText text="Contributions" /></span>
           <SectionInfoTooltip>
             <WorkTooltip />
           </SectionInfoTooltip>
@@ -73,6 +85,7 @@ const Work = () => {
           items={visible}
           modalOpen={activeIndex !== null}
           onViewMore={(index) => setActiveIndex(index)}
+          fullBleed
         />
 
         <a className="work-view-all" href="/projects" data-cursor="disable">

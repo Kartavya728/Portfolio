@@ -1,0 +1,22 @@
+{
+  "intro": "Applied research at the intersection of deep learning and medical imaging, with a broader interest in generative models and diffusion / flow-based methods for scientific data.",
+  "project": {
+    "tag": "Feb 2026",
+    "title": "Anatomy-Aware DoseFlow",
+    "subtitle": "Dose-Conditioned Flow Matching for Low-Dose CT Reconstruction",
+    "image": "/images/research/anatomy-aware-doseflow/research-anatomy-aware-doseflow.png",
+    "imageAlt": "Anatomy-Aware DoseFlow",
+    "description": "A three-stage deep learning pipeline that reconstructs CT images from arbitrary dose levels (5%-100%), built around a dose-conditioned flow-trajectory model integrating MedSAM and ViT encoders with Mamba blocks, trained with four complementary loss terms.",
+    "results": [
+      "48.15 dB PSNR ? 0.9991 SSIM on held-out CT slices",
+      "Zero-shot generalization across three unseen anatomical regions",
+      "Evaluated on 10,000+ CT slices"
+    ],
+    "stack": [
+      "PyTorch",
+      "MedSAM",
+      "ViT",
+      "Mamba"
+    ]
+  }
+}

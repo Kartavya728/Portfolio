@@ -1,0 +1,49 @@
+{
+  "achievements": [
+    {
+      "id": "nasa-space-apps-challenge-1st-place",
+      "title": "NASA Space Apps Challenge — 1st Place",
+      "meta": "Chandigarh · 2025",
+      "description": "Won among 100+ teams with Astrogenesis, a RAG-powered bioscience research engine built end to end during the challenge weekend.",
+      "image": "/images/achievements/nasa-space-apps-challenge-1st-place/achievement-nasa-space-apps-challenge-1st-place.png",
+      "teams": "100+",
+      "position": "1st Place"
+    },
+    {
+      "id": "ihub-multimodal-ai-hackathon-1st-overall",
+      "title": "iHub Multimodal AI Hackathon — 1st Overall",
+      "meta": "IIT Mandi iHub · 2025",
+      "description": "Led a 5-member team to first place among 1,600+ teams with Smart-Scribes, a multimodal AI lecture assistant covering video, audio and slides.",
+      "image": "/images/achievements/ihub-multimodal-ai-hackathon-1st-overall/achievement-ihub-multimodal-ai-hackathon-1st-overall.png",
+      "teams": "1,600+",
+      "position": "1st Overall"
+    },
+    {
+      "id": "hack-60-hcltech-iit-mandi",
+      "title": "Hack 60 — HCLTech × IIT Mandi",
+      "meta": "Deep Learning Track Winner · 2026",
+      "description": "Won the Deep Learning track with a dual-system framework pairing neural voice cloning against a real-time deepfake and audio anti-spoofing detector.",
+      "image": "/images/achievements/hack-60-hcltech-iit-mandi/achievement-hack-60-hcltech-iit-mandi.png",
+      "teams": "—",
+      "position": "Track Winner"
+    },
+    {
+      "id": "inxiteout-hackathon-1st-runner-up",
+      "title": "InxiteOut Hackathon — 1st Runner-Up",
+      "meta": "XPECTO '26 · IIT Mandi",
+      "description": "Runner-up at IIT Mandi's flagship tech fest, competing against the strongest teams on campus.",
+      "image": "/images/achievements/inxiteout-hackathon-1st-runner-up/achievement-inxiteout-hackathon-1st-runner-up.png",
+      "teams": "—",
+      "position": "1st Runner-Up"
+    },
+    {
+      "id": "agentic-ai-track-podium-finish",
+      "title": "Agentic AI Track — Podium Finish",
+      "meta": "National Hackathon Circuit",
+      "description": "Podium run building autonomous multi-step agent workflows with tool use, retries and human-in-the-loop checkpoints.",
+      "image": "/images/achievements/agentic-ai-track-podium-finish/achievement-agentic-ai-track-podium-finish.png",
+      "teams": "—",
+      "position": "Podium Finish"
+    }
+  ]
+}

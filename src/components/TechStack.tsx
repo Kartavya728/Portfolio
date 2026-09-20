@@ -21,25 +21,32 @@ import "./styles/TechStack.css";
 import SectionInfoTooltip from "./SectionInfoTooltip";
 import { TechStackTooltip } from "./SectionTooltipContent";
 import EncryptedText from "./EncryptedText";
+import techStackText from "../../public/images/tech-stack/text.json";
 
-const TECHS = [
-  { name: "React", Icon: SiReact, color: "#61DAFB", r: 66 },
-  { name: "Next.js", Icon: SiNextdotjs, color: "#FFFFFF", r: 58 },
-  { name: "Node.js", Icon: SiNodedotjs, color: "#8CC84B", r: 62 },
-  { name: "Express", Icon: SiExpress, color: "#FFFFFF", r: 54 },
-  { name: "MongoDB", Icon: SiMongodb, color: "#47A248", r: 60 },
-  { name: "MySQL", Icon: SiMysql, color: "#4479A1", r: 56 },
-  { name: "TypeScript", Icon: SiTypescript, color: "#3178C6", r: 64 },
-  { name: "JavaScript", Icon: SiJavascript, color: "#F7DF1E", r: 58 },
-  { name: "Python", Icon: SiPython, color: "#3776AB", r: 64 },
-  { name: "PostgreSQL", Icon: SiPostgresql, color: "#4169E1", r: 58 },
-  { name: "Redis", Icon: SiRedis, color: "#DC382D", r: 54 },
-  { name: "Docker", Icon: SiDocker, color: "#2496ED", r: 60 },
-  { name: "AWS", Icon: SiAmazonwebservices, color: "#FF9900", r: 56 },
-  { name: "Git", Icon: SiGit, color: "#F05032", r: 54 },
-  { name: "PyTorch", Icon: SiPytorch, color: "#EE4C2C", r: 60 },
-  { name: "TensorFlow", Icon: SiTensorflow, color: "#FF6F00", r: 58 },
-];
+const ICONS = {
+  react: SiReact,
+  nextjs: SiNextdotjs,
+  nodejs: SiNodedotjs,
+  express: SiExpress,
+  mongodb: SiMongodb,
+  mysql: SiMysql,
+  typescript: SiTypescript,
+  javascript: SiJavascript,
+  python: SiPython,
+  postgresql: SiPostgresql,
+  redis: SiRedis,
+  docker: SiDocker,
+  aws: SiAmazonwebservices,
+  git: SiGit,
+  pytorch: SiPytorch,
+  tensorflow: SiTensorflow,
+};
+
+const TECHS = techStackText.technologies.map((tech) => ({
+  ...tech,
+  Icon: ICONS[tech.icon as keyof typeof ICONS],
+  r: tech.radius,
+}));
 
 const PADDING = 10; // minimum gap kept between ball edges, so they never touch/overlap
 const POINTER_RADIUS = 300; // how close the cursor has to be to push a ball away
@@ -265,7 +272,7 @@ const TechStack = () => {
   return (
     <div className="techstack" id="techstack">
       <h2>
-        <EncryptedText text="My Techstack" />
+        <EncryptedText text={techStackText.heading} />
         <SectionInfoTooltip>
           <TechStackTooltip />
         </SectionInfoTooltip>

@@ -1,0 +1,49 @@
+{
+  "brandHref": "/#",
+  "email": "kartavya.suryawanshi7@gmail.com",
+  "emailHref": "mailto:kartavya.suryawanshi7@gmail.com",
+  "primary": [
+    {
+      "href": "#about",
+      "text": "ABOUT"
+    },
+    {
+      "href": "#career",
+      "text": "WORK"
+    },
+    {
+      "href": "#contact",
+      "text": "CONTACT"
+    }
+  ],
+  "more": [
+    {
+      "href": "#whatido",
+      "text": "SKILLS"
+    },
+    {
+      "href": "#career",
+      "text": "EXPERIENCE"
+    },
+    {
+      "href": "#research",
+      "text": "RESEARCH"
+    },
+    {
+      "href": "#achievements",
+      "text": "ACHIEVEMENTS"
+    },
+    {
+      "href": "#certificates",
+      "text": "CERTIFICATES"
+    },
+    {
+      "href": "#techstack",
+      "text": "TECH STACK"
+    },
+    {
+      "href": "#featured",
+      "text": "FEATURED PROJECTS"
+    }
+  ]
+}

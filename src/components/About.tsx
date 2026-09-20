@@ -10,6 +10,7 @@ import {
   IITMandiCard,
   NasaSpaceAppsCard,
 } from "./AboutTooltipCards";
+import aboutData from "../../public/images/about/data.json";
 
 const TOOLTIP_CONTENT = {
   "iit-mandi": <IITMandiCard />,
@@ -28,17 +29,17 @@ const About = () => {
       <div className="about-me" ref={containerRef}>
         <h3 className="title">About Me</h3>
         <p className="para">
-          I&apos;m a Data Science undergrad at{" "}
-          <TooltipTerm id="iit-mandi">IIT Mandi</TooltipTerm>, building at
-          the intersection of full-stack engineering and applied AI.
-          I&apos;ve shipped production systems ranging from event-driven
-          fraud detection pipelines to{" "}
-          <TooltipTerm id="deep-learning">deep learning</TooltipTerm> models
-          for medical imaging, and led teams to first-place finishes at
-          national hackathons like{" "}
-          <TooltipTerm id="nasa-space-apps">NASA Space Apps</TooltipTerm> and{" "}
-          <TooltipTerm id="hack-60">Hack 60</TooltipTerm> by{" "}
-          <TooltipTerm id="hcltech">HCLTech</TooltipTerm>.
+          {aboutData.bodyParts[0]}
+          <TooltipTerm id="iit-mandi">{aboutData.terms.iitMandi}</TooltipTerm>
+          {aboutData.bodyParts[1]}
+          <TooltipTerm id="deep-learning">{aboutData.terms.deepLearning}</TooltipTerm>
+          {aboutData.bodyParts[2]}
+          <TooltipTerm id="nasa-space-apps">{aboutData.terms.nasaSpaceApps}</TooltipTerm>
+          {aboutData.bodyParts[3]}
+          <TooltipTerm id="hack-60">{aboutData.terms.hack60}</TooltipTerm>
+          {aboutData.bodyParts[4]}
+          <TooltipTerm id="hcltech">{aboutData.terms.hcltech}</TooltipTerm>
+          {aboutData.bodyParts[5]}
         </p>
       </div>
       <TooltipManager containerRef={containerRef} content={TOOLTIP_CONTENT} />

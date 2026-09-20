@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion } from "motion/react";
 import { MdArrowOutward } from "react-icons/md";
 import { ProjectData } from "../data/projects";
 import { CATEGORIES } from "../data/categories";
@@ -9,9 +8,9 @@ interface FannedProjectCardsProps {
   items: { project: ProjectData; index: number }[];
   modalOpen: boolean;
   onViewMore: (index: number) => void;
+  fullBleed?: boolean;
 }
 
-const cardSpring = { type: "spring" as const, visualDuration: 0.55, bounce: 0.22 };
 const AUTO_SCROLL_SPEED = 0.5; // px per frame
 const ROW_DIRECTIONS = [1, -1] as const; // second row scrolls the opposite way
 
@@ -35,14 +34,7 @@ const IDLE_PATTERN = [
   { y: -6, rotate: -7 },
 ];
 
-type Phase = "idle" | "expanding" | "open" | "collapsing";
-
-type OverlayState = {
-  key: string;
-  index: number;
-  project: ProjectData;
-  rect: { left: number; top: number; width: number; height: number };
-};
+type Phase = "idle" | "open" | "collapsing";
 
 /**
  * Two endlessly auto-scrolling, fanned project rows moving in opposite
@@ -51,17 +43,20 @@ type OverlayState = {
  * mechanism reuses this project's own Work.tsx auto-scroll technique -
  * a doubled item list with its scrollLeft nudged forward/back every
  * frame so each row can wrap seamlessly). Scrolling never pauses on
- * hover - only while a card is expanding/open/collapsing.
+ * hover - only while the modal is open or the cards are returning.
  *
  * Clicking a card freezes both rows, pushes every other card down/away,
- * and grows a FLIP-style overlay clone from the clicked card's exact
- * screen rect up to a large centred size; once that settles it hands
- * off to the site's existing ProjectModal via `onViewMore`. When that
- * modal is closed (`modalOpen` flips back to false), the overlay
- * reverses the same animation back down into the row before scrolling
- * resumes.
+ * and opens the site's existing ProjectModal immediately so the modal
+ * fade and card movement run at the same time. When that modal is closed
+ * (`modalOpen` flips back to false), the card rows return at the same
+ * time as the modal fades out.
  */
-const FannedProjectCards = ({ items, modalOpen, onViewMore }: FannedProjectCardsProps) => {
+const FannedProjectCards = ({
+  items,
+  modalOpen,
+  onViewMore,
+  fullBleed = false,
+}: FannedProjectCardsProps) => {
   const trackRefs = useRef<(HTMLDivElement | null)[]>([null, null]);
   const pausedRef = useRef(false);
   const hoveredRowRef = useRef<number | null>(null);
@@ -71,19 +66,9 @@ const FannedProjectCards = ({ items, modalOpen, onViewMore }: FannedProjectCards
   // up to the same integer), which froze the reverse-direction row dead
   // in place instead of ever decrementing.
   const positionsRef = useRef<number[]>([0, 0]);
-  const [isDesktop, setIsDesktop] = useState(true);
   const [phase, setPhase] = useState<Phase>("idle");
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
-  const [overlay, setOverlay] = useState<OverlayState | null>(null);
   const prevModalOpenRef = useRef(modalOpen);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(min-width: 901px)");
-    const update = () => setIsDesktop(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
 
   // Interleaved rather than split into contiguous halves, so a filtered
   // view with only a few projects still fills both rows.
@@ -121,61 +106,59 @@ const FannedProjectCards = ({ items, modalOpen, onViewMore }: FannedProjectCards
     return () => cancelAnimationFrame(rafId);
   }, [rows]);
 
-  // The modal closing (parent hands us `modalOpen: false`) is the signal
-  // to reverse the expand animation back into the row.
+  const syncTrackPosition = (track: HTMLDivElement, rowIndex: number) => {
+    const halfWidth = track.scrollWidth / 2;
+    if (halfWidth <= 0) return;
+    let next = track.scrollLeft;
+    if (next >= halfWidth) {
+      next -= halfWidth;
+      track.scrollLeft = next;
+    }
+    positionsRef.current[rowIndex] = next;
+  };
+
+  const handleTrackScroll = (track: HTMLDivElement, rowIndex: number) => {
+    syncTrackPosition(track, rowIndex);
+  };
+
+  const handleTrackWheel = (e: React.WheelEvent<HTMLDivElement>, rowIndex: number) => {
+    const track = trackRefs.current[rowIndex];
+    if (!track || phase !== "idle") return;
+    const intendedHorizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.shiftKey;
+    if (!intendedHorizontal) return;
+
+    e.preventDefault();
+    track.scrollLeft += e.deltaX || e.deltaY;
+    syncTrackPosition(track, rowIndex);
+  };
+
+  // The modal closing (parent hands us `modalOpen: false`) starts the card
+  // rows returning immediately, in parallel with ProjectModal's fade-out.
   useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
     if (prevModalOpenRef.current && !modalOpen) {
-      setPhase((p) => (p === "open" ? "collapsing" : p));
+      setPhase((p) => {
+        if (p !== "open") return p;
+        timeoutId = setTimeout(() => setPhase("idle"), 400);
+        return "collapsing";
+      });
     }
     prevModalOpenRef.current = modalOpen;
+    return () => clearTimeout(timeoutId);
   }, [modalOpen]);
 
   const handleCardClick = (
     e: React.MouseEvent<HTMLElement>,
-    project: ProjectData,
-    index: number,
-    key: string
+    index: number
   ) => {
     if (phase !== "idle") return;
-    const card = (e.currentTarget.closest(".fan-card") as HTMLElement) ?? e.currentTarget;
-    const r = card.getBoundingClientRect();
-    setOverlay({
-      key,
-      index,
-      project,
-      rect: { left: r.left, top: r.top, width: r.width, height: r.height },
-    });
-    setPhase("expanding");
+    e.stopPropagation();
+    setPhase("open");
+    onViewMore(index);
   };
-
-  // Matches ProjectModal's own sizing (68vw, capped 1100px, max 88vh /
-  // 94vw under 1100px) as closely as possible, so the blank box this
-  // grows into lands almost exactly where the real modal will render -
-  // the handoff reads as one continuous zoom rather than a jump.
-  const enlargedW = isDesktop
-    ? Math.min(window.innerWidth * 0.68, 1100)
-    : window.innerWidth * 0.94;
-  const enlargedH = window.innerHeight * 0.88;
-  const targetY = (window.innerHeight - enlargedH) / 2;
-
-  const enlargedRect = {
-    x: (window.innerWidth - enlargedW) / 2,
-    y: targetY,
-    width: enlargedW,
-    height: enlargedH,
-  };
-  const originalRect = overlay
-    ? { x: overlay.rect.left, y: overlay.rect.top, width: overlay.rect.width, height: overlay.rect.height }
-    : undefined;
-
-  // The overlay unmounts entirely while the real modal is open (see
-  // below), so on remounting for the collapse it needs to START from the
-  // enlarged position rather than replaying the expand from scratch.
-  const overlayInitial = phase === "collapsing" ? enlargedRect : originalRect;
-  const overlayTarget = phase === "collapsing" ? originalRect : enlargedRect;
 
   return (
-    <div className="fanned-projects">
+    <div className={`fanned-projects ${fullBleed ? "fanned-projects-full-bleed" : ""}`}>
       {rows.map((row, rowIndex) => (
         <div
           key={rowIndex}
@@ -191,12 +174,13 @@ const FannedProjectCards = ({ items, modalOpen, onViewMore }: FannedProjectCards
             hoveredRowRef.current = null;
             setHoveredRow(null);
           }}
+          onScroll={(e) => handleTrackScroll(e.currentTarget, rowIndex)}
+          onWheel={(e) => handleTrackWheel(e, rowIndex)}
         >
           {row.map((item, i) => {
             const key = `${item.project.name}-${rowIndex}-${i}`;
             const theme = CATEGORIES[item.project.categoryKey];
             const pattern = IDLE_PATTERN[i % IDLE_PATTERN.length];
-            const isSource = overlay?.key === key && phase !== "idle";
             const isStraightened = phase === "idle" && hoveredRow === rowIndex;
 
             return (
@@ -210,15 +194,14 @@ const FannedProjectCards = ({ items, modalOpen, onViewMore }: FannedProjectCards
                   background: hexToRgba(theme.color, 0.06),
                   borderColor: hexToRgba(theme.color, 0.4),
                   transform:
-                    phase !== "idle"
+                    phase === "open"
                       ? "translateY(300px) scale(0.72)"
                       : isStraightened
                         ? "translateY(0) rotate(0deg)"
                         : `translateY(${pattern.y}px) rotate(${pattern.rotate}deg)`,
-                  opacity: phase !== "idle" ? 0.35 : 1,
-                  visibility: isSource ? "hidden" : "visible",
+                  opacity: phase === "open" ? 0.35 : 1,
                 }}
-                onClick={(e) => handleCardClick(e, item.project, item.index, key)}
+                onClick={(e) => handleCardClick(e, item.index)}
               >
                 <div className="fan-card-tag" style={{ color: theme.color }}>
                   {theme.label}
@@ -237,7 +220,7 @@ const FannedProjectCards = ({ items, modalOpen, onViewMore }: FannedProjectCards
                   <button
                     type="button"
                     className="fan-card-view-more"
-                    onClick={(e) => handleCardClick(e, item.project, item.index, key)}
+                    onClick={(e) => handleCardClick(e, item.index)}
                   >
                     View More
                   </button>
@@ -260,33 +243,6 @@ const FannedProjectCards = ({ items, modalOpen, onViewMore }: FannedProjectCards
           })}
         </div>
       ))}
-
-      {overlay && (phase === "expanding" || phase === "collapsing") && (
-        // Deliberately blank - a plain colour/blur growing or shrinking
-        // box, not a preview of the card's own content. It only carries
-        // the motion; ProjectModal (opened once this finishes expanding)
-        // supplies all the actual detail, so nothing here has to be kept
-        // visually in sync with the modal's real layout.
-        <motion.div
-          className="fan-card-overlay"
-          style={{
-            background: hexToRgba(CATEGORIES[overlay.project.categoryKey].color, 0.1),
-            borderColor: hexToRgba(CATEGORIES[overlay.project.categoryKey].color, 0.4),
-          }}
-          initial={overlayInitial}
-          animate={overlayTarget}
-          transition={cardSpring}
-          onAnimationComplete={() => {
-            if (phase === "expanding") {
-              onViewMore(overlay.index);
-              setPhase("open");
-            } else if (phase === "collapsing") {
-              setPhase("idle");
-              setOverlay(null);
-            }
-          }}
-        />
-      )}
     </div>
   );
 };
